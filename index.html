@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teleprompter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0a0a0c;
+    --panel: #141417;
+    --panel-line: #232328;
+    --text-main: #f5f4ef;
+    --text-dim: #8a8a92;
+    --accent-amber: #ffb020;
+    --accent-red: #ff3b30;
+    --accent-green: #39ff88;
+    --font-display: 'Archivo', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html, body{
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background: var(--bg);
+    color: var(--text-main);
+    font-family: var(--font-mono);
+    overflow: hidden;
+  }
+
+  #app{
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ---------- TOP STATUS BAR ---------- */
+  #statusbar{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 18px;
+    background: var(--panel);
+    border-bottom: 1px solid var(--panel-line);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    flex-shrink: 0;
+    z-index: 20;
+  }
+
+  #statusbar .left{ display:flex; align-items:center; gap:10px; }
+
+  #rec-dot{
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent-red);
+    opacity: 0.25;
+    transition: opacity .15s ease;
+  }
+  #rec-dot.live{
+    opacity: 1;
+    animation: pulse 1s infinite ease-in-out;
+  }
+  @keyframes pulse{
+    0%, 100%{ box-shadow: 0 0 0 0 rgba(255,59,48,0.55); }
+    50%{ box-shadow: 0 0 0 6px rgba(255,59,48,0); }
+  }
+
+  #statusbar .brand{ color: var(--text-main); font-weight: 600; }
+
+  /* ---------- EDIT VIEW ---------- */
+  #edit-view{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 28px clamp(20px, 6vw, 120px);
+    overflow-y: auto;
+  }
+
+  #edit-view h1{
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: clamp(28px, 4vw, 44px);
+    margin: 0 0 4px 0;
+    letter-spacing: -0.02em;
+  }
+
+  #edit-view .sub{
+    color: var(--text-dim);
+    font-size: 13px;
+    margin-bottom: 24px;
+  }
+
+  #script-input{
+    flex: 1;
+    min-height: 280px;
+    resize: none;
+    background: var(--panel);
+    border: 1px solid var(--panel-line);
+    border-radius: 4px;
+    color: var(--text-main);
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 1.6;
+    padding: 20px;
+    outline: none;
+  }
+  #script-input:focus{ border-color: var(--accent-amber); }
+  #script-input::placeholder{ color: #55555c; font-family: var(--font-mono); font-size: 14px; }
+
+  .controls-row{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 28px;
+    margin-top: 22px;
+    align-items: end;
+  }
+
+  .field{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 160px;
+  }
+  .field label{
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    display: flex;
+    justify-content: space-between;
+  }
+  .field label .val{ color: var(--accent-amber); }
+
+  input[type=range]{
+    -webkit-appearance: none;
+    height: 3px;
+    background: var(--panel-line);
+    border-radius: 2px;
+    outline: none;
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--accent-amber);
+    cursor: pointer;
+    border: 2px solid var(--bg);
+  }
+
+  .toggle{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    user-select: none;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+  .toggle .switch{
+    width: 34px;
+    height: 18px;
+    background: var(--panel-line);
+    border-radius: 10px;
+    position: relative;
+    transition: background .15s ease;
+    flex-shrink: 0;
+  }
+  .toggle .switch::after{
+    content: '';
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--text-dim);
+    top: 2px;
+    left: 2px;
+    transition: all .15s ease;
+  }
+  .toggle.active .switch{ background: rgba(255,176,32,0.25); }
+  .toggle.active .switch::after{ background: var(--accent-amber); left: 18px; }
+
+  #start-btn{
+    margin-left: auto;
+    background: var(--accent-amber);
+    color: #1a1200;
+    border: none;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 14px 28px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: filter .15s ease;
+  }
+  #start-btn:hover{ filter: brightness(1.1); }
+  #start-btn:disabled{ background: var(--panel-line); color: var(--text-dim); cursor: not-allowed; }
+
+  /* ---------- PROMPTER VIEW ---------- */
+  #prompter-view{
+    flex: 1;
+    display: none;
+    position: relative;
+    overflow: hidden;
+    background: var(--bg);
+  }
+
+  #scroll-container{
+    height: 100%;
+    overflow-y: scroll;
+    scrollbar-width: none;
+  }
+  #scroll-container::-webkit-scrollbar{ display: none; }
+
+  #script-display{
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--text-main);
+    white-space: pre-wrap;
+    padding: 45vh clamp(24px, 8vw, 160px);
+    line-height: 1.5;
+  }
+  #script-display.mirrored{ transform: scaleX(-1); }
+
+  /* reading guide line, centered */
+  #guide-line{
+    position: absolute;
+    left: 0; right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 0;
+    border-top: 1px dashed rgba(255,176,32,0.5);
+    pointer-events: none;
+    z-index: 10;
+  }
+  #guide-line::before, #guide-line::after{
+    content: '';
+    position: absolute;
+    top: -5px;
+    width: 10px;
+    height: 10px;
+    border-top: 2px solid var(--accent-amber);
+  }
+  #guide-line::before{ left: 0; border-left: 2px solid var(--accent-amber); }
+  #guide-line::after{ right: 0; border-right: 2px solid var(--accent-amber); }
+
+  /* countdown overlay */
+  #countdown{
+    position: absolute;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(10,10,12,0.92);
+    z-index: 30;
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 140px;
+    color: var(--accent-amber);
+  }
+
+  /* prompter control dock */
+  #dock{
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    background: rgba(20,20,23,0.9);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--panel-line);
+    border-radius: 40px;
+    padding: 10px 20px;
+    z-index: 20;
+    transition: opacity .3s ease;
+  }
+  #dock.hidden{ opacity: 0; pointer-events: none; }
+
+  #dock button{
+    background: none;
+    border: none;
+    color: var(--text-main);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+  }
+  #dock button:hover{ background: var(--panel-line); }
+  #dock button svg{ width: 16px; height: 16px; }
+
+  #dock .mini-field{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  #dock .mini-field input[type=range]{ width: 70px; }
+
+  #exit-btn{
+    position: absolute;
+    top: 16px;
+    right: 18px;
+    z-index: 20;
+    background: var(--panel);
+    border: 1px solid var(--panel-line);
+    color: var(--text-dim);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 8px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: opacity .3s ease;
+  }
+  #exit-btn.hidden{ opacity: 0; pointer-events: none; }
+  #exit-btn:hover{ color: var(--text-main); border-color: var(--accent-amber); }
+
+  #hint{
+    position: absolute;
+    top: 16px;
+    left: 18px;
+    z-index: 20;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.04em;
+    transition: opacity .3s ease;
+  }
+  #hint.hidden{ opacity: 0; }
+  #hint kbd{
+    background: var(--panel);
+    border: 1px solid var(--panel-line);
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-family: var(--font-mono);
+  }
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <div id="statusbar">
+    <div class="left">
+      <span id="rec-dot"></span>
+      <span class="brand">TELEPROMPTER</span>
+    </div>
+    <div id="status-text">MODO EDIÇÃO</div>
+  </div>
+
+  <!-- EDIT VIEW -->
+  <div id="edit-view">
+    <h1>Prepare seu roteiro</h1>
+    <div class="sub">Cole ou escreva o texto que vai ler durante a gravação. Ajuste a velocidade e o tamanho da fonte antes de começar.</div>
+    <textarea id="script-input" placeholder="Cole seu roteiro aqui...
+
+Ex: Olá, seja bem-vindo ao vídeo de hoje. Vamos falar sobre..."></textarea>
+
+    <div class="controls-row">
+      <div class="field">
+        <label>Velocidade <span class="val" id="speed-val">3</span></label>
+        <input type="range" id="speed-input" min="1" max="10" step="1" value="3">
+      </div>
+      <div class="field">
+        <label>Tam. da fonte <span class="val" id="fontsize-val">48px</span></label>
+        <input type="range" id="fontsize-input" min="24" max="96" step="2" value="48">
+      </div>
+      <div class="toggle" id="mirror-toggle">
+        <div class="switch"></div>
+        <span>Espelhar texto</span>
+      </div>
+      <div class="toggle active" id="countdown-toggle">
+        <div class="switch"></div>
+        <span>Contagem 3s</span>
+      </div>
+      <button id="start-btn" disabled>Iniciar leitura</button>
+    </div>
+  </div>
+
+  <!-- PROMPTER VIEW -->
+  <div id="prompter-view">
+    <div id="scroll-container">
+      <div id="script-display"></div>
+    </div>
+    <div id="guide-line"></div>
+    <div id="countdown">3</div>
+
+    <button id="exit-btn">← Voltar a editar (Esc)</button>
+    <div id="hint">Espaço: play/pause · ↑↓: velocidade · M: espelhar</div>
+
+    <div id="dock">
+      <button id="play-btn" title="Play/Pause (Espaço)">
+        <svg id="play-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      </button>
+      <div class="mini-field">
+        VEL
+        <input type="range" id="dock-speed" min="1" max="10" step="1" value="3">
+      </div>
+      <div class="mini-field">
+        FONTE
+        <input type="range" id="dock-fontsize" min="24" max="96" step="2" value="48">
+      </div>
+      <button id="dock-mirror-btn" title="Espelhar (M)">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2v20M5 6l-3 6 3 6M19 6l3 6-3 6"/></svg>
+      </button>
+      <button id="fullscreen-btn" title="Tela cheia">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h6v2H6v4H4V4zm10 0h6v6h-2V6h-4V4zM4 14h2v4h4v2H4v-6zm16 0h2v6h-6v-2h4v-4z"/></svg>
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  const editView = document.getElementById('edit-view');
+  const prompterView = document.getElementById('prompter-view');
+  const scriptInput = document.getElementById('script-input');
+  const scriptDisplay = document.getElementById('script-display');
+  const scrollContainer = document.getElementById('scroll-container');
+  const startBtn = document.getElementById('start-btn');
+  const exitBtn = document.getElementById('exit-btn');
+  const statusText = document.getElementById('status-text');
+  const recDot = document.getElementById('rec-dot');
+  const countdownEl = document.getElementById('countdown');
+  const dock = document.getElementById('dock');
+  const hint = document.getElementById('hint');
+  const playBtn = document.getElementById('play-btn');
+  const playIcon = document.getElementById('play-icon');
+  const fullscreenBtn = document.getElementById('fullscreen-btn');
+
+  const speedInput = document.getElementById('speed-input');
+  const speedVal = document.getElementById('speed-val');
+  const fontsizeInput = document.getElementById('fontsize-input');
+  const fontsizeVal = document.getElementById('fontsize-val');
+  const mirrorToggle = document.getElementById('mirror-toggle');
+  const countdownToggle = document.getElementById('countdown-toggle');
+
+  const dockSpeed = document.getElementById('dock-speed');
+  const dockFontsize = document.getElementById('dock-fontsize');
+  const dockMirrorBtn = document.getElementById('dock-mirror-btn');
+
+  let state = {
+    speed: 3,
+    fontSize: 48,
+    mirrored: false,
+    useCountdown: true,
+    playing: false
+  };
+
+  let scrollPos = 0;
+  let rafId = null;
+  let idleTimer = null;
+
+  // ---------- EDIT VIEW LOGIC ----------
+  scriptInput.addEventListener('input', () => {
+    startBtn.disabled = scriptInput.value.trim().length === 0;
+  });
+
+  function syncSpeedLabel(){
+    speedVal.textContent = state.speed;
+    speedInput.value = state.speed;
+    dockSpeed.value = state.speed;
+  }
+  function syncFontLabel(){
+    fontsizeVal.textContent = state.fontSize + 'px';
+    fontsizeInput.value = state.fontSize;
+    dockFontsize.value = state.fontSize;
+    scriptDisplay.style.fontSize = state.fontSize + 'px';
+  }
+
+  speedInput.addEventListener('input', e => { state.speed = +e.target.value; syncSpeedLabel(); });
+  dockSpeed.addEventListener('input', e => { state.speed = +e.target.value; syncSpeedLabel(); });
+  fontsizeInput.addEventListener('input', e => { state.fontSize = +e.target.value; syncFontLabel(); });
+  dockFontsize.addEventListener('input', e => { state.fontSize = +e.target.value; syncFontLabel(); });
+
+  mirrorToggle.addEventListener('click', () => {
+    state.mirrored = !state.mirrored;
+    mirrorToggle.classList.toggle('active', state.mirrored);
+    scriptDisplay.classList.toggle('mirrored', state.mirrored);
+  });
+
+  countdownToggle.addEventListener('click', () => {
+    state.useCountdown = !state.useCountdown;
+    countdownToggle.classList.toggle('active', state.useCountdown);
+  });
+
+  startBtn.addEventListener('click', enterPrompter);
+
+  function enterPrompter(){
+    scriptDisplay.textContent = scriptInput.value;
+    editView.style.display = 'none';
+    prompterView.style.display = 'block';
+    statusText.textContent = 'PRONTO';
+    scrollContainer.scrollTop = 0;
+    scrollPos = 0;
+
+    if(state.useCountdown){
+      runCountdown(3, () => setPlaying(true));
+    }
+  }
+
+  function runCountdown(n, done){
+    countdownEl.style.display = 'flex';
+    countdownEl.textContent = n;
+    if(n <= 0){
+      countdownEl.style.display = 'none';
+      done();
+      return;
+    }
+    setTimeout(() => runCountdown(n-1, done), 1000);
+  }
+
+  // ---------- PROMPTER SCROLL LOGIC ----------
+  function tick(){
+    if(state.playing){
+      scrollPos += state.speed * 0.4;
+      scrollContainer.scrollTop = scrollPos;
+      statusText.textContent = 'LENDO';
+
+      // reached the end
+      if(scrollContainer.scrollTop + scrollContainer.clientHeight >= scrollContainer.scrollHeight - 2){
+        setPlaying(false);
+        statusText.textContent = 'FIM DO ROTEIRO';
+      }
+    }
+    rafId = requestAnimationFrame(tick);
+  }
+  rafId = requestAnimationFrame(tick);
+
+  function setPlaying(val){
+    state.playing = val;
+    recDot.classList.toggle('live', val);
+    playIcon.innerHTML = val
+      ? '<path d="M6 5h4v14H6zM14 5h4v14h-4z"/>'
+      : '<path d="M8 5v14l11-7z"/>';
+    statusText.textContent = val ? 'LENDO' : 'PAUSADO';
+    resetIdleTimer();
+  }
+
+  playBtn.addEventListener('click', () => setPlaying(!state.playing));
+
+  dockMirrorBtn.addEventListener('click', () => {
+    state.mirrored = !state.mirrored;
+    scriptDisplay.classList.toggle('mirrored', state.mirrored);
+  });
+
+  fullscreenBtn.addEventListener('click', () => {
+    if(!document.fullscreenElement){
+      document.documentElement.requestFullscreen().catch(()=>{});
+    } else {
+      document.exitFullscreen();
+    }
+  });
+
+  exitBtn.addEventListener('click', backToEdit);
+
+  function backToEdit(){
+    setPlaying(false);
+    prompterView.style.display = 'none';
+    editView.style.display = 'flex';
+    statusText.textContent = 'MODO EDIÇÃO';
+  }
+
+  // ---------- KEYBOARD SHORTCUTS ----------
+  document.addEventListener('keydown', (e) => {
+    if(prompterView.style.display !== 'block') return;
+    if(e.code === 'Space'){
+      e.preventDefault();
+      setPlaying(!state.playing);
+    } else if(e.code === 'Escape'){
+      backToEdit();
+    } else if(e.code === 'ArrowUp'){
+      e.preventDefault();
+      state.speed = Math.min(10, state.speed + 1);
+      syncSpeedLabel();
+    } else if(e.code === 'ArrowDown'){
+      e.preventDefault();
+      state.speed = Math.max(1, state.speed - 1);
+      syncSpeedLabel();
+    } else if(e.code === 'KeyM'){
+      state.mirrored = !state.mirrored;
+      scriptDisplay.classList.toggle('mirrored', state.mirrored);
+    }
+    resetIdleTimer();
+  });
+
+  // auto-hide dock/hint/exit while reading, reveal on mouse move
+  function resetIdleTimer(){
+    dock.classList.remove('hidden');
+    hint.classList.remove('hidden');
+    exitBtn.classList.remove('hidden');
+    clearTimeout(idleTimer);
+    if(state.playing){
+      idleTimer = setTimeout(() => {
+        dock.classList.add('hidden');
+        hint.classList.add('hidden');
+        exitBtn.classList.add('hidden');
+      }, 2500);
+    }
+  }
+  prompterView.addEventListener('mousemove', resetIdleTimer);
+
+  // allow manual scroll to override position when paused
+  scrollContainer.addEventListener('scroll', () => {
+    if(!state.playing){
+      scrollPos = scrollContainer.scrollTop;
+    }
+  });
+
+  syncSpeedLabel();
+  syncFontLabel();
+})();
+</script>
+
+</body>
+</html>

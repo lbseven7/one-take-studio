@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>OneTake · Claquete Digital</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0a0a0c;
+    --panel: #141417;
+    --panel-line: #232328;
+    --card: #1a1a1e;
+    --text-main: #f5f4ef;
+    --text-dim: #8a8a92;
+    --accent-amber: #ffb020;
+    --accent-red: #ff3b30;
+    --accent-green: #39ff88;
+    --font-display: 'Archivo', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+  }
+
+  *{ box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html, body{
+    margin: 0; padding: 0;
+    height: 100%;
+    background: var(--bg);
+    color: var(--text-main);
+    font-family: var(--font-mono);
+    overflow: hidden;
+  }
+
+  #app{
+    height: 100vh;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    background: var(--panel);
+    border-bottom: 1px solid var(--panel-line);
+    flex-shrink: 0;
+  }
+  header h1{
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 16px;
+    margin: 0;
+  }
+  header .n{
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* ---------- VIEWS ---------- */
+  .view{
+    flex: 1;
+    display: none;
+    overflow-y: auto;
+    position: relative;
+  }
+  .view.active{ display: flex; flex-direction: column; }
+
+  /* ---------- SETUP VIEW ---------- */
+  #setup-view{ padding: 22px clamp(18px, 6vw, 100px); }
+
+  .slate-visual{
+    width: 100%;
+    max-width: 360px;
+    margin: 0 auto 26px auto;
+  }
+  .clap-bar{
+    height: 34px;
+    background-image: repeating-linear-gradient(-45deg, #0d0d0f 0 18px, #f5f4ef 18px 36px);
+    border-radius: 4px 4px 0 0;
+    transform-origin: left center;
+  }
+  .clap-bar.top{ transform: rotate(-14deg) translateY(2px); margin-bottom: -2px; }
+  .clap-board{
+    background: #17171a;
+    border: 1px solid var(--panel-line);
+    border-radius: 0 0 4px 4px;
+    padding: 16px 18px;
+  }
+  .clap-row{
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.04em;
+    padding: 6px 0;
+    border-bottom: 1px dashed var(--panel-line);
+  }
+  .clap-row:last-child{ border-bottom: none; }
+  .clap-row .v{ color: var(--text-main); font-weight: 600; }
+
+  .field{
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+  .field label{
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+  .field input[type=text], .field input[type=number]{
+    background: var(--card);
+    border: 1px solid var(--panel-line);
+    border-radius: 4px;
+    color: var(--text-main);
+    font-family: var(--font-display);
+    font-size: 17px;
+    font-weight: 600;
+    padding: 12px 14px;
+    outline: none;
+  }
+  .field input:focus{ border-color: var(--accent-amber); }
+
+  .field-row{ display: flex; gap: 14px; }
+  .field-row .field{ flex: 1; }
+
+  .stepper{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .stepper button{
+    width: 40px; height: 40px;
+    border-radius: 4px;
+    border: 1px solid var(--panel-line);
+    background: var(--card);
+    color: var(--text-main);
+    font-size: 18px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .stepper button:hover{ border-color: var(--accent-amber); }
+  .stepper input{ text-align: center; }
+
+  .chip-row{ display: flex; gap: 8px; flex-wrap: wrap; }
+  .chip{
+    border: 1px solid var(--panel-line);
+    background: var(--card);
+    color: var(--text-dim);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    padding: 8px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+  }
+  .chip.active{
+    border-color: var(--accent-amber);
+    color: var(--accent-amber);
+    background: rgba(255,176,32,0.08);
+  }
+
+  #clap-btn{
+    margin-top: 8px;
+    width: 100%;
+    background: var(--accent-amber);
+    color: #1a1200;
+    border: none;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 18px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  #clap-btn:hover{ filter: brightness(1.1); }
+
+  /* history */
+  #history{ margin-top: 26px; }
+  #history h2{
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+  }
+  #history h2 button{
+    background: none; border: none;
+    color: var(--text-dim);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  #history h2 button:hover{ color: var(--accent-red); }
+
+  .take-item{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--card);
+    border: 1px solid var(--panel-line);
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin-bottom: 8px;
+    font-size: 12px;
+  }
+  .take-item .name{ font-weight: 600; color: var(--text-main); font-family: var(--font-display); }
+  .take-item .meta{ color: var(--text-dim); font-size: 11px; margin-top: 2px; }
+  .take-item .dur{ color: var(--accent-amber); font-weight: 600; }
+  .take-item .del{
+    background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 14px; margin-left: 10px;
+  }
+  .take-item .del:hover{ color: var(--accent-red); }
+  .empty-hint{
+    color: var(--text-dim);
+    font-size: 11px;
+    text-align: center;
+    padding: 16px;
+    opacity: 0.7;
+  }
+
+  /* ---------- COUNTDOWN VIEW ---------- */
+  #countdown-view{
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+  }
+  #countdown-num{
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 34vw;
+    line-height: 1;
+    color: var(--accent-amber);
+  }
+  #countdown-label{
+    position: absolute;
+    top: 30px;
+    left: 0; right: 0;
+    text-align: center;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+
+  /* ---------- CLAP FLASH VIEW ---------- */
+  #clap-view{
+    align-items: center;
+    justify-content: center;
+    background: #050506;
+    position: relative;
+  }
+  #clap-flash{
+    position: absolute;
+    inset: 0;
+    background: #fff;
+    opacity: 0;
+    z-index: 5;
+    pointer-events: none;
+  }
+  #clap-flash.flash{ animation: flashAnim 0.35s ease-out; }
+  @keyframes flashAnim{
+    0%{ opacity: 0.95; }
+    100%{ opacity: 0; }
+  }
+
+  .big-slate{ width: min(70vw, 340px); }
+  .big-slate .clap-bar.top{
+    transform: rotate(-30deg) translateY(2px);
+    transition: transform 0.28s cubic-bezier(.4,1.6,.6,1);
+  }
+  .big-slate.clapped .clap-bar.top{ transform: rotate(0deg) translateY(2px); }
+  #action-label{
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 44px;
+    color: var(--accent-red);
+    letter-spacing: 0.05em;
+    margin-top: 24px;
+    opacity: 0;
+  }
+  #action-label.show{ opacity: 1; animation: pop 0.3s ease; }
+  @keyframes pop{ 0%{ transform: scale(0.7); } 60%{ transform: scale(1.1); } 100%{ transform: scale(1); } }
+
+  /* ---------- RECORDING VIEW ---------- */
+  #recording-view{
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+    position: relative;
+    text-align: center;
+  }
+  #rec-info{
+    font-size: 12px;
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  #rec-info span{ color: var(--accent-amber); }
+  #rec-clock{
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 22vw;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  #rec-dotline{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 14px 0 30px 0;
+    color: var(--accent-red);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+  }
+  #rec-dotline .dot{
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--accent-red);
+    animation: pulse 1s infinite ease-in-out;
+  }
+  @keyframes pulse{
+    0%, 100%{ box-shadow: 0 0 0 0 rgba(255,59,48,0.55); }
+    50%{ box-shadow: 0 0 0 8px rgba(255,59,48,0); }
+  }
+  #stop-btn{
+    background: var(--accent-red);
+    color: #fff;
+    border: none;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 18px 44px;
+    border-radius: 40px;
+    cursor: pointer;
+  }
+  #stop-btn:hover{ filter: brightness(1.1); }
+
+  @media (max-width: 640px){
+    #countdown-num{ font-size: 40vw; }
+    #rec-clock{ font-size: 24vw; }
+  }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <header>
+    <h1>OneTake · Claquete Digital</h1>
+    <div class="n" id="take-badge">TAKE 1</div>
+  </header>
+
+  <!-- SETUP -->
+  <div id="setup-view" class="view active">
+    <div class="slate-visual">
+      <div class="clap-bar top"></div>
+      <div class="clap-board">
+        <div class="clap-row"><span>Projeto</span><span class="v" id="preview-title">—</span></div>
+        <div class="clap-row"><span>Cena</span><span class="v" id="preview-scene">—</span></div>
+        <div class="clap-row"><span>Take</span><span class="v" id="preview-take">1</span></div>
+        <div class="clap-row"><span>Nota</span><span class="v" id="preview-note">—</span></div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Projeto / título do vídeo</label>
+      <input type="text" id="field-title" placeholder="Ex: Vídeo sobre rotina matinal">
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>Cena</label>
+        <input type="text" id="field-scene" placeholder="Ex: Abertura">
+      </div>
+      <div class="field">
+        <label>Take</label>
+        <div class="stepper">
+          <button id="take-minus">−</button>
+          <input type="number" id="field-take" value="1" min="1">
+          <button id="take-plus">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Observação</label>
+      <input type="text" id="field-note" placeholder="Ex: variação mais rápida, luz da janela">
+    </div>
+
+    <div class="field">
+      <label>Contagem regressiva</label>
+      <div class="chip-row" id="countdown-chips">
+        <div class="chip" data-v="3">3s</div>
+        <div class="chip active" data-v="5">5s</div>
+        <div class="chip" data-v="10">10s</div>
+      </div>
+    </div>
+
+    <button id="clap-btn">Bater claquete</button>
+
+    <div id="history">
+      <h2>Takes registrados <button id="clear-history">Limpar tudo</button></h2>
+      <div id="history-list"></div>
+    </div>
+  </div>
+
+  <!-- COUNTDOWN -->
+  <div id="countdown-view" class="view">
+    <div id="countdown-label">Preparando take</div>
+    <div id="countdown-num">5</div>
+  </div>
+
+  <!-- CLAP FLASH -->
+  <div id="clap-view" class="view">
+    <div id="clap-flash"></div>
+    <div>
+      <div class="slate-visual big-slate" id="big-slate">
+        <div class="clap-bar top"></div>
+        <div class="clap-board">
+          <div class="clap-row"><span>Projeto</span><span class="v" id="clap-title">—</span></div>
+          <div class="clap-row"><span>Cena</span><span class="v" id="clap-scene">—</span></div>
+          <div class="clap-row"><span>Take</span><span class="v" id="clap-take">1</span></div>
+        </div>
+      </div>
+      <div style="text-align:center;"><div id="action-label">AÇÃO</div></div>
+    </div>
+  </div>
+
+  <!-- RECORDING -->
+  <div id="recording-view" class="view">
+    <div>
+      <div id="rec-info">Take <span id="rec-take-n">1</span> · <span id="rec-scene-n">—</span></div>
+      <div id="rec-clock">00:00</div>
+      <div id="rec-dotline"><span class="dot"></span><span>GRAVANDO</span></div>
+      <button id="stop-btn">Encerrar take</button>
+    </div>
+  </div>
+</div>
+
+<script src="db.js"></script>
+<script>
+(function(){
+
+  const views = {
+    setup: document.getElementById('setup-view'),
+    countdown: document.getElementById('countdown-view'),
+    clap: document.getElementById('clap-view'),
+    recording: document.getElementById('recording-view')
+  };
+
+  function showView(name){
+    Object.values(views).forEach(v => v.classList.remove('active'));
+    views[name].classList.add('active');
+  }
+
+  const fieldTitle = document.getElementById('field-title');
+  const fieldScene = document.getElementById('field-scene');
+  const fieldTake = document.getElementById('field-take');
+  const fieldNote = document.getElementById('field-note');
+  const takeMinus = document.getElementById('take-minus');
+  const takePlus = document.getElementById('take-plus');
+  const countdownChips = document.getElementById('countdown-chips');
+  const clapBtn = document.getElementById('clap-btn');
+  const takeBadge = document.getElementById('take-badge');
+
+  const previewTitle = document.getElementById('preview-title');
+  const previewScene = document.getElementById('preview-scene');
+  const previewTake = document.getElementById('preview-take');
+  const previewNote = document.getElementById('preview-note');
+
+  const countdownNum = document.getElementById('countdown-num');
+  const clapFlash = document.getElementById('clap-flash');
+  const bigSlate = document.getElementById('big-slate');
+  const clapTitle = document.getElementById('clap-title');
+  const clapScene = document.getElementById('clap-scene');
+  const clapTake = document.getElementById('clap-take');
+  const actionLabel = document.getElementById('action-label');
+
+  const recTakeN = document.getElementById('rec-take-n');
+  const recSceneN = document.getElementById('rec-scene-n');
+  const recClock = document.getElementById('rec-clock');
+  const stopBtn = document.getElementById('stop-btn');
+
+  const historyList = document.getElementById('history-list');
+  const clearHistoryBtn = document.getElementById('clear-history');
+
+  let countdownSeconds = 5;
+  let takes = [];
+  let recStart = 0;
+  let recInterval = null;
+  let audioCtx = null;
+
+  // ---------- PERSIST STATE (IndexedDB) ----------
+  async function saveFieldState(){
+    await OneTakeDB.put('claquete_state', {
+      id: 'state',
+      title: fieldTitle.value,
+      scene: fieldScene.value,
+      take: fieldTake.value,
+      note: fieldNote.value,
+      countdown: countdownSeconds
+    });
+  }
+
+  async function loadFieldState(){
+    try{
+      const s = await OneTakeDB.get('claquete_state', 'state');
+      if(s){
+        fieldTitle.value = s.title || '';
+        fieldScene.value = s.scene || '';
+        fieldTake.value = s.take || 1;
+        fieldNote.value = s.note || '';
+        countdownSeconds = s.countdown || 5;
+      }
+    }catch(e){}
+  }
+
+  function updatePreview(){
+    previewTitle.textContent = fieldTitle.value.trim() || '—';
+    previewScene.textContent = fieldScene.value.trim() || '—';
+    previewTake.textContent = fieldTake.value || '1';
+    previewNote.textContent = fieldNote.value.trim() || '—';
+    takeBadge.textContent = 'TAKE ' + (fieldTake.value || '1');
+    saveFieldState();
+  }
+
+  [fieldTitle, fieldScene, fieldTake, fieldNote].forEach(f => f.addEventListener('input', updatePreview));
+
+  takeMinus.addEventListener('click', () => {
+    fieldTake.value = Math.max(1, (parseInt(fieldTake.value)||1) - 1);
+    updatePreview();
+  });
+  takePlus.addEventListener('click', () => {
+    fieldTake.value = (parseInt(fieldTake.value)||1) + 1;
+    updatePreview();
+  });
+
+  [...countdownChips.children].forEach(chip => {
+    chip.addEventListener('click', () => {
+      [...countdownChips.children].forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      countdownSeconds = parseInt(chip.dataset.v);
+      saveFieldState();
+    });
+  });
+
+  // ---------- HISTORY ----------
+  async function loadTakes(){
+    try{ takes = await OneTakeDB.getAll('claquete_takes') || []; }catch(e){ takes = []; }
+  }
+
+  function renderHistory(){
+    historyList.innerHTML = '';
+    if(takes.length === 0){
+      historyList.innerHTML = '<div class="empty-hint">Nenhum take registrado ainda</div>';
+      return;
+    }
+    takes.slice().reverse().forEach(t => {
+      const el = document.createElement('div');
+      el.className = 'take-item';
+      const mins = Math.floor(t.duration / 60);
+      const secs = t.duration % 60;
+      const durStr = String(mins).padStart(2,'0') + ':' + String(secs).padStart(2,'0');
+      el.innerHTML = `
+        <div>
+          <div class="name">${escapeHtml(t.title || 'Sem título')} · Take ${t.take}</div>
+          <div class="meta">${escapeHtml(t.scene || 'sem cena')} · ${new Date(t.timestamp).toLocaleString('pt-BR', {day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit'})}</div>
+        </div>
+        <div style="display:flex; align-items:center;">
+          <span class="dur">${durStr}</span>
+          <button class="del" data-id="${t.id}">✕</button>
+        </div>
+      `;
+      historyList.appendChild(el);
+    });
+    [...historyList.querySelectorAll('.del')].forEach(btn => {
+      btn.addEventListener('click', async () => {
+        takes = takes.filter(t => t.id !== btn.dataset.id);
+        await OneTakeDB.del('claquete_takes', btn.dataset.id);
+        renderHistory();
+      });
+    });
+  }
+
+  function escapeHtml(str){
+    const d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+  }
+
+  clearHistoryBtn.addEventListener('click', async () => {
+    if(takes.length === 0) return;
+    takes = [];
+    await OneTakeDB.clear('claquete_takes');
+    renderHistory();
+  });
+
+  // ---------- AUDIO ----------
+  function getAudioCtx(){
+    if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    return audioCtx;
+  }
+
+  function playBeep(freq, duration){
+    const ctx = getAudioCtx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(0.15, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + duration);
+  }
+
+  function playClapSound(){
+    const ctx = getAudioCtx();
+    const bufferSize = ctx.sampleRate * 0.12;
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for(let i = 0; i < bufferSize; i++){
+      data[i] = (Math.random() * 2 - 1) * (1 - i / bufferSize);
+    }
+    const noise = ctx.createBufferSource();
+    noise.buffer = buffer;
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.5, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'highpass';
+    filter.frequency.value = 800;
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(ctx.destination);
+    noise.start();
+  }
+
+  // ---------- FLOW ----------
+  clapBtn.addEventListener('click', () => {
+    getAudioCtx(); // unlock audio on user gesture
+    startCountdown();
+  });
+
+  function startCountdown(){
+    showView('countdown');
+    let n = countdownSeconds;
+    countdownNum.textContent = n;
+    const timer = setInterval(() => {
+      n--;
+      if(n <= 0){
+        clearInterval(timer);
+        doClap();
+        return;
+      }
+      countdownNum.textContent = n;
+      playBeep(660, 0.08);
+    }, 1000);
+  }
+
+  function doClap(){
+    clapTitle.textContent = fieldTitle.value.trim() || '—';
+    clapScene.textContent = fieldScene.value.trim() || '—';
+    clapTake.textContent = fieldTake.value || '1';
+    bigSlate.classList.remove('clapped');
+    actionLabel.classList.remove('show');
+    showView('clap');
+
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        bigSlate.classList.add('clapped');
+        clapFlash.classList.add('flash');
+        playClapSound();
+        setTimeout(() => {
+          actionLabel.classList.add('show');
+        }, 150);
+        setTimeout(() => {
+          clapFlash.classList.remove('flash');
+          startRecordingView();
+        }, 900);
+      }, 250);
+    });
+  }
+
+  function startRecordingView(){
+    recTakeN.textContent = fieldTake.value || '1';
+    recSceneN.textContent = fieldScene.value.trim() || 'sem cena';
+    recStart = Date.now();
+    updateClock();
+    recInterval = setInterval(updateClock, 250);
+    showView('recording');
+  }
+
+  function updateClock(){
+    const secs = Math.floor((Date.now() - recStart) / 1000);
+    const m = String(Math.floor(secs / 60)).padStart(2, '0');
+    const s = String(secs % 60).padStart(2, '0');
+    recClock.textContent = m + ':' + s;
+  }
+
+  stopBtn.addEventListener('click', async () => {
+    clearInterval(recInterval);
+    const duration = Math.floor((Date.now() - recStart) / 1000);
+
+    const take = {
+      id: Date.now().toString(36) + Math.random().toString(36).slice(2,6),
+      title: fieldTitle.value.trim(),
+      scene: fieldScene.value.trim(),
+      take: fieldTake.value || '1',
+      duration,
+      timestamp: Date.now()
+    };
+    takes.push(take);
+    await OneTakeDB.put('claquete_takes', take);
+    renderHistory();
+
+    fieldTake.value = (parseInt(fieldTake.value)||1) + 1;
+    updatePreview();
+
+    showView('setup');
+  });
+
+  // ---------- INIT ----------
+  (async function init(){
+    await OneTakeMigrate();
+    await loadFieldState();
+    [...countdownChips.children].forEach(c => {
+      c.classList.toggle('active', parseInt(c.dataset.v) === countdownSeconds);
+    });
+    updatePreview();
+    await loadTakes();
+    renderHistory();
+  })();
+})();
+</script>
+
+</body>
+</html>

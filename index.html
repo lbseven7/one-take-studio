@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Teleprompter</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -20,7 +20,7 @@
     --font-mono: 'IBM Plex Mono', monospace;
   }
 
-  *{ box-sizing: border-box; }
+  *{ box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
   html, body{
     margin: 0;
@@ -34,6 +34,7 @@
 
   #app{
     height: 100vh;
+    height: 100dvh;
     width: 100vw;
     display: flex;
     flex-direction: column;
@@ -81,14 +82,14 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    padding: 28px clamp(20px, 6vw, 120px);
+    padding: 24px clamp(18px, 6vw, 120px);
     overflow-y: auto;
   }
 
   #edit-view h1{
     font-family: var(--font-display);
     font-weight: 900;
-    font-size: clamp(28px, 4vw, 44px);
+    font-size: clamp(26px, 4vw, 44px);
     margin: 0 0 4px 0;
     letter-spacing: -0.02em;
   }
@@ -96,12 +97,12 @@
   #edit-view .sub{
     color: var(--text-dim);
     font-size: 13px;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
   }
 
   #script-input{
     flex: 1;
-    min-height: 280px;
+    min-height: 200px;
     resize: none;
     background: var(--panel);
     border: 1px solid var(--panel-line);
@@ -109,19 +110,19 @@
     color: var(--text-main);
     font-family: var(--font-display);
     font-weight: 500;
-    font-size: 20px;
+    font-size: 18px;
     line-height: 1.6;
-    padding: 20px;
+    padding: 18px;
     outline: none;
   }
   #script-input:focus{ border-color: var(--accent-amber); }
-  #script-input::placeholder{ color: #55555c; font-family: var(--font-mono); font-size: 14px; }
+  #script-input::placeholder{ color: #55555c; font-family: var(--font-mono); font-size: 13px; }
 
   .controls-row{
     display: flex;
     flex-wrap: wrap;
-    gap: 28px;
-    margin-top: 22px;
+    gap: 22px;
+    margin-top: 20px;
     align-items: end;
   }
 
@@ -129,7 +130,7 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
-    min-width: 160px;
+    min-width: 150px;
   }
   .field label{
     font-size: 11px;
@@ -150,8 +151,8 @@
   }
   input[type=range]::-webkit-slider-thumb{
     -webkit-appearance: none;
-    width: 14px;
-    height: 14px;
+    width: 16px;
+    height: 16px;
     border-radius: 50%;
     background: var(--accent-amber);
     cursor: pointer;
@@ -210,6 +211,14 @@
   #start-btn:hover{ filter: brightness(1.1); }
   #start-btn:disabled{ background: var(--panel-line); color: var(--text-dim); cursor: not-allowed; }
 
+  #camera-note{
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 6px;
+    max-width: 480px;
+    line-height: 1.5;
+  }
+
   /* ---------- PROMPTER VIEW ---------- */
   #prompter-view{
     flex: 1;
@@ -219,7 +228,39 @@
     background: var(--bg);
   }
 
+  #camera-feed{
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+    display: none;
+    background: #000;
+  }
+  #camera-feed.mirrored{ transform: scaleX(-1); }
+
+  #camera-error{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    z-index: 15;
+    background: var(--panel);
+    border: 1px solid var(--accent-red);
+    border-radius: 6px;
+    padding: 18px 22px;
+    max-width: 320px;
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--text-dim);
+    text-align: center;
+    display: none;
+  }
+
   #scroll-container{
+    position: relative;
+    z-index: 2;
     height: 100%;
     overflow-y: scroll;
     scrollbar-width: none;
@@ -231,10 +272,14 @@
     font-weight: 700;
     color: var(--text-main);
     white-space: pre-wrap;
-    padding: 45vh clamp(24px, 8vw, 160px);
+    padding: 45vh clamp(20px, 8vw, 160px);
     line-height: 1.5;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
   }
   #script-display.mirrored{ transform: scaleX(-1); }
+  #script-display.on-camera{
+    background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.45) 38%, rgba(0,0,0,0.45) 62%, rgba(0,0,0,0) 100%);
+  }
 
   /* reading guide line, centered */
   #guide-line{
@@ -265,7 +310,7 @@
     display: none;
     align-items: center;
     justify-content: center;
-    background: rgba(10,10,12,0.92);
+    background: rgba(10,10,12,0.7);
     z-index: 30;
     font-family: var(--font-display);
     font-weight: 900;
@@ -273,22 +318,49 @@
     color: var(--accent-amber);
   }
 
+  /* recording badge top */
+  #rec-badge{
+    position: absolute;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 25;
+    display: none;
+    align-items: center;
+    gap: 8px;
+    background: rgba(20,20,23,0.85);
+    backdrop-filter: blur(6px);
+    border: 1px solid var(--accent-red);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+  }
+  #rec-badge .dot{
+    width: 9px; height: 9px; border-radius: 50%;
+    background: var(--accent-red);
+    animation: pulse 1s infinite ease-in-out;
+  }
+  #rec-badge.show{ display: flex; }
+
   /* prompter control dock */
   #dock{
     position: absolute;
-    bottom: 20px;
+    bottom: 18px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
     align-items: center;
-    gap: 18px;
+    gap: 14px;
     background: rgba(20,20,23,0.9);
     backdrop-filter: blur(8px);
     border: 1px solid var(--panel-line);
     border-radius: 40px;
-    padding: 10px 20px;
+    padding: 8px 16px;
     z-index: 20;
     transition: opacity .3s ease;
+    max-width: calc(100vw - 24px);
+    overflow-x: auto;
   }
   #dock.hidden{ opacity: 0; pointer-events: none; }
 
@@ -300,12 +372,31 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 34px;
-    height: 34px;
+    width: 38px;
+    height: 38px;
     border-radius: 50%;
+    flex-shrink: 0;
   }
   #dock button:hover{ background: var(--panel-line); }
-  #dock button svg{ width: 16px; height: 16px; }
+  #dock button svg{ width: 17px; height: 17px; }
+
+  #record-btn{
+    width: 46px;
+    height: 46px;
+    border: 2px solid var(--accent-red) !important;
+  }
+  #record-btn .rec-shape{
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--accent-red);
+    transition: all .2s ease;
+  }
+  #record-btn.recording .rec-shape{
+    border-radius: 3px;
+    width: 14px;
+    height: 14px;
+  }
 
   #dock .mini-field{
     display: flex;
@@ -315,8 +406,9 @@
     color: var(--text-dim);
     letter-spacing: 0.06em;
     text-transform: uppercase;
+    flex-shrink: 0;
   }
-  #dock .mini-field input[type=range]{ width: 70px; }
+  #dock .mini-field input[type=range]{ width: 60px; }
 
   #exit-btn{
     position: absolute;
@@ -347,6 +439,7 @@
     color: var(--text-dim);
     letter-spacing: 0.04em;
     transition: opacity .3s ease;
+    max-width: 40vw;
   }
   #hint.hidden{ opacity: 0; }
   #hint kbd{
@@ -356,6 +449,59 @@
     padding: 1px 5px;
     font-family: var(--font-mono);
   }
+
+  /* ---------- REVIEW OVERLAY (after recording) ---------- */
+  #review-overlay{
+    position: absolute;
+    inset: 0;
+    z-index: 40;
+    background: rgba(6,6,8,0.96);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    padding: 20px;
+  }
+  #review-overlay.show{ display: flex; }
+  #review-overlay video{
+    max-width: min(90vw, 420px);
+    max-height: 55vh;
+    border-radius: 8px;
+    border: 1px solid var(--panel-line);
+  }
+  #review-overlay .review-title{
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 18px;
+  }
+  #review-actions{
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  #review-actions button{
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 12px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1px solid var(--panel-line);
+  }
+  #download-btn{
+    background: var(--accent-amber);
+    color: #1a1200;
+    border: none;
+    font-weight: 600;
+  }
+  #retake-btn{
+    background: transparent;
+    color: var(--text-dim);
+  }
+  #retake-btn:hover{ color: var(--text-main); border-color: var(--accent-amber); }
 </style>
 </head>
 <body>
@@ -373,14 +519,10 @@
   <!-- EDIT VIEW -->
   <div id="edit-view">
     <h1>Prepare seu roteiro</h1>
-    <div class="sub">Cole ou escreva o texto que vai ler durante a gravação. Ajuste a velocidade e o tamanho da fonte antes de começar.</div>
-    <textarea id="script-input">Valor tonal é a escala de luz e sombra em uma imagem, do branco ao preto. Ele é o alicerce visual: sem valor tonal, não existe contraste, profundidade nem volume.
+    <div class="sub">Cole ou escreva o texto. Se quiser gravar com a própria câmera do celular por trás do texto, ative a opção abaixo.</div>
+    <textarea id="script-input" placeholder="Cole seu roteiro aqui...
 
-Pense em um desenho a lápis. Mesmo sem cor, você reconhece formas porque os valores tonais definem planos, texturas e iluminação. Cor sem valor é plana e confusa; valor sem cor ainda comunica perfeitamente.
-
-Na prática, dominar valor tonal significa controlar onde o olho do espectador vai primeiro. Contraste alto atrai atenção; valores próximos criam atmosfera e unidade.
-
-Por isso, antes de pensar em cor, aprenda a ver em preto e branco. Valor tonal não é detalhe técnico — é a estrutura invisível de toda imagem impactante.</textarea>
+Ex: Olá, seja bem-vindo ao vídeo de hoje. Vamos falar sobre..."></textarea>
 
     <div class="controls-row">
       <div class="field">
@@ -388,8 +530,8 @@ Por isso, antes de pensar em cor, aprenda a ver em preto e branco. Valor tonal n
         <input type="range" id="speed-input" min="1" max="10" step="1" value="3">
       </div>
       <div class="field">
-        <label>Tam. da fonte <span class="val" id="fontsize-val">48px</span></label>
-        <input type="range" id="fontsize-input" min="24" max="96" step="2" value="48">
+        <label>Tam. da fonte <span class="val" id="fontsize-val">40px</span></label>
+        <input type="range" id="fontsize-input" min="20" max="88" step="2" value="40">
       </div>
       <div class="toggle" id="mirror-toggle">
         <div class="switch"></div>
@@ -399,20 +541,29 @@ Por isso, antes de pensar em cor, aprenda a ver em preto e branco. Valor tonal n
         <div class="switch"></div>
         <span>Contagem 3s</span>
       </div>
+      <div class="toggle" id="camera-toggle">
+        <div class="switch"></div>
+        <span>Usar câmera e gravar</span>
+      </div>
       <button id="start-btn" disabled>Iniciar leitura</button>
     </div>
+    <div id="camera-note" style="display:none;">O navegador vai pedir permissão de câmera e microfone. O texto some do vídeo gravado — ele aparece só na sua tela, como guia de leitura.</div>
   </div>
 
   <!-- PROMPTER VIEW -->
   <div id="prompter-view">
+    <video id="camera-feed" autoplay playsinline muted></video>
+    <div id="camera-error">Não foi possível acessar a câmera. Verifique se você permitiu o acesso, ou continue só com o texto.</div>
+
     <div id="scroll-container">
       <div id="script-display"></div>
     </div>
     <div id="guide-line"></div>
     <div id="countdown">3</div>
+    <div id="rec-badge"><span class="dot"></span><span id="rec-timer">00:00</span></div>
 
-    <button id="exit-btn">← Voltar a editar (Esc)</button>
-    <div id="hint">Espaço: play/pause · ↑↓: velocidade · M: espelhar</div>
+    <button id="exit-btn">← Voltar (Esc)</button>
+    <div id="hint">Espaço: play/pause · ↑↓: velocidade</div>
 
     <div id="dock">
       <button id="play-btn" title="Play/Pause (Espaço)">
@@ -424,14 +575,28 @@ Por isso, antes de pensar em cor, aprenda a ver em preto e branco. Valor tonal n
       </div>
       <div class="mini-field">
         FONTE
-        <input type="range" id="dock-fontsize" min="24" max="96" step="2" value="48">
+        <input type="range" id="dock-fontsize" min="20" max="88" step="2" value="40">
       </div>
-      <button id="dock-mirror-btn" title="Espelhar (M)">
+      <button id="dock-mirror-btn" title="Espelhar texto">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2v20M5 6l-3 6 3 6M19 6l3 6-3 6"/></svg>
       </button>
+      <button id="flip-camera-btn" title="Trocar câmera" style="display:none;">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 7h3l1.5-2h7L17 7h3a1 1 0 011 1v10a1 1 0 01-1 1H4a1 1 0 01-1-1V8a1 1 0 011-1zm8 3a4 4 0 100 8 4 4 0 000-8z"/></svg>
+      </button>
+      <button id="record-btn" title="Gravar" style="display:none;"><span class="rec-shape"></span></button>
       <button id="fullscreen-btn" title="Tela cheia">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h6v2H6v4H4V4zm10 0h6v6h-2V6h-4V4zM4 14h2v4h4v2H4v-6zm16 0h2v6h-6v-2h4v-4z"/></svg>
       </button>
+    </div>
+
+    <!-- Review after stopping recording -->
+    <div id="review-overlay">
+      <div class="review-title">Vídeo gravado</div>
+      <video id="review-video" controls playsinline></video>
+      <div id="review-actions">
+        <button id="download-btn">Baixar vídeo</button>
+        <button id="retake-btn">Gravar de novo</button>
+      </div>
     </div>
   </div>
 
@@ -461,22 +626,46 @@ Por isso, antes de pensar em cor, aprenda a ver em preto e branco. Valor tonal n
   const fontsizeVal = document.getElementById('fontsize-val');
   const mirrorToggle = document.getElementById('mirror-toggle');
   const countdownToggle = document.getElementById('countdown-toggle');
+  const cameraToggle = document.getElementById('camera-toggle');
+  const cameraNote = document.getElementById('camera-note');
 
   const dockSpeed = document.getElementById('dock-speed');
   const dockFontsize = document.getElementById('dock-fontsize');
   const dockMirrorBtn = document.getElementById('dock-mirror-btn');
 
+  const cameraFeed = document.getElementById('camera-feed');
+  const cameraError = document.getElementById('camera-error');
+  const flipCameraBtn = document.getElementById('flip-camera-btn');
+  const recordBtn = document.getElementById('record-btn');
+  const recBadge = document.getElementById('rec-badge');
+  const recTimer = document.getElementById('rec-timer');
+
+  const reviewOverlay = document.getElementById('review-overlay');
+  const reviewVideo = document.getElementById('review-video');
+  const downloadBtn = document.getElementById('download-btn');
+  const retakeBtn = document.getElementById('retake-btn');
+
   let state = {
     speed: 3,
-    fontSize: 48,
+    fontSize: 40,
     mirrored: false,
     useCountdown: true,
-    playing: false
+    useCamera: false,
+    playing: false,
+    facingMode: 'user'
   };
 
   let scrollPos = 0;
   let rafId = null;
   let idleTimer = null;
+
+  let mediaStream = null;
+  let mediaRecorder = null;
+  let recordedChunks = [];
+  let isRecording = false;
+  let recStartTime = 0;
+  let recTimerInterval = null;
+  let lastBlobUrl = null;
 
   // ---------- EDIT VIEW LOGIC ----------
   scriptInput.addEventListener('input', () => {
@@ -511,6 +700,13 @@ Por isso, antes de pensar em cor, aprenda a ver em preto e branco. Valor tonal n
     countdownToggle.classList.toggle('active', state.useCountdown);
   });
 
+  cameraToggle.addEventListener('click', () => {
+    state.useCamera = !state.useCamera;
+    cameraToggle.classList.toggle('active', state.useCamera);
+    cameraNote.style.display = state.useCamera ? 'block' : 'none';
+    startBtn.textContent = state.useCamera ? 'Iniciar com câmera' : 'Iniciar leitura';
+  });
+
   startBtn.addEventListener('click', enterPrompter);
 
   function enterPrompter(){
@@ -521,8 +717,19 @@ Por isso, antes de pensar em cor, aprenda a ver em preto e branco. Valor tonal n
     scrollContainer.scrollTop = 0;
     scrollPos = 0;
 
-    if(state.useCountdown){
-      runCountdown(3, () => setPlaying(true));
+    flipCameraBtn.style.display = state.useCamera ? 'flex' : 'none';
+    recordBtn.style.display = state.useCamera ? 'flex' : 'none';
+    scriptDisplay.classList.toggle('on-camera', state.useCamera);
+
+    if(state.useCamera){
+      startCamera().then(() => {
+        if(state.useCountdown) runCountdown(3, () => setPlaying(true));
+      }).catch(() => {
+        cameraError.style.display = 'block';
+        if(state.useCountdown) runCountdown(3, () => setPlaying(true));
+      });
+    } else {
+      if(state.useCountdown) runCountdown(3, () => setPlaying(true));
     }
   }
 
@@ -537,14 +744,127 @@ Por isso, antes de pensar em cor, aprenda a ver em preto e branco. Valor tonal n
     setTimeout(() => runCountdown(n-1, done), 1000);
   }
 
+  // ---------- CAMERA ----------
+  async function startCamera(){
+    stopCamera();
+    cameraError.style.display = 'none';
+    const constraints = {
+      video: { facingMode: state.facingMode, width: { ideal: 1280 }, height: { ideal: 720 } },
+      audio: true
+    };
+    mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
+    cameraFeed.srcObject = mediaStream;
+    cameraFeed.style.display = 'block';
+    cameraFeed.classList.toggle('mirrored', state.facingMode === 'user');
+  }
+
+  function stopCamera(){
+    if(mediaStream){
+      mediaStream.getTracks().forEach(t => t.stop());
+      mediaStream = null;
+    }
+  }
+
+  flipCameraBtn.addEventListener('click', async () => {
+    state.facingMode = state.facingMode === 'user' ? 'environment' : 'user';
+    try{ await startCamera(); }catch(e){ cameraError.style.display = 'block'; }
+  });
+
+  // ---------- RECORDING ----------
+  function pickMimeType(){
+    const options = [
+      'video/webm;codecs=vp9,opus',
+      'video/webm;codecs=vp8,opus',
+      'video/webm',
+      'video/mp4'
+    ];
+    for(const opt of options){
+      if(window.MediaRecorder && MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(opt)) return opt;
+    }
+    return '';
+  }
+
+  function startRecording(){
+    if(!mediaStream) return;
+    recordedChunks = [];
+    const mimeType = pickMimeType();
+    try{
+      mediaRecorder = mimeType ? new MediaRecorder(mediaStream, { mimeType }) : new MediaRecorder(mediaStream);
+    }catch(e){
+      mediaRecorder = new MediaRecorder(mediaStream);
+    }
+    mediaRecorder.ondataavailable = (e) => { if(e.data && e.data.size > 0) recordedChunks.push(e.data); };
+    mediaRecorder.onstop = onRecordingStop;
+    mediaRecorder.start();
+    isRecording = true;
+    recordBtn.classList.add('recording');
+    recBadge.classList.add('show');
+    recStartTime = Date.now();
+    recTimerInterval = setInterval(updateRecTimer, 250);
+    updateRecTimer();
+  }
+
+  function stopRecording(){
+    if(mediaRecorder && isRecording){
+      mediaRecorder.stop();
+    }
+    isRecording = false;
+    recordBtn.classList.remove('recording');
+    recBadge.classList.remove('show');
+    clearInterval(recTimerInterval);
+  }
+
+  function updateRecTimer(){
+    const secs = Math.floor((Date.now() - recStartTime) / 1000);
+    const m = String(Math.floor(secs / 60)).padStart(2, '0');
+    const s = String(secs % 60).padStart(2, '0');
+    recTimer.textContent = m + ':' + s;
+  }
+
+  function onRecordingStop(){
+    const mimeType = mediaRecorder.mimeType || 'video/webm';
+    const blob = new Blob(recordedChunks, { type: mimeType });
+    if(lastBlobUrl) URL.revokeObjectURL(lastBlobUrl);
+    lastBlobUrl = URL.createObjectURL(blob);
+    reviewVideo.src = lastBlobUrl;
+    const ext = mimeType.includes('mp4') ? 'mp4' : 'webm';
+    downloadBtn.dataset.filename = 'gravacao-teleprompter-' + Date.now() + '.' + ext;
+    setPlaying(false);
+    reviewOverlay.classList.add('show');
+  }
+
+  recordBtn.addEventListener('click', () => {
+    if(!mediaStream){ cameraError.style.display = 'block'; return; }
+    if(isRecording){ stopRecording(); } else { startRecording(); setPlaying(true); }
+  });
+
+  downloadBtn.addEventListener('click', () => {
+    if(!lastBlobUrl) return;
+    const a = document.createElement('a');
+    a.href = lastBlobUrl;
+    a.download = downloadBtn.dataset.filename || 'gravacao-teleprompter.webm';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  });
+
+  retakeBtn.addEventListener('click', () => {
+    reviewOverlay.classList.remove('show');
+    scrollContainer.scrollTop = 0;
+    scrollPos = 0;
+    statusText.textContent = 'PRONTO';
+    if(state.useCountdown){
+      runCountdown(3, () => setPlaying(true));
+    }
+  });
+
   // ---------- PROMPTER SCROLL LOGIC ----------
   function tick(){
     if(state.playing){
       scrollPos += state.speed * 0.4;
       scrollContainer.scrollTop = scrollPos;
-      statusText.textContent = 'LENDO';
+      if(!isRecording) statusText.textContent = 'LENDO';
 
-      // reached the end
       if(scrollContainer.scrollTop + scrollContainer.clientHeight >= scrollContainer.scrollHeight - 2){
         setPlaying(false);
         statusText.textContent = 'FIM DO ROTEIRO';
@@ -560,7 +880,7 @@ Por isso, antes de pensar em cor, aprenda a ver em preto e branco. Valor tonal n
     playIcon.innerHTML = val
       ? '<path d="M6 5h4v14H6zM14 5h4v14h-4z"/>'
       : '<path d="M8 5v14l11-7z"/>';
-    statusText.textContent = val ? 'LENDO' : 'PAUSADO';
+    if(!isRecording) statusText.textContent = val ? 'LENDO' : 'PAUSADO';
     resetIdleTimer();
   }
 
@@ -583,6 +903,11 @@ Por isso, antes de pensar em cor, aprenda a ver em preto e branco. Valor tonal n
 
   function backToEdit(){
     setPlaying(false);
+    if(isRecording) stopRecording();
+    stopCamera();
+    cameraFeed.style.display = 'none';
+    reviewOverlay.classList.remove('show');
+    cameraError.style.display = 'none';
     prompterView.style.display = 'none';
     editView.style.display = 'flex';
     statusText.textContent = 'MODO EDIÇÃO';
@@ -607,11 +932,13 @@ Por isso, antes de pensar em cor, aprenda a ver em preto e branco. Valor tonal n
     } else if(e.code === 'KeyM'){
       state.mirrored = !state.mirrored;
       scriptDisplay.classList.toggle('mirrored', state.mirrored);
+    } else if(e.code === 'KeyR' && state.useCamera){
+      recordBtn.click();
     }
     resetIdleTimer();
   });
 
-  // auto-hide dock/hint/exit while reading, reveal on mouse move
+  // auto-hide dock/hint/exit while reading, reveal on touch/mouse move
   function resetIdleTimer(){
     dock.classList.remove('hidden');
     hint.classList.remove('hidden');
@@ -622,10 +949,11 @@ Por isso, antes de pensar em cor, aprenda a ver em preto e branco. Valor tonal n
         dock.classList.add('hidden');
         hint.classList.add('hidden');
         exitBtn.classList.add('hidden');
-      }, 2500);
+      }, 3000);
     }
   }
   prompterView.addEventListener('mousemove', resetIdleTimer);
+  prompterView.addEventListener('touchstart', resetIdleTimer);
 
   // allow manual scroll to override position when paused
   scrollContainer.addEventListener('scroll', () => {

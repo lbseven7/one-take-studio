@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Painel de Pauta</title>
+<title>OneTake · Painel de Pauta</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -351,7 +351,7 @@
 <div id="app">
   <header>
     <div>
-      <h1>Painel de Pauta</h1>
+      <h1>OneTake · Painel de Pauta</h1>
       <div class="count" id="total-count">0 ideias</div>
     </div>
     <button id="add-btn">+ Nova ideia</button>
@@ -393,9 +393,9 @@
   </div>
 </div>
 
+<script src="db.js"></script>
 <script>
 (function(){
-  const STORAGE_KEY = 'painel-pauta-cards-v1';
 
   const COLUMNS = [
     { id: 'ideia',    label: 'Ideia',        color: '#8a8a92' },
@@ -430,23 +430,17 @@
   let editingId = null;
   let selectedPlatform = 'reels';
 
-  function loadCards(){
+  async function loadCards(){
     try{
-      const raw = localStorage.getItem(STORAGE_KEY);
-      cards = raw ? JSON.parse(raw) : seedCards();
+      cards = await OneTakeDB.getAll('pauta_cards') || [];
+      if(cards.length === 0){
+        const seed = { id: uid(), title: 'Bastidores da rotina de gravação', platform: 'reels', notes: 'Mostrar setup, teleprompter, luz. Gancho: "isso mudou minha forma de gravar".', status: 'ideia', createdAt: Date.now() };
+        cards.push(seed);
+        await OneTakeDB.put('pauta_cards', seed);
+      }
     }catch(e){
-      cards = seedCards();
+      cards = [];
     }
-  }
-
-  function seedCards(){
-    return [
-      { id: uid(), title: 'Bastidores da rotina de gravação', platform: 'reels', notes: 'Mostrar setup, teleprompter, luz. Gancho: "isso mudou minha forma de gravar".', status: 'ideia', createdAt: Date.now() }
-    ];
-  }
-
-  function saveCards(){
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(cards));
   }
 
   function uid(){
@@ -543,13 +537,13 @@
     const newIdx = idx + dir;
     if(newIdx < 0 || newIdx >= COLUMNS.length) return;
     card.status = COLUMNS[newIdx].id;
-    saveCards();
+    OneTakeDB.put('pauta_cards', card);
     render();
   }
 
   function deleteCard(id){
     cards = cards.filter(c => c.id !== id);
-    saveCards();
+    OneTakeDB.del('pauta_cards', id);
     render();
   }
 
@@ -610,7 +604,7 @@
   cancelBtn.addEventListener('click', closeModal);
   modalBackdrop.addEventListener('click', (e) => { if(e.target === modalBackdrop) closeModal(); });
 
-  saveBtn.addEventListener('click', () => {
+  saveBtn.addEventListener('click', async () => {
     const title = fieldTitle.value.trim();
     if(!title){ fieldTitle.focus(); return; }
 
@@ -620,17 +614,19 @@
       card.notes = fieldNotes.value.trim();
       card.status = fieldStatus.value;
       card.platform = selectedPlatform;
+      await OneTakeDB.put('pauta_cards', card);
     } else {
-      cards.push({
+      const card = {
         id: uid(),
         title,
         notes: fieldNotes.value.trim(),
         status: fieldStatus.value,
         platform: selectedPlatform,
         createdAt: Date.now()
-      });
+      };
+      cards.push(card);
+      await OneTakeDB.put('pauta_cards', card);
     }
-    saveCards();
     render();
     closeModal();
   });
@@ -645,10 +641,13 @@
   });
 
   // ---------- INIT ----------
-  buildStatusOptions();
-  buildPlatformPicker();
-  loadCards();
-  render();
+  (async function init(){
+    await OneTakeMigrate();
+    buildStatusOptions();
+    buildPlatformPicker();
+    await loadCards();
+    render();
+  })();
 })();
 </script>
 

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Teleprompter</title>
+<title>OneTake · Teleprompter</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -511,7 +511,7 @@
   <div id="statusbar">
     <div class="left">
       <span id="rec-dot"></span>
-      <span class="brand">TELEPROMPTER</span>
+      <span class="brand">OneTake · Teleprompter</span>
     </div>
     <div id="status-text">MODO EDIÇÃO</div>
   </div>
@@ -602,6 +602,7 @@ Ex: Olá, seja bem-vindo ao vídeo de hoje. Vamos falar sobre..."></textarea>
 
 </div>
 
+<script src="db.js"></script>
 <script>
 (function(){
   const editView = document.getElementById('edit-view');
@@ -655,6 +656,32 @@ Ex: Olá, seja bem-vindo ao vídeo de hoje. Vamos falar sobre..."></textarea>
     facingMode: 'user'
   };
 
+  async function saveTeleState(){
+    await OneTakeDB.put('teleprompter_state', {
+      id: 'state',
+      script: scriptInput.value,
+      speed: state.speed,
+      fontSize: state.fontSize,
+      mirrored: state.mirrored,
+      useCountdown: state.useCountdown,
+      useCamera: state.useCamera
+    });
+  }
+
+  async function loadTeleState(){
+    try{
+      const s = await OneTakeDB.get('teleprompter_state', 'state');
+      if(s){
+        scriptInput.value = s.script || '';
+        if(s.speed) state.speed = s.speed;
+        if(s.fontSize) state.fontSize = s.fontSize;
+        state.mirrored = !!s.mirrored;
+        state.useCountdown = s.useCountdown !== false;
+        state.useCamera = !!s.useCamera;
+      }
+    }catch(e){}
+  }
+
   let scrollPos = 0;
   let rafId = null;
   let idleTimer = null;
@@ -670,6 +697,7 @@ Ex: Olá, seja bem-vindo ao vídeo de hoje. Vamos falar sobre..."></textarea>
   // ---------- EDIT VIEW LOGIC ----------
   scriptInput.addEventListener('input', () => {
     startBtn.disabled = scriptInput.value.trim().length === 0;
+    saveTeleState();
   });
 
   function syncSpeedLabel(){
@@ -684,20 +712,22 @@ Ex: Olá, seja bem-vindo ao vídeo de hoje. Vamos falar sobre..."></textarea>
     scriptDisplay.style.fontSize = state.fontSize + 'px';
   }
 
-  speedInput.addEventListener('input', e => { state.speed = +e.target.value; syncSpeedLabel(); });
-  dockSpeed.addEventListener('input', e => { state.speed = +e.target.value; syncSpeedLabel(); });
-  fontsizeInput.addEventListener('input', e => { state.fontSize = +e.target.value; syncFontLabel(); });
-  dockFontsize.addEventListener('input', e => { state.fontSize = +e.target.value; syncFontLabel(); });
+  speedInput.addEventListener('input', e => { state.speed = +e.target.value; syncSpeedLabel(); saveTeleState(); });
+  dockSpeed.addEventListener('input', e => { state.speed = +e.target.value; syncSpeedLabel(); saveTeleState(); });
+  fontsizeInput.addEventListener('input', e => { state.fontSize = +e.target.value; syncFontLabel(); saveTeleState(); });
+  dockFontsize.addEventListener('input', e => { state.fontSize = +e.target.value; syncFontLabel(); saveTeleState(); });
 
   mirrorToggle.addEventListener('click', () => {
     state.mirrored = !state.mirrored;
     mirrorToggle.classList.toggle('active', state.mirrored);
     scriptDisplay.classList.toggle('mirrored', state.mirrored);
+    saveTeleState();
   });
 
   countdownToggle.addEventListener('click', () => {
     state.useCountdown = !state.useCountdown;
     countdownToggle.classList.toggle('active', state.useCountdown);
+    saveTeleState();
   });
 
   cameraToggle.addEventListener('click', () => {
@@ -705,6 +735,7 @@ Ex: Olá, seja bem-vindo ao vídeo de hoje. Vamos falar sobre..."></textarea>
     cameraToggle.classList.toggle('active', state.useCamera);
     cameraNote.style.display = state.useCamera ? 'block' : 'none';
     startBtn.textContent = state.useCamera ? 'Iniciar com câmera' : 'Iniciar leitura';
+    saveTeleState();
   });
 
   startBtn.addEventListener('click', enterPrompter);
@@ -962,8 +993,18 @@ Ex: Olá, seja bem-vindo ao vídeo de hoje. Vamos falar sobre..."></textarea>
     }
   });
 
-  syncSpeedLabel();
-  syncFontLabel();
+  (async function init(){
+    await loadTeleState();
+    mirrorToggle.classList.toggle('active', state.mirrored);
+    scriptDisplay.classList.toggle('mirrored', state.mirrored);
+    countdownToggle.classList.toggle('active', state.useCountdown);
+    cameraToggle.classList.toggle('active', state.useCamera);
+    cameraNote.style.display = state.useCamera ? 'block' : 'none';
+    startBtn.textContent = state.useCamera ? 'Iniciar com câmera' : 'Iniciar leitura';
+    startBtn.disabled = scriptInput.value.trim().length === 0;
+    syncSpeedLabel();
+    syncFontLabel();
+  })();
 })();
 </script>
 

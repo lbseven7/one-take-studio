@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Claquete Digital</title>
+<title>OneTake · Claquete Digital</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -361,7 +361,7 @@
 
 <div id="app">
   <header>
-    <h1>Claquete Digital</h1>
+    <h1>OneTake · Claquete Digital</h1>
     <div class="n" id="take-badge">TAKE 1</div>
   </header>
 
@@ -452,10 +452,9 @@
   </div>
 </div>
 
+<script src="db.js"></script>
 <script>
 (function(){
-  const STORAGE_KEY = 'claquete-takes-v1';
-  const STATE_KEY = 'claquete-state-v1';
 
   const views = {
     setup: document.getElementById('setup-view'),
@@ -506,16 +505,21 @@
   let recInterval = null;
   let audioCtx = null;
 
-  // ---------- PERSIST STATE (fields) ----------
-  function saveFieldState(){
-    localStorage.setItem(STATE_KEY, JSON.stringify({
-      title: fieldTitle.value, scene: fieldScene.value, take: fieldTake.value,
-      note: fieldNote.value, countdown: countdownSeconds
-    }));
+  // ---------- PERSIST STATE (IndexedDB) ----------
+  async function saveFieldState(){
+    await OneTakeDB.put('claquete_state', {
+      id: 'state',
+      title: fieldTitle.value,
+      scene: fieldScene.value,
+      take: fieldTake.value,
+      note: fieldNote.value,
+      countdown: countdownSeconds
+    });
   }
-  function loadFieldState(){
+
+  async function loadFieldState(){
     try{
-      const s = JSON.parse(localStorage.getItem(STATE_KEY));
+      const s = await OneTakeDB.get('claquete_state', 'state');
       if(s){
         fieldTitle.value = s.title || '';
         fieldScene.value = s.scene || '';
@@ -556,10 +560,9 @@
   });
 
   // ---------- HISTORY ----------
-  function loadTakes(){
-    try{ takes = JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }catch(e){ takes = []; }
+  async function loadTakes(){
+    try{ takes = await OneTakeDB.getAll('claquete_takes') || []; }catch(e){ takes = []; }
   }
-  function saveTakes(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(takes)); }
 
   function renderHistory(){
     historyList.innerHTML = '';
@@ -586,9 +589,9 @@
       historyList.appendChild(el);
     });
     [...historyList.querySelectorAll('.del')].forEach(btn => {
-      btn.addEventListener('click', () => {
+      btn.addEventListener('click', async () => {
         takes = takes.filter(t => t.id !== btn.dataset.id);
-        saveTakes();
+        await OneTakeDB.del('claquete_takes', btn.dataset.id);
         renderHistory();
       });
     });
@@ -600,10 +603,10 @@
     return d.innerHTML;
   }
 
-  clearHistoryBtn.addEventListener('click', () => {
+  clearHistoryBtn.addEventListener('click', async () => {
     if(takes.length === 0) return;
     takes = [];
-    saveTakes();
+    await OneTakeDB.clear('claquete_takes');
     renderHistory();
   });
 
@@ -711,19 +714,20 @@
     recClock.textContent = m + ':' + s;
   }
 
-  stopBtn.addEventListener('click', () => {
+  stopBtn.addEventListener('click', async () => {
     clearInterval(recInterval);
     const duration = Math.floor((Date.now() - recStart) / 1000);
 
-    takes.push({
+    const take = {
       id: Date.now().toString(36) + Math.random().toString(36).slice(2,6),
       title: fieldTitle.value.trim(),
       scene: fieldScene.value.trim(),
       take: fieldTake.value || '1',
       duration,
       timestamp: Date.now()
-    });
-    saveTakes();
+    };
+    takes.push(take);
+    await OneTakeDB.put('claquete_takes', take);
     renderHistory();
 
     fieldTake.value = (parseInt(fieldTake.value)||1) + 1;
@@ -733,13 +737,16 @@
   });
 
   // ---------- INIT ----------
-  loadFieldState();
-  [...countdownChips.children].forEach(c => {
-    c.classList.toggle('active', parseInt(c.dataset.v) === countdownSeconds);
-  });
-  updatePreview();
-  loadTakes();
-  renderHistory();
+  (async function init(){
+    await OneTakeMigrate();
+    await loadFieldState();
+    [...countdownChips.children].forEach(c => {
+      c.classList.toggle('active', parseInt(c.dataset.v) === countdownSeconds);
+    });
+    updatePreview();
+    await loadTakes();
+    renderHistory();
+  })();
 })();
 </script>
 

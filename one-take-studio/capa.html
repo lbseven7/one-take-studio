@@ -222,6 +222,42 @@
     cursor: pointer;
   }
 
+  .img-actions{ display: flex; gap: 8px; flex-wrap: wrap; }
+  .img-actions button{
+    padding: 9px 13px;
+    border: 1px solid var(--panel-line);
+    border-radius: 6px;
+    background: var(--card);
+    color: var(--text-dim);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    cursor: pointer;
+  }
+  .img-actions button:hover{ color: var(--text-main); border-color: var(--accent-amber); }
+  #bg-image-remove:hover{ color: var(--accent-red); border-color: var(--accent-red); }
+
+  #bg-thumb-wrap{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  #bg-thumb-wrap.hidden{ display: none; }
+  #bg-thumb{
+    width: 44px;
+    height: 44px;
+    border-radius: 6px;
+    background-size: cover;
+    background-position: center;
+    border: 1px solid var(--panel-line);
+    flex-shrink: 0;
+  }
+  #bg-thumb-wrap span{
+    font-size: 11px;
+    color: var(--text-dim);
+    line-height: 1.5;
+  }
+
   /* ---------- PREVIEW ---------- */
   #preview-col{
     flex: 1;
@@ -321,6 +357,19 @@
         </div>
 
         <div class="group">
+          <label>Imagem de fundo (opcional)</label>
+          <div class="img-actions">
+            <button id="bg-image-btn">📷 Escolher imagem</button>
+            <button id="bg-image-remove" style="display:none">✕ Remover</button>
+          </div>
+          <div id="bg-thumb-wrap" class="hidden">
+            <div id="bg-thumb"></div>
+            <span>A imagem preenche a capa inteira. A cor de fundo vira reserva quando não há imagem.</span>
+          </div>
+          <input type="file" id="bg-image-file" accept="image/*" hidden>
+        </div>
+
+        <div class="group">
           <label>Cor do texto</label>
           <div class="swatches" id="fg-swatches"></div>
           <div class="custom-color">
@@ -360,8 +409,11 @@
     title: 'MEU PRIMEIRO VÍDEO',
     emoji: '🚀',
     bg: '#ffb020',
-    fg: '#1a1200'
+    fg: '#1a1200',
+    bgImage: null
   };
+
+  let bgImage = null;
 
   const canvas = document.getElementById('preview');
   const ctx = canvas.getContext('2d');
@@ -373,6 +425,11 @@
   const fgCustom = document.getElementById('fg-custom');
   const msgEl = document.getElementById('msg');
   const downloadBtn = document.getElementById('download-btn');
+  const bgImageBtn = document.getElementById('bg-image-btn');
+  const bgImageRemove = document.getElementById('bg-image-remove');
+  const bgImageFile = document.getElementById('bg-image-file');
+  const bgThumbWrap = document.getElementById('bg-thumb-wrap');
+  const bgThumb = document.getElementById('bg-thumb');
 
   let saveTimer = null;
 
@@ -427,6 +484,11 @@
     document.querySelectorAll('.emoji-btn').forEach(b => {
       b.classList.toggle('active', b.dataset.emoji === state.emoji);
     });
+
+    const hasImg = !!state.bgImage;
+    bgImageRemove.style.display = hasImg ? 'inline-block' : 'none';
+    bgThumbWrap.classList.toggle('hidden', !hasImg);
+    if(hasImg) bgThumb.style.backgroundImage = 'url("' + state.bgImage + '")';
   }
 
   // ---------- DRAWING ----------
@@ -450,14 +512,27 @@
     return lines;
   }
 
+  function drawCover(img, w, h){
+    const ir = img.width / img.height;
+    const cr = w / h;
+    let dw, dh;
+    if(ir > cr){ dh = h; dw = h * ir; }
+    else { dw = w; dh = w / ir; }
+    ctx.drawImage(img, (w - dw) / 2, (h - dh) / 2, dw, dh);
+  }
+
   function draw(){
     const fmt = FORMATS[state.format];
     const w = fmt.w, h = fmt.h;
     const title = state.title.trim();
     const emoji = state.emoji.trim();
 
-    ctx.fillStyle = state.bg;
-    ctx.fillRect(0, 0, w, h);
+    if(bgImage){
+      drawCover(bgImage, w, h);
+    } else {
+      ctx.fillStyle = state.bg;
+      ctx.fillRect(0, 0, w, h);
+    }
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
 
@@ -572,6 +647,44 @@
     scheduleSave();
   });
 
+  bgImageBtn.addEventListener('click', () => bgImageFile.click());
+
+  bgImageFile.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        bgImage = img;
+        state.bgImage = reader.result;
+        syncUI();
+        render();
+        scheduleSave();
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+    bgImageFile.value = '';
+  });
+
+  bgImageRemove.addEventListener('click', () => {
+    bgImage = null;
+    state.bgImage = null;
+    syncUI();
+    render();
+    scheduleSave();
+  });
+
+  function loadBgImage(src){
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => { bgImage = img; resolve(); };
+      img.onerror = () => { bgImage = null; state.bgImage = null; resolve(); };
+      img.src = src;
+    });
+  }
+
   // ---------- DOWNLOAD ----------
   downloadBtn.addEventListener('click', () => {
     const fmt = FORMATS[state.format];
@@ -599,6 +712,7 @@
       if(s) state = { ...state, ...s };
     }catch(e){}
     try{ await OneTakeMigrate(); }catch(e){}
+    if(state.bgImage) await loadBgImage(state.bgImage);
     syncUI();
     render();
   })();

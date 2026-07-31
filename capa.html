@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Take Um Studio · Gerador de Capa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0a0a0c;
+    --panel: #141417;
+    --panel-line: #232328;
+    --card: #1a1a1e;
+    --text-main: #f5f4ef;
+    --text-dim: #8a8a92;
+    --accent-amber: #ffb020;
+    --accent-red: #ff3b30;
+    --accent-green: #39ff88;
+    --accent-blue: #5aa9ff;
+    --accent-purple: #c084fc;
+    --font-display: 'Archivo', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+  }
+
+  *{ box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html, body{
+    margin: 0; padding: 0;
+    height: 100%;
+    background: var(--bg);
+    color: var(--text-main);
+    font-family: var(--font-mono);
+  }
+
+  #app{
+    height: 100vh;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    max-width: 980px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    background: var(--panel);
+    border-bottom: 1px solid var(--panel-line);
+    flex-shrink: 0;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  header h1{
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 16px;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  header .actions{ display: flex; gap: 8px; }
+  header button{
+    background: none;
+    border: 1px solid var(--panel-line);
+    color: var(--text-dim);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  header button:hover{ color: var(--text-main); border-color: var(--accent-amber); }
+  #download-btn{
+    background: var(--accent-amber);
+    color: #1a1200;
+    border-color: var(--accent-amber);
+    font-weight: 600;
+  }
+  #download-btn:hover{ filter: brightness(1.1); }
+
+  #content{
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 20px 28px;
+  }
+
+  #layout{
+    display: flex;
+    gap: 26px;
+    align-items: flex-start;
+  }
+
+  /* ---------- CONTROLS ---------- */
+  #controls{
+    width: 320px;
+    flex-shrink: 0;
+  }
+
+  .group{ margin-bottom: 22px; }
+  .group > label{
+    display: block;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+  }
+
+  .fmt-row{ display: flex; gap: 8px; flex-wrap: wrap; }
+  .fmt-btn{
+    padding: 9px 13px;
+    border: 1px solid var(--panel-line);
+    border-radius: 6px;
+    background: var(--card);
+    color: var(--text-dim);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    cursor: pointer;
+  }
+  .fmt-btn.active{
+    color: var(--accent-amber);
+    border-color: var(--accent-amber);
+    background: rgba(255, 176, 32, 0.08);
+  }
+
+  #field-title{
+    width: 100%;
+    background: var(--card);
+    border: 1px solid var(--panel-line);
+    border-radius: 6px;
+    color: var(--text-main);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 16px;
+    padding: 12px 14px;
+    outline: none;
+    resize: vertical;
+    min-height: 60px;
+    line-height: 1.4;
+  }
+  #field-title:focus{ border-color: var(--accent-amber); }
+
+  .emoji-grid{
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+  .emoji-btn{
+    background: var(--card);
+    border: 1px solid var(--panel-line);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 17px;
+    padding: 7px 0;
+    line-height: 1;
+  }
+  .emoji-btn:hover{ border-color: var(--text-dim); }
+  .emoji-btn.active{ border-color: var(--accent-amber); }
+
+  #field-emoji{
+    width: 100%;
+    background: var(--card);
+    border: 1px solid var(--panel-line);
+    border-radius: 6px;
+    color: var(--text-main);
+    font-family: var(--font-mono);
+    font-size: 14px;
+    padding: 10px 12px;
+    outline: none;
+  }
+  #field-emoji:focus{ border-color: var(--accent-amber); }
+  .clear-emoji{
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    font-size: 11px;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 4px 0 0 0;
+  }
+  .clear-emoji:hover{ color: var(--accent-red); }
+
+  .swatches{ display: grid; grid-template-columns: repeat(8, 1fr); gap: 8px; }
+  .swatch{
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 6px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    padding: 0;
+  }
+  .swatch.active{ border-color: var(--text-main); }
+  .swatch.dark-border{ border-color: var(--panel-line); }
+  .swatch.dark-border.active{ border-color: var(--text-main); }
+
+  .custom-color{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  .custom-color label{
+    font-size: 11px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .custom-color input[type=color]{
+    width: 40px;
+    height: 30px;
+    padding: 0;
+    border: 1px solid var(--panel-line);
+    border-radius: 6px;
+    background: var(--card);
+    cursor: pointer;
+  }
+
+  /* ---------- PREVIEW ---------- */
+  #preview-col{
+    flex: 1;
+    min-width: 0;
+    position: sticky;
+    top: 16px;
+  }
+
+  #preview-wrap{
+    background: var(--panel);
+    border: 1px solid var(--panel-line);
+    border-radius: 10px;
+    padding: 14px;
+  }
+
+  canvas{
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 6px;
+    background: #000;
+  }
+
+  #format-hint{
+    margin-top: 10px;
+    font-size: 11px;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+
+  #msg{
+    margin-top: 12px;
+    font-size: 12px;
+    min-height: 18px;
+  }
+  #msg.ok{ color: var(--accent-green); }
+  #msg.err{ color: var(--accent-red); }
+
+  ::-webkit-scrollbar{ width: 6px; }
+  ::-webkit-scrollbar-track{ background: transparent; }
+  ::-webkit-scrollbar-thumb{ background: var(--panel-line); border-radius: 3px; }
+
+  @media (max-width: 860px){
+    #layout{ flex-direction: column-reverse; }
+    #controls{ width: 100%; }
+    #preview-col{ position: static; width: 100%; }
+  }
+  @media (max-width: 480px){
+    header{ padding: 12px 14px; }
+    header h1{ font-size: 14px; }
+    #content{ padding: 12px 14px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <header>
+    <h1>Take Um Studio · Gerador de Capa</h1>
+    <div class="actions">
+      <button id="download-btn">⬇ Baixar PNG</button>
+    </div>
+  </header>
+
+  <div id="content">
+    <div id="layout">
+
+      <div id="controls">
+        <div class="group">
+          <label>Formato</label>
+          <div class="fmt-row">
+            <button class="fmt-btn" data-format="yt">YouTube</button>
+            <button class="fmt-btn" data-format="sq">Quadrado</button>
+            <button class="fmt-btn" data-format="vt">Shorts / Reels</button>
+          </div>
+        </div>
+
+        <div class="group">
+          <label>Texto da capa</label>
+          <textarea id="field-title" placeholder="Ex: 5 ERROS QUE TODO INICIANTE COMETE"></textarea>
+        </div>
+
+        <div class="group">
+          <label>Emoji</label>
+          <div class="emoji-grid" id="emoji-grid"></div>
+          <input type="text" id="field-emoji" placeholder="Ou digite o emoji (ex: 🔥)" maxlength="8">
+          <button class="clear-emoji" id="clear-emoji">Sem emoji</button>
+        </div>
+
+        <div class="group">
+          <label>Cor de fundo</label>
+          <div class="swatches" id="bg-swatches"></div>
+          <div class="custom-color">
+            <label>Outra cor</label>
+            <input type="color" id="bg-custom">
+          </div>
+        </div>
+
+        <div class="group">
+          <label>Cor do texto</label>
+          <div class="swatches" id="fg-swatches"></div>
+          <div class="custom-color">
+            <label>Outra cor</label>
+            <input type="color" id="fg-custom">
+          </div>
+        </div>
+      </div>
+
+      <div id="preview-col">
+        <div id="preview-wrap">
+          <canvas id="preview"></canvas>
+        </div>
+        <div id="format-hint">Dica: no YouTube, o texto precisa dar para ler até em telas pequenas. Mantenha o texto curto e de alto contraste.</div>
+        <div id="msg"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="db.js"></script>
+<script>
+(function(){
+  const STATE_ID = 'state';
+  const EMOJIS = ['🚀','🔥','💡','🎯','✅','💰','🏆','📱','💪','🧠','⚡','❤️','😱','🤯','✨','🌱','💼','🎮','📈','👀','🎬','🎤','📝','🌟'];
+  const BG_COLORS = ['#ffb020','#ff3b30','#39ff88','#5aa9ff','#c084fc','#ff6b6b','#ff8c42','#ffd166','#2dd4bf','#f43f5e','#3b82f6','#22c55e','#0ea5e9','#a855f7','#f97316','#0a0a0c'];
+  const FG_COLORS = ['#ffffff','#1a1200','#ffb020','#39ff88','#ff3b30','#5aa9ff'];
+  const FORMATS = {
+    yt: { w: 1280, h: 720,  label: '1280×720' },
+    sq: { w: 1080, h: 1080, label: '1080×1080' },
+    vt: { w: 1080, h: 1920, label: '1080×1920' }
+  };
+
+  let state = {
+    format: 'yt',
+    title: 'MEU PRIMEIRO VÍDEO',
+    emoji: '🚀',
+    bg: '#ffb020',
+    fg: '#1a1200'
+  };
+
+  const canvas = document.getElementById('preview');
+  const ctx = canvas.getContext('2d');
+  const titleEl = document.getElementById('field-title');
+  const emojiInput = document.getElementById('field-emoji');
+  const clearEmoji = document.getElementById('clear-emoji');
+  const emojiGrid = document.getElementById('emoji-grid');
+  const bgCustom = document.getElementById('bg-custom');
+  const fgCustom = document.getElementById('fg-custom');
+  const msgEl = document.getElementById('msg');
+  const downloadBtn = document.getElementById('download-btn');
+
+  let saveTimer = null;
+
+  // ---------- BUILD SWATCHES ----------
+  function buildSwatches(container, colors, getKey, setKey){
+    container.innerHTML = '';
+    colors.forEach(color => {
+      const b = document.createElement('button');
+      b.className = 'swatch' + (color === '#0a0a0c' || color === '#1a1200' ? ' dark-border' : '');
+      b.style.background = color;
+      b.dataset.color = color;
+      b.addEventListener('click', () => {
+        state[getKey] = color;
+        syncUI();
+        render();
+        scheduleSave();
+      });
+      container.appendChild(b);
+    });
+  }
+  buildSwatches(document.getElementById('bg-swatches'), BG_COLORS, 'bg', 'bg');
+  buildSwatches(document.getElementById('fg-swatches'), FG_COLORS, 'fg', 'fg');
+
+  // ---------- BUILD EMOJI GRID ----------
+  EMOJIS.forEach(emoji => {
+    const b = document.createElement('button');
+    b.className = 'emoji-btn';
+    b.textContent = emoji;
+    b.dataset.emoji = emoji;
+    b.addEventListener('click', () => {
+      state.emoji = emoji;
+      syncUI();
+      render();
+      scheduleSave();
+    });
+    emojiGrid.appendChild(b);
+  });
+
+  // ---------- SYNC UI ----------
+  function syncUI(){
+    titleEl.value = state.title;
+    emojiInput.value = state.emoji;
+    bgCustom.value = state.bg;
+    fgCustom.value = state.fg;
+
+    document.querySelectorAll('.fmt-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.format === state.format);
+    });
+    document.querySelectorAll('.swatch').forEach(s => {
+      s.classList.toggle('active', s.dataset.color === state.bg || s.dataset.color === state.fg);
+    });
+    document.querySelectorAll('.emoji-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.emoji === state.emoji);
+    });
+  }
+
+  // ---------- DRAWING ----------
+  function wrap(text, maxWidth){
+    const lines = [];
+    for(const para of text.split('\n')){
+      if(para === ''){ lines.push(''); continue; }
+      const words = para.split(/\s+/);
+      let line = '';
+      for(const word of words){
+        const test = line ? line + ' ' + word : word;
+        if(line && ctx.measureText(test).width > maxWidth){
+          lines.push(line);
+          line = word;
+        } else {
+          line = test;
+        }
+      }
+      if(line) lines.push(line);
+    }
+    return lines;
+  }
+
+  function draw(){
+    const fmt = FORMATS[state.format];
+    const w = fmt.w, h = fmt.h;
+    const title = state.title.trim();
+    const emoji = state.emoji.trim();
+
+    ctx.fillStyle = state.bg;
+    ctx.fillRect(0, 0, w, h);
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+
+    const emojiSize = Math.round(w * 0.24);
+    if(emoji){
+      ctx.font = emojiSize + 'px sans-serif';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(emoji, w / 2, Math.round(h * 0.20));
+      ctx.textBaseline = 'top';
+    }
+
+    if(title){
+      const padX = Math.round(w * 0.07);
+      const maxWidth = w - padX * 2;
+      const titleTop = emoji ? h * 0.42 : h * 0.22;
+      const titleBottom = h * 0.90;
+
+      let size = Math.round(w * 0.105);
+      let lines = [];
+      let lineH = 0;
+      let maxLine = 0;
+
+      while(size > Math.round(w * 0.028)){
+        ctx.font = '900 ' + size + 'px Archivo, sans-serif';
+        lines = wrap(title, maxWidth);
+        maxLine = 0;
+        for(const ln of lines){
+          const tw = ctx.measureText(ln).width;
+          if(tw > maxLine) maxLine = tw;
+        }
+        lineH = Math.round(size * 1.15);
+        if(maxLine <= maxWidth && lineH * lines.length <= (titleBottom - titleTop)) break;
+        size = Math.round(size - w * 0.004);
+      }
+
+      ctx.font = '900 ' + size + 'px Archivo, sans-serif';
+      const totalH = lineH * lines.length;
+      let y = titleTop + Math.round((titleBottom - titleTop - totalH) / 2);
+
+      ctx.shadowColor = 'rgba(0,0,0,0.5)';
+      ctx.shadowBlur = Math.round(size * 0.12);
+      ctx.shadowOffsetY = Math.round(size * 0.06);
+      ctx.fillStyle = state.fg;
+      for(const ln of lines){
+        ctx.fillText(ln, w / 2, y);
+        y += lineH;
+      }
+      ctx.shadowBlur = 0;
+      ctx.shadowOffsetY = 0;
+    }
+  }
+
+  async function render(){
+    const fmt = FORMATS[state.format];
+    canvas.width = fmt.w;
+    canvas.height = fmt.h;
+    try{ await document.fonts.ready; }catch(e){}
+    draw();
+  }
+
+  // ---------- SAVE / LOAD ----------
+  function scheduleSave(){
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(async () => {
+      try{
+        await OneTakeDB.put('capa_state', { id: STATE_ID, ...state });
+      }catch(e){}
+    }, 400);
+  }
+
+  // ---------- EVENTS ----------
+  document.querySelectorAll('.fmt-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      state.format = btn.dataset.format;
+      syncUI();
+      render();
+      scheduleSave();
+    });
+  });
+
+  titleEl.addEventListener('input', () => {
+    state.title = titleEl.value;
+    render();
+    scheduleSave();
+  });
+
+  emojiInput.addEventListener('input', () => {
+    state.emoji = emojiInput.value;
+    syncUI();
+    render();
+    scheduleSave();
+  });
+
+  clearEmoji.addEventListener('click', () => {
+    state.emoji = '';
+    syncUI();
+    render();
+    scheduleSave();
+  });
+
+  bgCustom.addEventListener('input', () => {
+    state.bg = bgCustom.value;
+    syncUI();
+    render();
+    scheduleSave();
+  });
+
+  fgCustom.addEventListener('input', () => {
+    state.fg = fgCustom.value;
+    syncUI();
+    render();
+    scheduleSave();
+  });
+
+  // ---------- DOWNLOAD ----------
+  downloadBtn.addEventListener('click', () => {
+    const fmt = FORMATS[state.format];
+    const slug = (state.title || 'capa').toLowerCase()
+      .replace(/[^a-z0-9áéíóúãõâêç]+/gi, '-')
+      .replace(/^-+|-+$/g, '')
+      .slice(0, 40) || 'capa';
+    canvas.toBlob(blob => {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'capa-' + slug + '-' + fmt.label + '.png';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(a.href);
+      msgEl.className = 'ok';
+      msgEl.textContent = 'Imagem baixada! Agora é só fazer o upload na plataforma.';
+    }, 'image/png');
+  });
+
+  // ---------- INIT ----------
+  (async function init(){
+    try{
+      const s = await OneTakeDB.get('capa_state', STATE_ID);
+      if(s) state = { ...state, ...s };
+    }catch(e){}
+    try{ await OneTakeMigrate(); }catch(e){}
+    syncUI();
+    render();
+  })();
+})();
+</script>
+
+</body>
+</html>

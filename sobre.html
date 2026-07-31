@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Take Um Studio · Sobre</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0a0a0c;
+    --panel: #141417;
+    --panel-line: #232328;
+    --card: #1a1a1e;
+    --text-main: #f5f4ef;
+    --text-dim: #8a8a92;
+    --accent-amber: #ffb020;
+    --accent-red: #ff3b30;
+    --accent-green: #39ff88;
+    --accent-blue: #5aa9ff;
+    --accent-purple: #c084fc;
+    --font-display: 'Archivo', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+  }
+
+  *{ box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html, body{
+    margin: 0; padding: 0;
+    min-height: 100%;
+    background: var(--bg);
+    color: var(--text-main);
+    font-family: var(--font-mono);
+  }
+
+  body{ overflow-y: auto; }
+
+  #app{
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 40px 24px 64px;
+  }
+
+  /* ---------- HERO ---------- */
+  #hero{
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 12px;
+  }
+
+  #hero .mark{
+    width: 46px;
+    height: 46px;
+    border-radius: 10px;
+    background: var(--accent-amber);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #1a1200;
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+
+  #hero .name{
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 22px;
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+  }
+
+  #hero .name small{
+    display: block;
+    font-family: var(--font-mono);
+    font-weight: 400;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-top: 3px;
+  }
+
+  h1{
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: clamp(24px, 4.5vw, 32px);
+    margin: 26px 0 10px 0;
+    letter-spacing: -0.02em;
+  }
+
+  .tagline{
+    color: var(--text-dim);
+    font-size: 14px;
+    line-height: 1.65;
+    margin: 0 0 30px 0;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--panel-line);
+  }
+
+  .tagline strong{ color: var(--accent-amber); font-weight: 600; }
+
+  /* ---------- SECTIONS ---------- */
+  section{ margin-bottom: 34px; }
+
+  h2{
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.02em;
+    margin: 0 0 12px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  h2 .dot{
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    background: var(--accent-amber);
+    flex-shrink: 0;
+  }
+
+  p{
+    color: var(--text-dim);
+    font-size: 13px;
+    line-height: 1.75;
+    margin: 0 0 12px 0;
+  }
+
+  p strong{ color: var(--text-main); font-weight: 600; }
+
+  /* ---------- CARDS / LISTS ---------- */
+  .card{
+    background: var(--card);
+    border: 1px solid var(--panel-line);
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin-bottom: 10px;
+  }
+
+  .who-list{ list-style: none; margin: 0; padding: 0; }
+  .who-list li{
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 9px 0;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text-dim);
+    border-bottom: 1px solid var(--panel-line);
+  }
+  .who-list li:last-child{ border-bottom: none; }
+  .who-list .chk{ color: var(--accent-green); flex-shrink: 0; font-weight: 700; }
+
+  /* tools grid */
+  #tools{ display: grid; grid-template-columns: 1fr; gap: 10px; }
+  @media (min-width: 560px){ #tools{ grid-template-columns: 1fr 1fr; } }
+
+  .tool{
+    background: var(--card);
+    border: 1px solid var(--panel-line);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .tool .t-icon{
+    width: 30px; height: 30px;
+    border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+  .tool h3{
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 14px;
+    margin: 0 0 5px 0;
+  }
+  .tool p{
+    font-size: 11.5px;
+    line-height: 1.6;
+    margin: 0;
+    color: var(--text-dim);
+  }
+
+  /* data banner */
+  #data-banner{
+    background: rgba(57, 255, 136, 0.06);
+    border: 1px solid rgba(57, 255, 136, 0.25);
+    border-radius: 10px;
+    padding: 16px 18px;
+    font-size: 12.5px;
+    line-height: 1.7;
+    color: var(--text-dim);
+  }
+  #data-banner strong{ color: var(--accent-green); }
+
+  /* CTA */
+  #cta{
+    margin-top: 8px;
+    text-align: center;
+    padding-top: 26px;
+    border-top: 1px solid var(--panel-line);
+  }
+  #cta-btn{
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 14px;
+    color: #1a1200;
+    background: var(--accent-amber);
+    border: none;
+    border-radius: 8px;
+    padding: 14px 34px;
+    cursor: pointer;
+  }
+  #cta-btn:hover{ filter: brightness(1.08); }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <div id="hero">
+    <div class="mark">1</div>
+    <div class="name">Take Um Studio<small>estúdio de bolso do criador</small></div>
+  </div>
+
+  <h1>O estúdio de quem tá começando</h1>
+  <p class="tagline">
+    Ferramentas simples que rodam direto no seu navegador pra você <strong>planejar, roteirizar e gravar</strong>
+    seus vídeos como numa produção de verdade — com o que você já tem em casa.
+  </p>
+
+  <section>
+    <h2><span class="dot"></span>O que é</h2>
+    <p>
+      O <strong>Take Um Studio</strong> é uma suíte de ferramentas pro criador de conteúdo solo.
+      Em vez de dez abas abertas, apps pagos e planilhas confusas, você tem tudo num lugar só:
+      do momento em que a ideia surge até o take gravado.
+    </p>
+    <p>
+      Nada de instalação, assinatura ou conta. Abriu a página, começou a criar.
+    </p>
+  </section>
+
+  <section>
+    <h2><span class="dot"></span>Pra quem é</h2>
+    <ul class="who-list">
+      <li><span class="chk">✓</span>Quem tá começando agora e não sabe por onde começar</li>
+      <li><span class="chk">✓</span>Quem grava sozinho, de celular, sem equipe</li>
+      <li><span class="chk">✓</span>Quem não tem orçamento pra software e equipamento caro</li>
+      <li><span class="chk">✓</span>Quem quer se organizar sem burocracia</li>
+      <li><span class="chk">✓</span>Quem quer parecer mais profissional mesmo no começo</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="dot"></span>O que tem dentro</h2>
+    <div id="tools">
+      <div class="tool">
+        <div class="t-icon" style="background:var(--accent-amber)22; color:var(--accent-amber)">▤</div>
+        <h3>Teleprompter</h3>
+        <p>Leia o roteiro rolando na tela enquanto grava, com câmera embutida e gravação direto no navegador.</p>
+      </div>
+      <div class="tool">
+        <div class="t-icon" style="background:var(--accent-blue)22; color:var(--accent-blue)">◫</div>
+        <h3>Painel de Pauta</h3>
+        <p>Organize suas ideias por etapas: ideia, roteiro, gravado, editado e postado.</p>
+      </div>
+      <div class="tool">
+        <div class="t-icon" style="background:var(--accent-purple)22; color:var(--accent-purple)">◧</div>
+        <h3>Claquete Digital</h3>
+        <p>Contagem regressiva, bate-claquete com som e cronômetro de take, com histórico.</p>
+      </div>
+      <div class="tool">
+        <div class="t-icon" style="background:var(--accent-green)22; color:var(--accent-green)">✓</div>
+        <h3>Checklist</h3>
+        <p>Lista pré-gravação: bateria, microfone, luz, isolamento e muito mais.</p>
+      </div>
+      <div class="tool">
+        <div class="t-icon" style="background:var(--accent-amber)22; color:var(--accent-amber)">✍</div>
+        <h3>Roteirizador</h3>
+        <p>Estruture o roteiro: gancho, problema, solução com tempo e CTA.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="dot"></span>Seus dados ficam com você</h2>
+    <div id="data-banner">
+      <strong>Sem conta, sem nuvem, sem assinatura.</strong> Tudo o que você salva fica no seu próprio navegador.
+      Seus dados não saem do seu aparelho.
+    </div>
+  </section>
+
+  <div id="cta">
+    <button id="cta-btn">Começar a criar</button>
+  </div>
+</div>
+
+<script>
+  document.getElementById('cta-btn').addEventListener('click', function(){
+    try{
+      var back = window.parent.document.getElementById('back-btn');
+      if(back){ back.click(); return; }
+    }catch(e){}
+    window.scrollTo(0, 0);
+  });
+</script>
+
+</body>
+</html>

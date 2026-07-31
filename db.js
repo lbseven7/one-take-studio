@@ -7,7 +7,8 @@
     'claquete_state',
     'pauta_cards',
     'teleprompter_state',
-    'checklist_state'
+    'checklist_state',
+    'roteirizador_scripts'
   ];
 
   let instance = null;
@@ -131,6 +132,45 @@
     }
   }
 
+  // -------- BACKUP (export / import) --------
+  async function exportAll(){
+    const d = await open();
+    const data = {};
+    for(const name of Array.from(d.objectStoreNames)){
+      data[name] = await new Promise((resolve, reject) => {
+        const tx = d.transaction(name, 'readonly');
+        const req = tx.objectStore(name).getAll();
+        req.onsuccess = () => resolve(req.result || []);
+        req.onerror = () => reject(req.error);
+      });
+    }
+    return {
+      format: 'takeum-backup',
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      data
+    };
+  }
+
+  async function importAll(payload){
+    if(!payload || payload.format !== 'takeum-backup' || !payload.data || typeof payload.data !== 'object'){
+      throw new Error('Arquivo de backup inválido');
+    }
+    const d = await open();
+    for(const name of Array.from(d.objectStoreNames)){
+      await new Promise((resolve, reject) => {
+        const tx = d.transaction(name, 'readwrite');
+        const os = tx.objectStore(name);
+        os.clear();
+        const records = payload.data[name] || [];
+        records.forEach(rec => os.put(rec));
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+      });
+    }
+  }
+
   window.OneTakeDB = db;
   window.OneTakeMigrate = migrateFromLocalStorage;
+  window.TakeUmBackup = { exportAll, importAll };
 })();

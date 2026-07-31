@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>OneTake</title>
+  <title>Take Um Studio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link
     href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
@@ -214,6 +214,103 @@
       max-width: 900px;
     }
 
+    #backup-section {
+      max-width: 900px;
+      margin-top: 44px;
+      padding-top: 28px;
+      border-top: 1px solid var(--panel-line);
+    }
+
+    #backup-section h2 {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 16px;
+      margin: 0 0 6px 0;
+    }
+
+    #backup-section p {
+      color: var(--text-dim);
+      font-size: 12.5px;
+      line-height: 1.6;
+      margin: 0 0 14px 0;
+      max-width: 560px;
+    }
+
+    .backup-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .backup-actions button {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 13px;
+      padding: 11px 18px;
+      border-radius: 6px;
+      cursor: pointer;
+      border: 1px solid var(--panel-line);
+      background: var(--card);
+      color: var(--text-main);
+    }
+
+    .backup-actions button:hover {
+      border-color: var(--accent-amber);
+    }
+
+    #backup-msg {
+      margin-top: 12px;
+      font-size: 12px;
+    }
+
+    #backup-msg.ok {
+      color: var(--accent-green);
+    }
+
+    #backup-msg.err {
+      color: var(--accent-red);
+    }
+
+    #backup-help {
+      margin-top: 16px;
+      background: var(--card);
+      border: 1px solid var(--panel-line);
+      border-radius: 10px;
+      padding: 16px 18px;
+      max-width: 640px;
+      font-size: 12.5px;
+      line-height: 1.7;
+      color: var(--text-dim);
+    }
+
+    #backup-help strong {
+      color: var(--accent-amber);
+      font-weight: 700;
+    }
+
+    #backup-help p {
+      margin: 8px 0 10px 0;
+      color: var(--text-dim);
+    }
+
+    #backup-help p strong {
+      color: var(--text-main);
+    }
+
+    #backup-help ol {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    #backup-help li {
+      margin-bottom: 6px;
+    }
+
+    #backup-help em {
+      color: var(--text-main);
+      font-style: normal;
+    }
+
     .tool-card {
       background: var(--card);
       border: 1px solid var(--panel-line);
@@ -340,19 +437,37 @@
 
     <aside id="sidebar">
       <div id="brand">
-        <div class="mark">O</div>
-        <div class="name">OneTake<small>Studio</small></div>
+        <div class="mark">1</div>
+        <div class="name">Take Um<small>studio</small></div>
       </div>
       <nav id="nav"></nav>
-      <div id="sidebar-footer">OneTake · Seus dados ficam salvos só neste navegador.</div>
+      <div id="sidebar-footer">Take Um Studio · Seus dados ficam no seu navegador. Baixe um backup na home para levá-los com você.</div>
     </aside>
 
     <main id="main">
       <div id="home-view" class="active">
-        <h1>OneTake</h1>
+        <h1>Take Um Studio</h1>
         <div class="sub"><STRong>Ferramentas pensadas pra quem grava e organiza vídeo sozinho: leia seu roteiro sem decorar,
           planeje suas pautas e marque seus takes como numa produção de verdade. SIMPLES E DIRETO!</STRong></div>
         <div id="tool-grid"></div>
+        <div id="backup-section">
+          <h2>Seus dados</h2>
+          <p>Seus dados ficam salvos só neste navegador. Para nunca perdê-los e poder levar para outro celular ou computador, faça um backup.</p>
+          <div class="backup-actions">
+            <button id="backup-export-btn">⬇ Baixar backup</button>
+            <button id="backup-import-btn">⬆ Restaurar backup</button>
+            <input type="file" id="backup-file" accept=".json,application/json" hidden>
+          </div>
+          <div id="backup-help">
+            <strong>O que é esse arquivo? Não precisa saber!</strong>
+            <p>Ele é o <strong>backup</strong>: um arquivo que guarda todos os seus dados (roteiros, pautas, takes). Você não precisa abrir nem entender — trate como um documento importante.</p>
+            <ol>
+              <li><strong>Baixou o arquivo?</strong> Envie para você mesmo no WhatsApp ou guarde no Google Drive / nuvem do celular.</li>
+              <li><strong>Mudou de aparelho?</strong> Abra o Take Um Studio lá, toque em <em>Restaurar backup</em> e escolha o arquivo.</li>
+            </ol>
+          </div>
+          <div id="backup-msg"></div>
+        </div>
       </div>
 
       <div id="tool-view">
@@ -400,8 +515,25 @@
           desc: 'Checklist pré-gravação: nunca mais esqueça bateria, microfone, luz, isolamento e muito mais.',
           color: 'var(--accent-green)',
           icon: '✓'
+        },
+        {
+          id: 'roteirizador',
+          file: 'roteirizador.html',
+          name: 'Roteirizador',
+          desc: 'Estruture seu roteiro em etapas: gancho, problema, solução com marcadores de tempo e CTA.',
+          color: 'var(--accent-amber)',
+          icon: '✍'
         }
       ];
+
+      const ABOUT = {
+        id: 'sobre',
+        file: 'sobre.html',
+        name: 'Sobre',
+        desc: 'O que é o Take Um Studio, pra quem é e como seus dados são guardados.',
+        color: 'var(--text-dim)',
+        icon: '?'
+      };
 
       const nav = document.getElementById('nav');
       const toolGrid = document.getElementById('tool-grid');
@@ -430,6 +562,13 @@
         nav.appendChild(item);
       });
 
+      const aboutNavItem = document.createElement('div');
+      aboutNavItem.className = 'nav-item';
+      aboutNavItem.dataset.id = ABOUT.id;
+      aboutNavItem.innerHTML = `<span class="dot" style="background:${ABOUT.color}"></span>${ABOUT.name}`;
+      aboutNavItem.addEventListener('click', () => openTool(ABOUT));
+      nav.appendChild(aboutNavItem);
+
       // Build home cards
       TOOLS.forEach(tool => {
         const card = document.createElement('div');
@@ -442,6 +581,16 @@
         card.addEventListener('click', () => openTool(tool));
         toolGrid.appendChild(card);
       });
+
+      const aboutCard = document.createElement('div');
+      aboutCard.className = 'tool-card';
+      aboutCard.innerHTML = `
+    <div class="icon" style="background:${ABOUT.color}22; color:${ABOUT.color};">${ABOUT.icon}</div>
+    <h3>${ABOUT.name}</h3>
+    <p>${ABOUT.desc}</p>
+  `;
+      aboutCard.addEventListener('click', () => openTool(ABOUT));
+      toolGrid.appendChild(aboutCard);
 
       function setActiveNav(id) {
         [...nav.children].forEach(el => el.classList.toggle('active', el.dataset.id === id));
@@ -465,6 +614,60 @@
       }
 
       backBtn.addEventListener('click', openHome);
+
+      // ---------- BACKUP ----------
+      const backupExportBtn = document.getElementById('backup-export-btn');
+      const backupImportBtn = document.getElementById('backup-import-btn');
+      const backupFile = document.getElementById('backup-file');
+      const backupMsg = document.getElementById('backup-msg');
+
+      backupExportBtn.addEventListener('click', async () => {
+        backupMsg.className = '';
+        backupMsg.textContent = 'Gerando backup...';
+        try {
+          const data = await TakeUmBackup.exportAll();
+          const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = 'takeum-backup-' + new Date().toISOString().slice(0, 10) + '.json';
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(a.href);
+          backupMsg.className = 'ok';
+          backupMsg.textContent = 'Backup baixado! Envie esse arquivo para você mesmo no WhatsApp ou guarde no Drive.';
+        } catch (e) {
+          backupMsg.className = 'err';
+          backupMsg.textContent = 'Erro ao gerar backup: ' + e.message;
+        }
+      });
+
+      backupImportBtn.addEventListener('click', () => backupFile.click());
+
+      backupFile.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        backupMsg.className = '';
+        backupMsg.textContent = 'Lendo arquivo...';
+        try {
+          const payload = JSON.parse(await file.text());
+          if (payload.format !== 'takeum-backup') {
+            throw new Error('Este arquivo não é um backup do Take Um Studio');
+          }
+          if (!window.confirm('Isso vai substituir todos os dados salvos neste navegador pelos dados do backup. Continuar?')) {
+            backupMsg.textContent = '';
+            return;
+          }
+          await TakeUmBackup.importAll(payload);
+          backupMsg.className = 'ok';
+          backupMsg.textContent = 'Backup restaurado com sucesso!';
+        } catch (err) {
+          backupMsg.className = 'err';
+          backupMsg.textContent = 'Falha ao restaurar: ' + err.message;
+        } finally {
+          backupFile.value = '';
+        }
+      });
 
       menuToggle.addEventListener('click', () => sidebar.classList.toggle('open'));
       function closeSidebarOnMobile() {

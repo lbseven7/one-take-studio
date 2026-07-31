@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Take Um Studio · Roteirizador</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0a0a0c;
+    --panel: #141417;
+    --panel-line: #232328;
+    --card: #1a1a1e;
+    --text-main: #f5f4ef;
+    --text-dim: #8a8a92;
+    --accent-amber: #ffb020;
+    --accent-red: #ff3b30;
+    --accent-green: #39ff88;
+    --accent-blue: #5aa9ff;
+    --accent-purple: #c084fc;
+    --font-display: 'Archivo', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+  }
+
+  *{ box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html, body{
+    margin: 0; padding: 0;
+    height: 100%;
+    background: var(--bg);
+    color: var(--text-main);
+    font-family: var(--font-mono);
+  }
+
+  #app{
+    height: 100vh;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    max-width: 720px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    background: var(--panel);
+    border-bottom: 1px solid var(--panel-line);
+    flex-shrink: 0;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  header h1{
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 16px;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  header .actions{ display: flex; gap: 8px; }
+
+  header button{
+    background: none;
+    border: 1px solid var(--panel-line);
+    color: var(--text-dim);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  header button:hover{ color: var(--text-main); border-color: var(--accent-amber); }
+
+  #save-btn{ background: var(--accent-amber); color: #1a1200; border-color: var(--accent-amber); font-weight: 600; }
+  #save-btn:hover{ filter: brightness(1.1); }
+  #library-btn svg{ width: 14px; height: 14px; display: block; }
+
+  #content{
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 20px 24px;
+  }
+
+  .field{
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 20px;
+  }
+  .field label{
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .field label .dur-badge{
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    color: var(--accent-amber);
+    font-weight: 600;
+    text-transform: none;
+  }
+
+  .field input[type=text], .field textarea{
+    background: var(--card);
+    border: 1px solid var(--panel-line);
+    border-radius: 4px;
+    color: var(--text-main);
+    font-family: var(--font-display);
+    font-size: 15px;
+    padding: 12px 14px;
+    outline: none;
+    font-weight: 500;
+  }
+  .field input[type=text]:focus, .field textarea:focus{ border-color: var(--accent-amber); }
+
+  .field textarea{
+    min-height: 100px;
+    resize: vertical;
+    line-height: 1.6;
+    font-size: 14px;
+  }
+  .field textarea.big{ min-height: 180px; }
+
+  .dur-row{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .dur-row input[type=range]{
+    -webkit-appearance: none;
+    flex: 1;
+    height: 3px;
+    background: var(--panel-line);
+    border-radius: 2px;
+    outline: none;
+  }
+  .dur-row input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance: none;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: var(--accent-amber);
+    cursor: pointer;
+    border: 2px solid var(--bg);
+  }
+  .dur-row .dur-val{
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--accent-amber);
+    min-width: 50px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .dur-row .dur-label{
+    font-size: 11px;
+    color: var(--text-dim);
+    min-width: 30px;
+  }
+
+  .section-card{
+    background: var(--panel);
+    border: 1px solid var(--panel-line);
+    border-radius: 8px;
+    padding: 16px 18px;
+    margin-bottom: 16px;
+  }
+  .section-card .section-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .section-card .section-header h3{
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 14px;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-card .section-header h3 .num{
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--card);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: var(--text-dim);
+    flex-shrink: 0;
+  }
+
+  .total-bar{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    background: var(--card);
+    border: 1px solid var(--panel-line);
+    border-radius: 8px;
+    margin-top: 4px;
+  }
+  .total-bar .label{
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+  .total-bar .time{
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 20px;
+    color: var(--accent-amber);
+  }
+  .total-bar .time span{ color: var(--text-dim); font-weight: 500; font-size: 14px; }
+
+  .separator{
+    border: none;
+    border-top: 1px solid var(--panel-line);
+    margin: 20px 0;
+  }
+
+  /* ---- Library modal ---- */
+  #modal-backdrop{
+    position: fixed;
+    inset: 0;
+    background: rgba(6,6,8,0.85);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+    padding: 20px;
+  }
+  #modal-backdrop.show{ display: flex; }
+
+  #modal{
+    background: var(--panel);
+    border: 1px solid var(--panel-line);
+    border-radius: 8px;
+    width: 100%;
+    max-width: 460px;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+  }
+  #modal-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--panel-line);
+    flex-shrink: 0;
+  }
+  #modal-header h2{
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 16px;
+    margin: 0;
+  }
+  #modal-header button{
+    background: none; border: none;
+    color: var(--text-dim); cursor: pointer;
+    font-size: 16px;
+  }
+  #modal-header button:hover{ color: var(--text-main); }
+
+  #modal-body{
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px 18px;
+  }
+
+  .lib-item{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    background: var(--card);
+    border: 1px solid var(--panel-line);
+    border-radius: 6px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: border-color .15s ease;
+  }
+  .lib-item:hover{ border-color: var(--accent-amber); }
+  .lib-item .info{ flex: 1; min-width: 0; }
+  .lib-item .lib-title{
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .lib-item .lib-meta{
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-top: 3px;
+  }
+  .lib-item .lib-actions{ display: flex; gap: 6px; flex-shrink: 0; margin-left: 10px; }
+  .lib-item .lib-actions button{
+    background: none; border: 1px solid var(--panel-line);
+    color: var(--text-dim);
+    font-size: 10px;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  .lib-item .lib-actions button:hover{ color: var(--accent-red); border-color: var(--accent-red); }
+  .lib-item .lib-actions .load-btn:hover{ color: var(--accent-amber); border-color: var(--accent-amber); }
+
+  .empty-lib{
+    color: var(--text-dim);
+    font-size: 12px;
+    text-align: center;
+    padding: 30px 16px;
+    line-height: 1.6;
+    opacity: 0.7;
+  }
+
+  ::-webkit-scrollbar{ width: 6px; }
+  ::-webkit-scrollbar-track{ background: transparent; }
+  ::-webkit-scrollbar-thumb{ background: var(--panel-line); border-radius: 3px; }
+
+  @media (max-width: 480px){
+    header{ padding: 12px 14px; }
+    header h1{ font-size: 14px; }
+    #content{ padding: 12px 14px; }
+    .section-card{ padding: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <header>
+    <h1>Take Um Studio · Roteirizador</h1>
+    <div class="actions">
+      <button id="library-btn" title="Roteiros salvos">📂</button>
+      <button id="new-btn">+ Novo</button>
+      <button id="save-btn">Salvar</button>
+    </div>
+  </header>
+
+  <div id="content">
+    <div class="field">
+      <label>Título do vídeo</label>
+      <input type="text" id="field-title" placeholder="Ex: 5 erros que todo iniciante comete">
+    </div>
+
+    <div id="sections"></div>
+
+    <div class="total-bar">
+      <span class="label">Duração total estimada</span>
+      <span class="time"><span id="total-min">0</span>:<span id="total-sec">00</span></span>
+    </div>
+  </div>
+</div>
+
+<!-- Library modal -->
+<div id="modal-backdrop">
+  <div id="modal">
+    <div id="modal-header">
+      <h2>Roteiros salvos</h2>
+      <button id="modal-close">✕</button>
+    </div>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<script src="db.js"></script>
+<script>
+(function(){
+  const SECTION_DEFS = [
+    { id: 'gancho',   name: 'Gancho',                placeholder: 'Prenda a atenção nos primeiros 5 segundos...', big: false },
+    { id: 'problema', name: 'Problema / Contexto',   placeholder: 'Qual a dor ou situação que seu público se identifica?', big: false },
+    { id: 'solucao',  name: 'Solução / Conteúdo principal', placeholder: 'Use [00:00] para marcar momentos importantes no vídeo...', big: true },
+    { id: 'cta',      name: 'CTA',                    placeholder: 'Inscreva-se, comente, link na descrição, ative o sininho...', big: false }
+  ];
+
+  const SECTIONS_EL = document.getElementById('sections');
+  const fieldTitle = document.getElementById('field-title');
+  const saveBtn = document.getElementById('save-btn');
+  const newBtn = document.getElementById('new-btn');
+  const libraryBtn = document.getElementById('library-btn');
+  const modalBackdrop = document.getElementById('modal-backdrop');
+  const modalBody = document.getElementById('modal-body');
+  const modalClose = document.getElementById('modal-close');
+  const totalMin = document.getElementById('total-min');
+  const totalSec = document.getElementById('total-sec');
+
+  let currentId = null;
+  let sections = [];
+  let scripts = [];
+
+  function buildSections(){
+    SECTIONS_EL.innerHTML = '';
+    sections = SECTION_DEFS.map((def, i) => {
+      const sec = { ...def, content: '', duration: 30 };
+      const card = document.createElement('div');
+      card.className = 'section-card';
+      card.innerHTML = `
+        <div class="section-header">
+          <h3><span class="num">${i + 1}</span>${def.name}</h3>
+          <div class="dur-row">
+            <span class="dur-label">Duração</span>
+            <input type="range" min="5" max="600" step="5" value="30">
+            <span class="dur-val">0:30</span>
+          </div>
+        </div>
+        <div class="field" style="margin:0">
+          <textarea class="${def.big ? 'big' : ''}" placeholder="${def.placeholder}"></textarea>
+        </div>
+      `;
+
+      const textarea = card.querySelector('textarea');
+      const range = card.querySelector('input[type=range]');
+      const durVal = card.querySelector('.dur-val');
+
+      textarea.addEventListener('input', () => {
+        sec.content = textarea.value;
+        autoSave();
+      });
+
+      range.addEventListener('input', () => {
+        sec.duration = +range.value;
+        durVal.textContent = formatDur(+range.value);
+        updateTotal();
+        autoSave();
+      });
+
+      SECTIONS_EL.appendChild(card);
+      return sec;
+    });
+    updateTotal();
+  }
+
+  function formatDur(secs){
+    const m = Math.floor(secs / 60);
+    const s = secs % 60;
+    return m + ':' + String(s).padStart(2, '0');
+  }
+
+  function updateTotal(){
+    const total = sections.reduce((sum, s) => sum + (s.duration || 0), 0);
+    totalMin.textContent = Math.floor(total / 60);
+    totalSec.textContent = String(total % 60).padStart(2, '0');
+  }
+
+  function getCurrentScript(){
+    return {
+      id: currentId || ('script_' + Date.now() + Math.random().toString(36).slice(2,6)),
+      title: fieldTitle.value.trim() || 'Sem título',
+      sections: sections.map(s => ({
+        id: s.id, name: s.name, content: s.content, duration: s.duration
+      })),
+      updatedAt: Date.now()
+    };
+  }
+
+  function loadScriptIntoUI(script){
+    currentId = script.id;
+    fieldTitle.value = script.title || '';
+    script.sections.forEach((s, i) => {
+      if(i < sections.length){
+        sections[i].content = s.content || '';
+        sections[i].duration = s.duration || 30;
+      }
+    });
+    syncUIFromState();
+    updateTotal();
+  }
+
+  function syncUIFromState(){
+    const cards = SECTIONS_EL.querySelectorAll('.section-card');
+    sections.forEach((sec, i) => {
+      const card = cards[i];
+      if(!card) return;
+      card.querySelector('textarea').value = sec.content;
+      const range = card.querySelector('input[type=range]');
+      range.value = sec.duration;
+      card.querySelector('.dur-val').textContent = formatDur(sec.duration);
+    });
+  }
+
+  let autoSaveTimer = null;
+  function autoSave(){
+    clearTimeout(autoSaveTimer);
+    autoSaveTimer = setTimeout(() => {
+      const script = getCurrentScript();
+      OneTakeDB.put('roteirizador_scripts', script);
+    }, 600);
+  }
+
+  async function saveScript(){
+    const script = getCurrentScript();
+    await OneTakeDB.put('roteirizador_scripts', script);
+    currentId = script.id;
+  }
+
+  async function loadScripts(){
+    try{ scripts = await OneTakeDB.getAll('roteirizador_scripts') || []; }catch(e){ scripts = []; }
+    scripts.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+  }
+
+  async function loadLastOrNew(){
+    await loadScripts();
+    if(scripts.length > 0){
+      loadScriptIntoUI(scripts[0]);
+    }
+  }
+
+  function openLibrary(){
+    renderLibrary();
+    modalBackdrop.classList.add('show');
+  }
+
+  function closeLibrary(){ modalBackdrop.classList.remove('show'); }
+
+  async function renderLibrary(){
+    await loadScripts();
+    modalBody.innerHTML = '';
+
+    if(scripts.length === 0){
+      modalBody.innerHTML = '<div class="empty-lib">Nenhum roteiro salvo ainda.<br>Crie e salve seu primeiro roteiro!</div>';
+      return;
+    }
+
+    scripts.forEach(s => {
+      const el = document.createElement('div');
+      el.className = 'lib-item';
+      const total = (s.sections || []).reduce((sum, sec) => sum + (sec.duration || 0), 0);
+      const date = s.updatedAt ? new Date(s.updatedAt).toLocaleString('pt-BR', {day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit'}) : '';
+      el.innerHTML = `
+        <div class="info">
+          <div class="lib-title">${escapeHtml(s.title)}</div>
+          <div class="lib-meta">${formatDur(total)} · ${date}</div>
+        </div>
+        <div class="lib-actions">
+          <button class="load-btn" data-id="${s.id}">Carregar</button>
+          <button class="del-btn" data-id="${s.id}">Excluir</button>
+        </div>
+      `;
+
+      el.querySelector('.load-btn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        loadScriptIntoUI(s);
+        closeLibrary();
+      });
+      el.querySelector('.del-btn').addEventListener('click', async (e) => {
+        e.stopPropagation();
+        scripts = scripts.filter(x => x.id !== s.id);
+        await OneTakeDB.del('roteirizador_scripts', s.id);
+        renderLibrary();
+        if(currentId === s.id) currentId = null;
+      });
+
+      modalBody.appendChild(el);
+    });
+  }
+
+  function escapeHtml(str){
+    const d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+  }
+
+  // ---- Events ----
+  saveBtn.addEventListener('click', async () => {
+    await saveScript();
+    await loadScripts();
+  });
+
+  newBtn.addEventListener('click', () => {
+    if(sections.some(s => s.content.trim())){
+      saveScript();
+    }
+    currentId = null;
+    fieldTitle.value = '';
+    buildSections();
+  });
+
+  libraryBtn.addEventListener('click', openLibrary);
+  modalClose.addEventListener('click', closeLibrary);
+  modalBackdrop.addEventListener('click', (e) => {
+    if(e.target === modalBackdrop) closeLibrary();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape' && modalBackdrop.classList.contains('show')) closeLibrary();
+  });
+
+  // ---- Init ----
+  (async function init(){
+    await OneTakeMigrate();
+    buildSections();
+    await loadLastOrNew();
+  })();
+})();
+</script>
+
+</body>
+</html>

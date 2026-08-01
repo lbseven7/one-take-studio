@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Take Um Studio · Banco de Ideias</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0a0a0c;
+    --panel: #141417;
+    --panel-line: #232328;
+    --card: #1a1a1e;
+    --text-main: #f5f4ef;
+    --text-dim: #8a8a92;
+    --accent-amber: #ffb020;
+    --accent-red: #ff3b30;
+    --accent-green: #39ff88;
+    --accent-blue: #5aa9ff;
+    --accent-purple: #c084fc;
+    --font-display: 'Archivo', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+  }
+
+  *{ box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html, body{
+    margin: 0; padding: 0;
+    height: 100%;
+    background: var(--bg);
+    color: var(--text-main);
+    font-family: var(--font-mono);
+  }
+
+  #app{
+    height: 100vh;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    max-width: 720px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    background: var(--panel);
+    border-bottom: 1px solid var(--panel-line);
+    flex-shrink: 0;
+    gap: 12px;
+  }
+  header h1{
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 16px;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  header .count{
+    color: var(--text-dim);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  header .count .total{ color: var(--accent-amber); }
+
+  #content{
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 20px 24px;
+  }
+
+  /* ---------- CAPTURE ---------- */
+  .capture-card{
+    background: var(--panel);
+    border: 1px solid var(--panel-line);
+    border-radius: 8px;
+    padding: 16px 18px;
+    margin-bottom: 20px;
+  }
+  .capture-card h2{
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 13px;
+    margin: 0 0 12px 0;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .capture-card h2 .bolt{ color: var(--accent-amber); font-size: 14px; }
+
+  .field{
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+  .field label{
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+  .field input[type=text], .field textarea{
+    background: var(--card);
+    border: 1px solid var(--panel-line);
+    border-radius: 4px;
+    color: var(--text-main);
+    font-family: var(--font-display);
+    font-size: 14px;
+    padding: 10px 12px;
+    outline: none;
+    font-weight: 500;
+  }
+  .field input[type=text]:focus, .field textarea:focus{ border-color: var(--accent-amber); }
+  .field textarea{ min-height: 62px; resize: vertical; line-height: 1.5; font-size: 13px; }
+  .field input[type=text]::placeholder, .field textarea::placeholder{ color: #55555c; }
+
+  .capture-footer{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .platform-picker{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .platform-chip{
+    border: 1px solid var(--panel-line);
+    background: var(--card);
+    color: var(--text-dim);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    padding: 6px 11px;
+    border-radius: 20px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .platform-chip.active{
+    border-color: transparent;
+    color: #1a1200;
+    font-weight: 600;
+  }
+
+  #capture-btn{
+    background: var(--accent-amber);
+    color: #1a1200;
+    border: none;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 11px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  #capture-btn:hover{ filter: brightness(1.1); }
+  #capture-btn:disabled{ background: var(--panel-line); color: var(--text-dim); cursor: not-allowed; }
+
+  /* ---------- LIST ---------- */
+  .search-row{
+    margin-bottom: 12px;
+  }
+  .search-row input{
+    width: 100%;
+    background: var(--card);
+    border: 1px solid var(--panel-line);
+    border-radius: 4px;
+    color: var(--text-main);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    padding: 10px 12px;
+    outline: none;
+  }
+  .search-row input:focus{ border-color: var(--accent-amber); }
+  .search-row input::placeholder{ color: #55555c; }
+
+  .list-label{
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    padding: 4px 2px 10px 2px;
+    opacity: 0.7;
+  }
+
+  .idea-item{
+    background: var(--card);
+    border: 1px solid var(--panel-line);
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin-bottom: 8px;
+    transition: border-color .15s ease;
+  }
+  .idea-item:hover{ border-color: var(--accent-amber); }
+
+  .idea-item .platform{
+    display: inline-block;
+    font-size: 9px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 3px;
+    margin-bottom: 8px;
+    color: #1a1200;
+    font-weight: 600;
+  }
+  .idea-item .title{
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 1.35;
+    margin-bottom: 4px;
+    word-break: break-word;
+  }
+  .idea-item .notes{
+    font-size: 11.5px;
+    color: var(--text-dim);
+    line-height: 1.5;
+    word-break: break-word;
+    white-space: pre-wrap;
+  }
+  .idea-item .footer{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid var(--panel-line);
+  }
+  .idea-item .date{
+    font-size: 10px;
+    color: var(--text-dim);
+  }
+  .idea-item .actions{ display: flex; gap: 8px; }
+  .idea-item .actions button{
+    background: none;
+    border: 1px solid var(--panel-line);
+    color: var(--text-dim);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 7px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .idea-item .actions .pauta-btn{ color: var(--accent-amber); }
+  .idea-item .actions .pauta-btn:hover{ border-color: var(--accent-amber); }
+  .idea-item .actions .del-btn:hover{ border-color: var(--accent-red); color: var(--accent-red); }
+
+  .empty-hint{
+    color: var(--text-dim);
+    font-size: 12px;
+    text-align: center;
+    padding: 36px 16px;
+    line-height: 1.6;
+    opacity: 0.7;
+  }
+  .empty-hint .big{
+    font-family: var(--font-display);
+    font-size: 15px;
+    color: var(--text-main);
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  /* ---------- TOAST ---------- */
+  #toast{
+    position: fixed;
+    left: 50%;
+    bottom: 24px;
+    transform: translate(-50%, 16px);
+    background: var(--card);
+    border: 1px solid var(--accent-green);
+    color: var(--text-main);
+    font-size: 12px;
+    padding: 11px 18px;
+    border-radius: 6px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s ease, transform .2s ease;
+    z-index: 60;
+    max-width: 90vw;
+    text-align: center;
+  }
+  #toast.show{ opacity: 1; transform: translate(-50%, 0); }
+
+  ::-webkit-scrollbar{ width: 6px; }
+  ::-webkit-scrollbar-track{ background: transparent; }
+  ::-webkit-scrollbar-thumb{ background: var(--panel-line); border-radius: 3px; }
+
+  @media (max-width: 480px){
+    header{ padding: 12px 14px; }
+    header h1{ font-size: 14px; }
+    #content{ padding: 12px 14px; }
+    .capture-card{ padding: 14px; }
+    .capture-footer{ flex-direction: column; align-items: stretch; }
+    #capture-btn{ width: 100%; }
+    .idea-item .footer{ flex-direction: column; align-items: flex-start; gap: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <header>
+    <h1>Take Um Studio · Banco de Ideias</h1>
+    <div class="count"><span class="total" id="total-count">0</span> ideias</div>
+  </header>
+
+  <div id="content">
+    <div class="capture-card">
+      <h2><span class="bolt">⚡</span> Capturar ideia na hora</h2>
+      <div class="field">
+        <label>Ideia</label>
+        <input type="text" id="field-title" placeholder="Ex: comparação rápido x devagar na edição" maxlength="140">
+      </div>
+      <div class="field">
+        <label>Notas (opcional)</label>
+        <textarea id="field-notes" placeholder="Detalhes, ganchos, referências..."></textarea>
+      </div>
+      <div class="field">
+        <label>Plataforma</label>
+        <div class="platform-picker" id="platform-picker"></div>
+      </div>
+      <div class="capture-footer">
+        <button id="capture-btn" disabled>+ Capturar</button>
+      </div>
+    </div>
+
+    <div class="search-row">
+      <input type="text" id="search-input" placeholder="Buscar ideias...">
+    </div>
+
+    <div class="list-label">Ideias salvas</div>
+    <div id="list"></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script src="db.js"></script>
+<script>
+(function(){
+  const PLATFORMS = [
+    { id: 'reels',   label: 'Reels',    color: '#ff5c8a' },
+    { id: 'tiktok',  label: 'TikTok',   color: '#39e6e6' },
+    { id: 'youtube', label: 'YouTube',  color: '#ff4d4d' },
+    { id: 'shorts',  label: 'Shorts',   color: '#ff3b30' },
+    { id: 'outro',   label: 'Outro',    color: '#8a8a92' }
+  ];
+
+  const fieldTitle = document.getElementById('field-title');
+  const fieldNotes = document.getElementById('field-notes');
+  const platformPicker = document.getElementById('platform-picker');
+  const captureBtn = document.getElementById('capture-btn');
+  const searchInput = document.getElementById('search-input');
+  const list = document.getElementById('list');
+  const totalCount = document.getElementById('total-count');
+  const toast = document.getElementById('toast');
+
+  let ideas = [];
+  let selectedPlatform = 'reels';
+
+  function uid(){
+    return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+  }
+
+  function platformInfo(id){
+    return PLATFORMS.find(p => p.id === id) || PLATFORMS[PLATFORMS.length - 1];
+  }
+
+  async function loadIdeas(){
+    try{
+      ideas = await OneTakeDB.getAll('banco_ideias') || [];
+      ideas.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+    }catch(e){
+      ideas = [];
+    }
+  }
+
+  async function saveIdea(idea){
+    await OneTakeDB.put('banco_ideias', idea);
+  }
+
+  function buildPlatformPicker(){
+    platformPicker.innerHTML = '';
+    PLATFORMS.forEach(p => {
+      const chip = document.createElement('div');
+      chip.className = 'platform-chip';
+      chip.textContent = p.label;
+      chip.dataset.id = p.id;
+      chip.addEventListener('click', () => {
+        selectedPlatform = p.id;
+        refreshPlatformChips();
+      });
+      platformPicker.appendChild(chip);
+    });
+    refreshPlatformChips();
+  }
+
+  function refreshPlatformChips(){
+    [...platformPicker.children].forEach(chip => {
+      const active = chip.dataset.id === selectedPlatform;
+      chip.classList.toggle('active', active);
+      chip.style.background = active ? platformInfo(chip.dataset.id).color : '';
+    });
+  }
+
+  function escapeHtml(str){
+    const d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+  }
+
+  function formatDate(ts){
+    const d = new Date(ts);
+    const now = new Date();
+    const diff = (now - d) / 1000;
+    if(diff < 60) return 'agora';
+    if(diff < 3600) return 'há ' + Math.floor(diff / 60) + ' min';
+    if(diff < 86400 && d.getDate() === now.getDate()) return 'há ' + Math.floor(diff / 3600) + 'h';
+    if(diff < 172800) return 'ontem';
+    return d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+  }
+
+  function render(){
+    const q = searchInput.value.trim().toLowerCase();
+    const filtered = q
+      ? ideas.filter(i => (i.title || '').toLowerCase().includes(q) || (i.notes || '').toLowerCase().includes(q))
+      : ideas;
+
+    totalCount.textContent = ideas.length;
+    list.innerHTML = '';
+
+    if(ideas.length === 0){
+      list.innerHTML = '<div class="empty-hint"><span class="big">Nada por aqui ainda</span>Uma ideia que surgiu na hora —<br>capture antes que ela suma!</div>';
+      return;
+    }
+
+    if(filtered.length === 0){
+      list.innerHTML = '<div class="empty-hint">Nenhuma ideia encontrada com esse termo.</div>';
+      return;
+    }
+
+    filtered.forEach(idea => {
+      const el = document.createElement('div');
+      el.className = 'idea-item';
+      const p = platformInfo(idea.platform);
+      el.innerHTML = `
+        <span class="platform" style="background:${p.color}">${p.label}</span>
+        <div class="title"></div>
+        ${idea.notes ? '<div class="notes"></div>' : ''}
+        <div class="footer">
+          <span class="date">${formatDate(idea.createdAt)}</span>
+          <div class="actions">
+            <button class="pauta-btn">→ Pauta</button>
+            <button class="del-btn">✕</button>
+          </div>
+        </div>
+      `;
+
+      el.querySelector('.title').textContent = idea.title;
+      if(idea.notes) el.querySelector('.notes').textContent = idea.notes;
+
+      el.querySelector('.pauta-btn').addEventListener('click', async () => {
+        const card = {
+          id: uid(),
+          title: idea.title,
+          notes: idea.notes || '',
+          status: 'ideia',
+          platform: idea.platform,
+          createdAt: Date.now()
+        };
+        try{
+          await OneTakeDB.put('pauta_cards', card);
+        }catch(e){
+          showToast('Não foi possível enviar para a pauta.');
+          return;
+        }
+        ideas = ideas.filter(x => x.id !== idea.id);
+        await OneTakeDB.del('banco_ideias', idea.id);
+        showToast('Ideia enviada para o Painel de Pauta!');
+        render();
+      });
+
+      el.querySelector('.del-btn').addEventListener('click', async () => {
+        ideas = ideas.filter(x => x.id !== idea.id);
+        await OneTakeDB.del('banco_ideias', idea.id);
+        render();
+      });
+
+      list.appendChild(el);
+    });
+  }
+
+  let toastTimer = null;
+  function showToast(msg){
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 2400);
+  }
+
+  function refreshCaptureBtn(){
+    captureBtn.disabled = fieldTitle.value.trim().length === 0;
+  }
+
+  function clearCapture(){
+    fieldTitle.value = '';
+    fieldNotes.value = '';
+    selectedPlatform = 'reels';
+    refreshPlatformChips();
+    refreshCaptureBtn();
+    fieldTitle.focus();
+  }
+
+  async function capture(){
+    const title = fieldTitle.value.trim();
+    if(!title) return;
+    const idea = {
+      id: uid(),
+      title,
+      notes: fieldNotes.value.trim(),
+      platform: selectedPlatform,
+      createdAt: Date.now()
+    };
+    await saveIdea(idea);
+    ideas.unshift(idea);
+    clearCapture();
+    render();
+  }
+
+  fieldTitle.addEventListener('input', refreshCaptureBtn);
+  captureBtn.addEventListener('click', capture);
+  fieldTitle.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter') capture();
+  });
+  searchInput.addEventListener('input', render);
+
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape') fieldTitle.blur();
+  });
+
+  (async function init(){
+    await OneTakeMigrate();
+    buildPlatformPicker();
+    await loadIdeas();
+    render();
+  })();
+})();
+</script>
+
+</body>
+</html>

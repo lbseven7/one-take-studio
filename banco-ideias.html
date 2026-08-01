@@ -263,7 +263,143 @@
   }
   .idea-item .actions .pauta-btn{ color: var(--accent-amber); }
   .idea-item .actions .pauta-btn:hover{ border-color: var(--accent-amber); }
+  .idea-item .actions .ai-btn{ color: var(--accent-purple); }
+  .idea-item .actions .ai-btn:hover{ border-color: var(--accent-purple); }
   .idea-item .actions .del-btn:hover{ border-color: var(--accent-red); color: var(--accent-red); }
+  .idea-item .actions button:disabled{ opacity: 0.5; cursor: not-allowed; }
+  .idea-item .actions button:disabled:hover{ border-color: var(--panel-line); color: var(--text-dim); }
+
+  /* ---------- AI SUGGEST ---------- */
+  .ai-card{
+    background: var(--panel);
+    border: 1px solid rgba(192,132,252,0.35);
+    border-radius: 8px;
+    padding: 16px 18px;
+    margin-bottom: 20px;
+  }
+  .ai-card h2{
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 13px;
+    margin: 0 0 4px 0;
+    color: var(--accent-purple);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .ai-card .sub{
+    color: var(--text-dim);
+    font-size: 11px;
+    line-height: 1.5;
+    margin: 0 0 12px 0;
+  }
+  .ai-row{ display: flex; gap: 8px; }
+  .ai-row input{
+    flex: 1;
+    background: var(--card);
+    border: 1px solid var(--panel-line);
+    border-radius: 4px;
+    color: var(--text-main);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    padding: 11px 12px;
+    outline: none;
+  }
+  .ai-row input:focus{ border-color: var(--accent-purple); }
+  .ai-row input::placeholder{ color: #55555c; }
+  #suggest-btn{
+    background: var(--accent-purple);
+    color: #1a1200;
+    border: none;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 0 18px;
+    border-radius: 4px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  #suggest-btn:hover{ filter: brightness(1.15); }
+  #suggest-btn:disabled{ background: var(--panel-line); color: var(--text-dim); cursor: not-allowed; }
+
+  #suggest-results{ margin-top: 14px; }
+  .suggestion{
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    background: var(--card);
+    border: 1px solid var(--panel-line);
+    border-radius: 6px;
+    padding: 12px 14px;
+    margin-bottom: 8px;
+  }
+  .suggestion .s-info{ flex: 1; min-width: 0; }
+  .suggestion .s-title{
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 13px;
+    line-height: 1.35;
+    margin-bottom: 3px;
+    word-break: break-word;
+  }
+  .suggestion .s-notes{
+    font-size: 11px;
+    color: var(--text-dim);
+    line-height: 1.5;
+    word-break: break-word;
+    margin-bottom: 6px;
+  }
+  .suggestion .s-meta{
+    display: inline-block;
+    font-size: 9px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 3px;
+    color: #1a1200;
+    font-weight: 600;
+  }
+  .suggestion .s-add{
+    background: none;
+    border: 1px solid var(--panel-line);
+    color: var(--accent-purple);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .suggestion .s-add:hover{ border-color: var(--accent-purple); }
+  .suggestion .s-add:disabled{ opacity: 0.5; cursor: not-allowed; }
+  .ai-err{
+    color: var(--accent-red);
+    font-size: 12px;
+    line-height: 1.5;
+  }
+  .ai-loading{
+    color: var(--text-dim);
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .spinner{
+    width: 12px; height: 12px;
+    border: 2px solid var(--panel-line);
+    border-top-color: var(--accent-purple);
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+    flex-shrink: 0;
+  }
+  @keyframes spin{ to{ transform: rotate(360deg); } }
 
   .empty-hint{
     color: var(--text-dim);
@@ -345,6 +481,16 @@
       </div>
     </div>
 
+    <div class="ai-card">
+      <h2>✦ Ideias com IA</h2>
+      <p class="sub">Escreva um tema e a IA sugere ideias de vídeo. Toque em "+" para guardar aqui no banco.</p>
+      <div class="ai-row">
+        <input type="text" id="theme-input" placeholder="Ex: rotina de estudos, cachorro, viagem, cozinha..." maxlength="100">
+        <button id="suggest-btn" disabled>Sugerir</button>
+      </div>
+      <div id="suggest-results"></div>
+    </div>
+
     <div class="search-row">
       <input type="text" id="search-input" placeholder="Buscar ideias...">
     </div>
@@ -357,6 +503,7 @@
 <div id="toast"></div>
 
 <script src="db.js"></script>
+<script src="ia.js"></script>
 <script>
 (function(){
   const PLATFORMS = [
@@ -375,6 +522,9 @@
   const list = document.getElementById('list');
   const totalCount = document.getElementById('total-count');
   const toast = document.getElementById('toast');
+  const themeInput = document.getElementById('theme-input');
+  const suggestBtn = document.getElementById('suggest-btn');
+  const suggestResults = document.getElementById('suggest-results');
 
   let ideas = [];
   let selectedPlatform = 'reels';
@@ -471,6 +621,7 @@
         <div class="footer">
           <span class="date">${formatDate(idea.createdAt)}</span>
           <div class="actions">
+            <button class="ai-btn">✍ Roteirizar</button>
             <button class="pauta-btn">→ Pauta</button>
             <button class="del-btn">✕</button>
           </div>
@@ -499,6 +650,38 @@
         await OneTakeDB.del('banco_ideias', idea.id);
         showToast('Ideia enviada para o Painel de Pauta!');
         render();
+      });
+
+      el.querySelector('.ai-btn').addEventListener('click', async (e) => {
+        const btn = e.currentTarget;
+        btn.disabled = true;
+        btn.textContent = 'Gerando...';
+        try{
+          const data = await TakeUmAI.callGemini({
+            system: 'Você é um roteirista especialista em vídeos para redes sociais. A partir da ideia fornecida, crie um roteiro em português do Brasil, direto e natural de falar, com gancho forte nos primeiros 5 segundos. A seção "solucao" deve ser a mais longa e usar marcadores [mm:ss] para momentos importantes. Responda SOMENTE com JSON válido, sem texto antes ou depois, neste formato exato: {"sections":[{"id":"gancho","content":"...","duration":15},{"id":"problema","content":"...","duration":30},{"id":"solucao","content":"...","duration":120},{"id":"cta","content":"...","duration":20}]}. As durações devem estar entre 5 e 600 segundos, em múltiplos de 5.',
+            prompt: 'Ideia: ' + idea.title + (idea.notes ? '\nNotas: ' + idea.notes : ''),
+            json: true
+          });
+          if(!data.sections || !Array.isArray(data.sections)) throw new Error('Resposta sem seções.');
+          const script = {
+            id: uid(),
+            title: idea.title,
+            sections: data.sections.map(s => ({
+              id: s.id,
+              name: sectionName(s.id),
+              content: s.content || '',
+              duration: clampDur(s.duration)
+            })),
+            updatedAt: Date.now()
+          };
+          await OneTakeDB.put('roteirizador_scripts', script);
+          showToast('Roteiro gerado! Abra o Roteirizador na home.');
+        }catch(err){
+          showToast(err.message);
+        }finally{
+          btn.disabled = false;
+          btn.textContent = '✍ Roteirizar';
+        }
       });
 
       el.querySelector('.del-btn').addEventListener('click', async () => {
@@ -532,6 +715,16 @@
     fieldTitle.focus();
   }
 
+  function sectionName(id){
+    const names = { gancho: 'Gancho', problema: 'Problema / Contexto', solucao: 'Solução / Conteúdo principal', cta: 'CTA' };
+    return names[id] || id;
+  }
+
+  function clampDur(secs){
+    const n = Math.round((+secs || 30) / 5) * 5;
+    return Math.min(600, Math.max(5, n));
+  }
+
   async function capture(){
     const title = fieldTitle.value.trim();
     if(!title) return;
@@ -548,12 +741,89 @@
     render();
   }
 
+  // ---------- AI: sugerir ideias ----------
+  function refreshSuggestBtn(){
+    suggestBtn.disabled = themeInput.value.trim().length === 0;
+  }
+
+  function renderSuggestionLoading(){
+    suggestResults.innerHTML = '<div class="ai-loading"><span class="spinner"></span>A IA está pensando...</div>';
+  }
+
+  function renderSuggestionError(msg){
+    suggestResults.innerHTML = '<div class="ai-err">' + escapeHtml(msg) + '</div>';
+  }
+
+  function renderSuggestions(items){
+    suggestResults.innerHTML = '';
+    items.forEach(s => {
+      const p = platformInfo(s.platform);
+      const el = document.createElement('div');
+      el.className = 'suggestion';
+      el.innerHTML = `
+        <div class="s-info">
+          <div class="s-title"></div>
+          ${s.notes ? '<div class="s-notes"></div>' : ''}
+          <span class="s-meta" style="background:${p.color}">${p.label}</span>
+        </div>
+        <button class="s-add">+ Guardar</button>
+      `;
+      el.querySelector('.s-title').textContent = s.title;
+      if(s.notes) el.querySelector('.s-notes').textContent = s.notes;
+
+      el.querySelector('.s-add').addEventListener('click', async (e) => {
+        const btn = e.currentTarget;
+        btn.disabled = true;
+        const idea = {
+          id: uid(),
+          title: s.title,
+          notes: s.notes || '',
+          platform: platformInfo(s.platform).id,
+          createdAt: Date.now()
+        };
+        await saveIdea(idea);
+        ideas.unshift(idea);
+        btn.textContent = '✓';
+        showToast('Ideia guardada no banco!');
+        render();
+      });
+
+      suggestResults.appendChild(el);
+    });
+  }
+
+  async function suggest(){
+    const theme = themeInput.value.trim();
+    if(!theme) return;
+    suggestBtn.disabled = true;
+    renderSuggestionLoading();
+    try{
+      const data = await TakeUmAI.callGemini({
+        system: 'Você é especialista em conteúdo para redes sociais. Crie ideias de vídeo criativas e realistas sobre o tema informado, variando entre Reels, TikTok, YouTube, Shorts e Outro. Responda SOMENTE com JSON válido, sem texto antes ou depois, neste formato exato: {"ideas":[{"title":"...","notes":"...","platform":"reels|tiktok|youtube|shorts|outro"}]}. Gere entre 6 e 8 ideias, com títulos objetivos e notas contendo um gancho ou referência rápida.',
+        prompt: 'Tema: ' + theme,
+        json: true
+      });
+      const items = (data && Array.isArray(data.ideas)) ? data.ideas : [];
+      if(items.length === 0) throw new Error('A IA não retornou ideias. Tente outro tema.');
+      renderSuggestions(items);
+    }catch(err){
+      renderSuggestionError(err.message);
+    }finally{
+      suggestBtn.disabled = false;
+    }
+  }
+
   fieldTitle.addEventListener('input', refreshCaptureBtn);
   captureBtn.addEventListener('click', capture);
   fieldTitle.addEventListener('keydown', (e) => {
     if(e.key === 'Enter') capture();
   });
   searchInput.addEventListener('input', render);
+  themeInput.addEventListener('input', refreshSuggestBtn);
+  suggestBtn.addEventListener('click', suggest);
+  themeInput.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter' && !suggestBtn.disabled) suggest();
+  });
 
   document.addEventListener('keydown', (e) => {
     if(e.key === 'Escape') fieldTitle.blur();

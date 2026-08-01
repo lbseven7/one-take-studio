@@ -81,6 +81,10 @@
   #save-btn{ background: var(--accent-amber); color: #1a1200; border-color: var(--accent-amber); font-weight: 600; }
   #save-btn:hover{ filter: brightness(1.1); }
   #library-btn svg{ width: 14px; height: 14px; display: block; }
+  #rewrite-btn, #desc-btn{ color: var(--accent-purple); }
+  #rewrite-btn:hover, #desc-btn:hover{ border-color: var(--accent-purple); }
+  #rewrite-btn:disabled, #desc-btn:disabled{ opacity: 0.5; cursor: not-allowed; color: var(--text-dim); }
+  #rewrite-btn:disabled:hover, #desc-btn:disabled:hover{ border-color: var(--panel-line); }
 
   #content{
     flex: 1;
@@ -330,6 +334,107 @@
     opacity: 0.7;
   }
 
+  /* ---- Description modal ---- */
+  #desc-backdrop{
+    position: fixed;
+    inset: 0;
+    background: rgba(6,6,8,0.85);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 55;
+    padding: 20px;
+  }
+  #desc-backdrop.show{ display: flex; }
+
+  #desc-modal{
+    background: var(--panel);
+    border: 1px solid var(--panel-line);
+    border-radius: 8px;
+    width: 100%;
+    max-width: 460px;
+    max-height: 82vh;
+    display: flex;
+    flex-direction: column;
+  }
+  #desc-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--panel-line);
+    flex-shrink: 0;
+  }
+  #desc-header h2{
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 16px;
+    margin: 0;
+  }
+  #desc-header button{
+    background: none; border: none;
+    color: var(--text-dim); cursor: pointer;
+    font-size: 16px;
+  }
+  #desc-header button:hover{ color: var(--text-main); }
+  #desc-text{
+    flex: 1;
+    overflow-y: auto;
+    margin: 0;
+    padding: 14px 18px;
+    background: var(--card);
+    border: none;
+    color: var(--text-main);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    min-height: 180px;
+  }
+  #desc-actions{
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 14px 18px;
+    border-top: 1px solid var(--panel-line);
+    flex-shrink: 0;
+  }
+  #desc-actions button{
+    background: var(--accent-amber);
+    border: none;
+    color: #1a1200;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 11px 18px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  #desc-actions button:hover{ filter: brightness(1.1); }
+
+  /* ---- Toast ---- */
+  #toast{
+    position: fixed;
+    left: 50%;
+    bottom: 24px;
+    transform: translate(-50%, 16px);
+    background: var(--card);
+    border: 1px solid var(--accent-green);
+    color: var(--text-main);
+    font-size: 12px;
+    padding: 11px 18px;
+    border-radius: 6px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s ease, transform .2s ease;
+    z-index: 60;
+    max-width: 90vw;
+    text-align: center;
+  }
+  #toast.show{ opacity: 1; transform: translate(-50%, 0); }
+
   ::-webkit-scrollbar{ width: 6px; }
   ::-webkit-scrollbar-track{ background: transparent; }
   ::-webkit-scrollbar-thumb{ background: var(--panel-line); border-radius: 3px; }
@@ -348,6 +453,8 @@
   <header>
     <h1>Take Um Studio · Roteirizador</h1>
     <div class="actions">
+      <button id="rewrite-btn" title="Reescrever com IA">✍ IA</button>
+      <button id="desc-btn" title="Gerar descrição com IA">📝 Descrição</button>
       <button id="library-btn" title="Roteiros salvos">📂</button>
       <button id="new-btn">+ Novo</button>
       <button id="save-btn">Salvar</button>
@@ -380,7 +487,24 @@
   </div>
 </div>
 
+<!-- Description modal -->
+<div id="desc-backdrop">
+  <div id="desc-modal">
+    <div id="desc-header">
+      <h2>Descrição gerada</h2>
+      <button id="desc-close">✕</button>
+    </div>
+    <textarea id="desc-text" readonly spellcheck="false"></textarea>
+    <div id="desc-actions">
+      <button id="desc-copy">Copiar</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
 <script src="db.js"></script>
+<script src="ia.js"></script>
 <script>
 (function(){
   const SECTION_DEFS = [
@@ -400,6 +524,13 @@
   const modalClose = document.getElementById('modal-close');
   const totalMin = document.getElementById('total-min');
   const totalSec = document.getElementById('total-sec');
+  const rewriteBtn = document.getElementById('rewrite-btn');
+  const descBtn = document.getElementById('desc-btn');
+  const descBackdrop = document.getElementById('desc-backdrop');
+  const descText = document.getElementById('desc-text');
+  const descCopy = document.getElementById('desc-copy');
+  const descClose = document.getElementById('desc-close');
+  const toast = document.getElementById('toast');
 
   let currentId = null;
   let sections = [];
@@ -577,6 +708,100 @@
     return d.innerHTML;
   }
 
+  let toastTimer = null;
+  function showToast(msg){
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 2400);
+  }
+
+  function scriptHasContent(){
+    return sections.some(s => s.content.trim());
+  }
+
+  // ---------- IA: reescrever ----------
+  async function rewriteWithAI(){
+    if(!scriptHasContent()){
+      showToast('Escreva algo no roteiro antes de pedir a IA.');
+      return;
+    }
+    rewriteBtn.disabled = true;
+    const original = rewriteBtn.textContent;
+    rewriteBtn.textContent = 'Gerando...';
+    try{
+      const data = await TakeUmAI.callGemini({
+        system: 'Você é um roteirista especialista em vídeos. Reescreva cada seção do roteiro mantendo a estrutura e o sentido, deixando o texto mais natural, direto e bom de falar em português do Brasil. Mantenha os marcadores [mm:ss] se existirem. Responda SOMENTE com JSON válido, sem texto antes ou depois, neste formato exato: {"sections":[{"id":"gancho","content":"..."},{"id":"problema","content":"..."},{"id":"solucao","content":"..."},{"id":"cta","content":"..."}]}. Inclua TODAS as seções com os mesmos ids.',
+        prompt: 'Título: ' + (fieldTitle.value.trim() || 'Sem título') + '\n\nRoteiro atual:\n' +
+          sections.map(s => '[' + s.name + ']\n' + (s.content || '')).join('\n\n'),
+        json: true
+      });
+      if(!data.sections || !Array.isArray(data.sections)) throw new Error('Resposta sem seções.');
+      data.sections.forEach(sec => {
+        const target = sections.find(s => s.id === sec.id);
+        if(target) target.content = sec.content || '';
+      });
+      syncUIFromState();
+      updateTotal();
+      await saveScript();
+      showToast('Roteiro reescrito com IA!');
+    }catch(err){
+      showToast(err.message);
+    }finally{
+      rewriteBtn.disabled = false;
+      rewriteBtn.textContent = original;
+    }
+  }
+
+  // ---------- IA: descrição ----------
+  function openDescription(text){
+    descText.value = text;
+    descBackdrop.classList.add('show');
+  }
+
+  function closeDescription(){ descBackdrop.classList.remove('show'); }
+
+  async function generateDescription(){
+    if(!scriptHasContent()){
+      showToast('Escreva algo no roteiro antes de gerar a descrição.');
+      return;
+    }
+    descBtn.disabled = true;
+    const original = descBtn.textContent;
+    descBtn.textContent = 'Gerando...';
+    try{
+      const text = await TakeUmAI.callGemini({
+        system: 'Você é especialista em descrições de vídeo para YouTube e redes sociais. Crie uma descrição em português do Brasil com: um parágrafo inicial chamativo, 2 a 3 parágrafos curtos de resumo, e no final até 5 hashtags relevantes. Use no máximo 3 emojis no total. Saída em texto puro, sem títulos com #, pronta para colar.',
+        prompt: 'Título: ' + (fieldTitle.value.trim() || 'Sem título') + '\n\nRoteiro:\n' +
+          sections.map(s => '[' + s.name + ']\n' + (s.content || '')).join('\n\n')
+      });
+      openDescription(text);
+    }catch(err){
+      showToast(err.message);
+    }finally{
+      descBtn.disabled = false;
+      descBtn.textContent = original;
+    }
+  }
+
+  async function copyDescription(){
+    const text = descText.value;
+    if(!text) return;
+    try{
+      await navigator.clipboard.writeText(text);
+      showToast('Descrição copiada!');
+    }catch(e){
+      descText.focus();
+      descText.select();
+      try{
+        document.execCommand('copy');
+        showToast('Descrição copiada!');
+      }catch(err2){
+        showToast('Selecione o texto e copie manualmente.');
+      }
+    }
+  }
+
   // ---- Events ----
   saveBtn.addEventListener('click', async () => {
     await saveScript();
@@ -598,8 +823,17 @@
     if(e.target === modalBackdrop) closeLibrary();
   });
 
+  rewriteBtn.addEventListener('click', rewriteWithAI);
+  descBtn.addEventListener('click', generateDescription);
+  descClose.addEventListener('click', closeDescription);
+  descCopy.addEventListener('click', copyDescription);
+  descBackdrop.addEventListener('click', (e) => {
+    if(e.target === descBackdrop) closeDescription();
+  });
+
   document.addEventListener('keydown', (e) => {
     if(e.key === 'Escape' && modalBackdrop.classList.contains('show')) closeLibrary();
+    if(e.key === 'Escape' && descBackdrop.classList.contains('show')) closeDescription();
   });
 
   // ---- Init ----

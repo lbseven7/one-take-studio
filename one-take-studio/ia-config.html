@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Take Um Studio · Configuração da IA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0a0a0c;
+    --panel: #141417;
+    --panel-line: #232328;
+    --card: #1a1a1e;
+    --text-main: #f5f4ef;
+    --text-dim: #8a8a92;
+    --accent-amber: #ffb020;
+    --accent-red: #ff3b30;
+    --accent-green: #39ff88;
+    --accent-blue: #5aa9ff;
+    --font-display: 'Archivo', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+  }
+
+  *{ box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html, body{
+    margin: 0; padding: 0;
+    height: 100%;
+    background: var(--bg);
+    color: var(--text-main);
+    font-family: var(--font-mono);
+  }
+
+  #app{
+    height: 100vh;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    max-width: 720px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  header{
+    display: flex;
+    align-items: center;
+    padding: 16px 20px;
+    background: var(--panel);
+    border-bottom: 1px solid var(--panel-line);
+    flex-shrink: 0;
+  }
+  header h1{
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 16px;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+
+  #content{
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+  }
+
+  .card{
+    background: var(--panel);
+    border: 1px solid var(--panel-line);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .card h2{
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 14px;
+    margin: 0 0 4px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card h2 .star{ color: var(--accent-amber); }
+  .card .sub{
+    color: var(--text-dim);
+    font-size: 12px;
+    line-height: 1.6;
+    margin: 0 0 16px 0;
+  }
+
+  .status-chip{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid var(--panel-line);
+    color: var(--text-dim);
+    margin-bottom: 16px;
+  }
+  .status-chip .dot{
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--text-dim);
+  }
+  .status-chip.configured{ color: var(--accent-green); border-color: rgba(57,255,136,0.35); }
+  .status-chip.configured .dot{ background: var(--accent-green); }
+  .status-chip.missing{ color: var(--accent-red); border-color: rgba(255,59,48,0.35); }
+  .status-chip.missing .dot{ background: var(--accent-red); }
+
+  .field{
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+  .field label{
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+  .key-row{ display: flex; gap: 8px; }
+  .key-row input{
+    flex: 1;
+    background: var(--card);
+    border: 1px solid var(--panel-line);
+    border-radius: 4px;
+    color: var(--text-main);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    padding: 11px 12px;
+    outline: none;
+  }
+  .key-row input:focus{ border-color: var(--accent-amber); }
+  .key-row input::placeholder{ color: #55555c; }
+  .key-row .eye-btn{
+    background: var(--card);
+    border: 1px solid var(--panel-line);
+    color: var(--text-dim);
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 0 14px;
+    font-size: 13px;
+  }
+  .key-row .eye-btn:hover{ color: var(--text-main); }
+
+  .field select{
+    background: var(--card);
+    border: 1px solid var(--panel-line);
+    border-radius: 4px;
+    color: var(--text-main);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    padding: 11px 12px;
+    outline: none;
+  }
+  .field select:focus{ border-color: var(--accent-amber); }
+
+  .actions{ display: flex; gap: 10px; flex-wrap: wrap; }
+  .actions button{
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 11px 18px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  #save-btn{
+    background: var(--accent-amber);
+    border: none;
+    color: #1a1200;
+    font-weight: 600;
+  }
+  #save-btn:hover{ filter: brightness(1.1); }
+  #test-btn{
+    background: transparent;
+    border: 1px solid var(--panel-line);
+    color: var(--text-dim);
+  }
+  #test-btn:hover{ color: var(--text-main); border-color: var(--accent-amber); }
+  #test-btn:disabled{ opacity: 0.5; cursor: not-allowed; }
+
+  #msg{
+    margin-top: 14px;
+    font-size: 12px;
+    line-height: 1.5;
+    min-height: 18px;
+  }
+  #msg.ok{ color: var(--accent-green); }
+  #msg.err{ color: var(--accent-red); }
+  #msg.loading{ color: var(--text-dim); }
+
+  .help{
+    background: var(--card);
+    border: 1px solid var(--panel-line);
+    border-radius: 8px;
+    padding: 16px 18px;
+    font-size: 12.5px;
+    line-height: 1.7;
+    color: var(--text-dim);
+  }
+  .help strong{ color: var(--accent-amber); font-weight: 700; }
+  .help p{ margin: 8px 0 10px 0; color: var(--text-dim); }
+  .help p strong{ color: var(--text-main); }
+  .help ol{ margin: 0; padding-left: 18px; }
+  .help li{ margin-bottom: 8px; }
+  .help a{
+    color: var(--accent-amber);
+    text-decoration: none;
+    font-weight: 600;
+    word-break: break-all;
+  }
+  .help a:hover{ text-decoration: underline; }
+  .help em{ color: var(--text-main); font-style: normal; }
+
+  @media (max-width: 480px){
+    header{ padding: 12px 14px; }
+    header h1{ font-size: 14px; }
+    #content{ padding: 14px; }
+    .card{ padding: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <header><h1>Take Um Studio · Configuração da IA</h1></header>
+
+  <div id="content">
+    <div class="card">
+      <h2><span class="star">✦</span> Google Gemini</h2>
+      <p class="sub">Sua chave fica salva apenas neste navegador. Ela é usada só para chamar a IA — nunca é enviada para outro lugar.</p>
+
+      <div id="status-chip" class="status-chip missing"><span class="dot"></span><span id="status-text">Não configurada</span></div>
+
+      <div class="field">
+        <label>Chave da API</label>
+        <div class="key-row">
+          <input type="password" id="api-key" placeholder="AIza..." autocomplete="off" spellcheck="false">
+          <button class="eye-btn" id="eye-btn" title="Mostrar / ocultar">👁</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Modelo</label>
+        <select id="model-select">
+          <option value="gemini-3.6-flash">gemini-3.6-flash (recomendado)</option>
+          <option value="gemini-3.5-flash-lite">gemini-3.5-flash-lite (mais leve e rápido)</option>
+          <option value="gemini-3-flash-preview">gemini-3-flash-preview (novo)</option>
+          <option value="gemini-2.5-flash-lite">gemini-2.5-flash-lite (alternativo)</option>
+        </select>
+      </div>
+
+      <div class="actions">
+        <button id="save-btn">Salvar chave</button>
+        <button id="test-btn">Testar conexão</button>
+      </div>
+      <div id="msg"></div>
+    </div>
+
+    <div class="help">
+      <strong>Como conseguir sua chave? É grátis!</strong>
+      <ol>
+        <li>Acesse <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a></li>
+        <li>Entre com sua conta Google e toque em <em>Criar chave de API</em>.</li>
+        <li>Copie o texto que começa com <em>AIza...</em> e cole aqui em cima.</li>
+        <li>Toque em <em>Salvar chave</em> e depois em <em>Testar conexão</em> para confirmar que está tudo certo.</li>
+      </ol>
+      <p>A camada gratuita cobre os modelos <strong>gemini-3.6-flash</strong> e <strong>gemini-3.5-flash-lite</strong>. Se um modelo acusar cota esgotada (erro 429), troque no seletor acima — cada modelo tem sua própria cota diária.</p>
+    </div>
+  </div>
+</div>
+
+<script src="db.js"></script>
+<script src="ia.js"></script>
+<script>
+(function(){
+  const keyInput = document.getElementById('api-key');
+  const modelSelect = document.getElementById('model-select');
+  const eyeBtn = document.getElementById('eye-btn');
+  const saveBtn = document.getElementById('save-btn');
+  const testBtn = document.getElementById('test-btn');
+  const msg = document.getElementById('msg');
+  const statusChip = document.getElementById('status-chip');
+  const statusText = document.getElementById('status-text');
+
+  function setStatus(configured){
+    statusChip.classList.toggle('configured', configured);
+    statusChip.classList.toggle('missing', !configured);
+    statusText.textContent = configured ? 'Configurada' : 'Não configurada';
+  }
+
+  async function refreshStatus(){
+    const has = await TakeUmAI.hasKey();
+    setStatus(has);
+  }
+
+  function setMsg(text, type){
+    msg.textContent = text;
+    msg.className = type || '';
+  }
+
+  saveBtn.addEventListener('click', async () => {
+    const apiKey = keyInput.value.trim();
+    if(!apiKey){ setMsg('Cole sua chave primeiro.', 'err'); return; }
+    setMsg('Salvando...', 'loading');
+    try{
+      await TakeUmAI.setConfig({ apiKey, model: modelSelect.value });
+      setStatus(true);
+      setMsg('Chave salva! Toque em "Testar conexão" para confirmar.', 'ok');
+    }catch(e){
+      setMsg('Não foi possível salvar: ' + e.message, 'err');
+    }
+  });
+
+  testBtn.addEventListener('click', async () => {
+    const apiKey = keyInput.value.trim();
+    if(apiKey){
+      await TakeUmAI.setConfig({ apiKey, model: modelSelect.value });
+    }
+    testBtn.disabled = true;
+    setMsg('Testando conexão...', 'loading');
+    try{
+      const res = await TakeUmAI.testConnection();
+      setStatus(true);
+      setMsg('Conexão OK! Resposta da IA: "' + res + '"', 'ok');
+    }catch(e){
+      setMsg('Falha no teste: ' + e.message, 'err');
+    }finally{
+      testBtn.disabled = false;
+    }
+  });
+
+  eyeBtn.addEventListener('click', () => {
+    const show = keyInput.type === 'password';
+    keyInput.type = show ? 'text' : 'password';
+    eyeBtn.textContent = show ? '🙈' : '👁';
+  });
+
+  keyInput.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter') saveBtn.click();
+  });
+
+  (async function init(){
+    await OneTakeMigrate();
+    const config = await TakeUmAI.getConfig();
+    if(config.apiKey) keyInput.value = config.apiKey;
+    if(config.model) modelSelect.value = config.model;
+    await refreshStatus();
+  })();
+})();
+</script>
+
+</body>
+</html>

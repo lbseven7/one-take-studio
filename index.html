@@ -350,6 +350,94 @@
       margin: 0;
     }
 
+    #journey-banner {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      max-width: 900px;
+      margin-bottom: 22px;
+      padding: 16px 18px;
+      background: rgba(57, 255, 136, 0.06);
+      border: 1px solid rgba(57, 255, 136, 0.3);
+      border-radius: 10px;
+    }
+
+    #journey-banner .jb-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      background: rgba(57, 255, 136, 0.15);
+      color: var(--accent-green);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+      flex-shrink: 0;
+    }
+
+    #journey-banner .jb-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    #journey-banner .jb-body strong {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--text-main);
+      display: block;
+    }
+
+    #journey-banner .jb-body p {
+      margin: 3px 0 0 0;
+      color: var(--text-dim);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    #journey-banner button {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 13px;
+      padding: 11px 18px;
+      border-radius: 6px;
+      cursor: pointer;
+      border: none;
+      background: var(--accent-green);
+      color: #06281a;
+      flex-shrink: 0;
+    }
+
+    #journey-banner button:hover {
+      filter: brightness(1.08);
+    }
+
+    .tool-card.featured {
+      border-color: rgba(57, 255, 136, 0.4);
+    }
+
+    .tool-card .badge {
+      display: inline-block;
+      margin-bottom: 10px;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #06281a;
+      background: var(--accent-green);
+      border-radius: 4px;
+      padding: 3px 8px;
+      font-weight: 700;
+    }
+
+    @media (max-width: 560px) {
+      #journey-banner {
+        flex-wrap: wrap;
+      }
+      #journey-banner button {
+        width: 100%;
+      }
+    }
+
     #tool-view {
       display: none;
     }
@@ -449,6 +537,14 @@
         <h1>Take Um Studio</h1>
         <div class="sub"><STRong>Ferramentas pensadas pra quem grava e organiza vídeo sozinho: leia seu roteiro sem decorar,
           planeje suas pautas e marque seus takes como numa produção de verdade. SIMPLES E DIRETO!</STRong></div>
+        <div id="journey-banner">
+          <div class="jb-icon">★</div>
+          <div class="jb-body">
+            <strong>Novo aqui? Comece pelo Primeiro Vídeo.</strong>
+            <p>Uma trilha guiada que te leva da ideia até o primeiro vídeo publicado, abrindo cada ferramenta na hora certa.</p>
+          </div>
+          <button id="journey-btn">Começar</button>
+        </div>
         <div id="tool-grid"></div>
         <div id="backup-section">
           <h2>Seus dados</h2>
@@ -484,6 +580,15 @@
   <script>
     (function () {
       const TOOLS = [
+        {
+          id: 'jornada',
+          file: 'jornada.html',
+          name: 'Primeiro Vídeo',
+          desc: 'Sua trilha guiada do zero até o primeiro vídeo publicado, passo a passo com as ferramentas do estúdio.',
+          color: 'var(--accent-green)',
+          icon: '★',
+          featured: true
+        },
         {
           id: 'teleprompter',
           file: 'teleprompter.html',
@@ -596,9 +701,10 @@
       // Build home cards
       TOOLS.forEach(tool => {
         const card = document.createElement('div');
-        card.className = 'tool-card';
+        card.className = 'tool-card' + (tool.featured ? ' featured' : '');
+        const badge = tool.featured ? '<div class="badge">Comece aqui</div>' : '';
         card.innerHTML = `
-      <div class="icon" style="background:${tool.color}22; color:${tool.color};">${tool.icon}</div>
+      ${badge}<div class="icon" style="background:${tool.color}22; color:${tool.color};">${tool.icon}</div>
       <h3>${tool.name}</h3>
       <p>${tool.desc}</p>
     `;
@@ -637,7 +743,19 @@
         closeSidebarOnMobile();
       }
 
+      function openToolById(id) {
+        const tool = TOOLS.find(t => t.id === id);
+        if (tool) openTool(tool);
+      }
+
+      window.TakeUmShell = {
+        openToolById,
+        openHome
+      };
+
       backBtn.addEventListener('click', openHome);
+
+      document.getElementById('journey-btn').addEventListener('click', () => openToolById('jornada'));
 
       // ---------- BACKUP ----------
       const backupExportBtn = document.getElementById('backup-export-btn');

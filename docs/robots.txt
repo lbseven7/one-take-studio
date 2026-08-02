@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://lbseven7.github.io/one-take-studio/sitemap.xml

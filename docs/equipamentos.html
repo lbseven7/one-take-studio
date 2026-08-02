@@ -291,7 +291,7 @@
       desc: 'Liberdade total pra gravar de qualquer ângulo, sem fio na frente da câmera. Ótimo pra quem se movimenta.',
       price: 'R$ 130–280',
       bg: ['#5a7bff', '#8a5aff'],
-      link: 'https://www.amazon.com.br/s?k=microfone+lapela+sem+fio'
+      link: 'https://www.amazon.com.br/Microfone-Bluetooth-Microfones-Cancelamento-compat%C3%ADvel/dp/B0GYPY71HR?dib=eyJ2IjoiMSJ9.tVhO4UzFUg6gh8UBitPzeHXc1OH7AxwgQnHIfp9GGDShoTom-w54OuF2oXdSwgYPfAT6snFc4qh5jZrtNIHzQk_OLK57DTWf_lfzYFbC1Z9-aGIR4DJdoUVAxdLR0ug0-HUu1tjhi9VxrTiqjAwpuj-tX1XxfnfNPlePI-t5A61JsCHBdYiLhp8eVVFVYsUGYlEAv1RAN9T48wSNnSUCvVjMKQ6onipqASmpYJfDSkiMf9fy8HCDQp-VDcFGy4-CHhKERuJcQpQG8kO0z-XLWj_GvDL9HAXnnNsUfO-tX8Q.fe2D6S52rADClJo_5K7T-9Qg_cbNdmgvIkjk-dBCpA0&dib_tag=se&keywords=microfone+lapela+sem+fio&qid=1785693737&sr=8-5&ufe=app_do%3Aamzn1.fos.6d798eae-cadf-45de-946a-f477d47705b9&linkCode=sl2&tag=takeumstudio-20&linkId=bd387c8c7b5887a02a76c9297d9a1e97&ref_=as_li_ss_tl&ascsubtag=srctok-78bd7093438a38b3&btn_type=ss&btn_ref=srctok-78bd7093438a38b3'
     },
     {
       icon: '💡',
@@ -345,8 +345,9 @@
   ITEMS.forEach((item, i) => {
     const el = document.createElement('div');
     el.className = 'item';
+    const hasTag = /[?&]tag=/.test(item.link);
     const sep = item.link.includes('?') ? '&' : '?';
-    const link = item.link + sep + 'tag=' + TAG;
+    const link = hasTag ? item.link : item.link + sep + 'tag=' + TAG;
     el.innerHTML = `
       <div class="shot" style="background: linear-gradient(160deg, ${item.bg[0]}, ${item.bg[1]});">
         <img class="prod-img" src="image/prod-${i + 1}.jpg" alt="${item.name}" loading="lazy"

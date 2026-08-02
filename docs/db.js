@@ -1,6 +1,6 @@
 (function(){
   const DB_NAME = 'OneTakeDB';
-  const DB_VERSION = 4;
+  const DB_VERSION = 5;
 
   const STORES = [
     'claquete_takes',
@@ -11,7 +11,8 @@
     'roteirizador_scripts',
     'banco_ideias',
     'ia_state',
-    'jornada_state'
+    'jornada_state',
+    'tracker_videos'
   ];
 
   let instance = null;

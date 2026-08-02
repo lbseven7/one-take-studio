@@ -107,18 +107,31 @@
     nav {
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 2px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-bottom: 8px;
+    }
+
+    .nav-group {
+      font-size: 9.5px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      font-weight: 600;
+      padding: 13px 12px 4px 12px;
+      margin-top: 4px;
     }
 
     .nav-item {
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 11px 12px;
+      gap: 10px;
+      padding: 8px 12px;
       border-radius: 6px;
       cursor: pointer;
       color: var(--text-dim);
-      font-size: 13px;
+      font-size: 12.5px;
       font-weight: 500;
       border: 1px solid transparent;
     }
@@ -818,6 +831,7 @@
       const TOOLS = [
         {
           id: 'jornada',
+          group: 'novo',
           file: 'jornada.html',
           name: 'Primeiro Vídeo',
           desc: 'Sua trilha guiada do zero até o primeiro vídeo publicado, passo a passo com as ferramentas do estúdio.',
@@ -827,6 +841,7 @@
         },
         {
           id: 'teleprompter',
+          group: 'gravar',
           file: 'teleprompter.html',
           name: 'Teleprompter',
           desc: 'Leia seu roteiro rolando na tela enquanto grava, com câmera embutida e gravação direto do navegador.',
@@ -835,6 +850,7 @@
         },
         {
           id: 'capa',
+          group: 'publicar',
           file: 'capa.html',
           name: 'Gerador de Capa',
           desc: 'Crie a capa do seu vídeo no navegador: título, emoji, cor de fundo e baixe o PNG pronto.',
@@ -843,6 +859,7 @@
         },
         {
           id: 'pauta',
+          group: 'planejar',
           file: 'painel-pauta.html',
           name: 'Painel de Pauta',
           desc: 'Organize suas ideias de vídeo num quadro por etapas: ideia, roteiro, gravado, editado e postado.',
@@ -851,6 +868,7 @@
         },
         {
           id: 'claquete',
+          group: 'gravar',
           file: 'claquete-digital.html',
           name: 'Claquete Digital',
           desc: 'Contagem regressiva, bate-claquete com som e cronômetro de take, com histórico de gravações.',
@@ -859,6 +877,7 @@
         },
         {
           id: 'checklist',
+          group: 'gravar',
           file: 'checklist-gravacao.html',
           name: 'Checklist',
           desc: 'Checklist pré-gravação: nunca mais esqueça bateria, microfone, luz, isolamento e muito mais.',
@@ -867,6 +886,7 @@
         },
         {
           id: 'roteirizador',
+          group: 'planejar',
           file: 'roteirizador.html',
           name: 'Roteirizador',
           desc: 'Estruture seu roteiro em etapas: gancho, problema, solução com marcadores de tempo e CTA.',
@@ -875,6 +895,7 @@
         },
         {
           id: 'ideias',
+          group: 'planejar',
           file: 'banco-ideias.html',
           name: 'Banco de Ideias',
           desc: 'Capture ideias de vídeo na hora, antes que sumam, e envie para o Painel de Pauta quando quiser.',
@@ -883,6 +904,7 @@
         },
         {
           id: 'equipamentos',
+          group: 'apoiar',
           file: 'equipamentos.html',
           name: 'Equipamentos',
           desc: 'Guia de equipamentos com ótimo custo-benefício pra começar: microfone, luz, tripé e mais.',
@@ -891,6 +913,7 @@
         },
         {
           id: 'guia',
+          group: 'apoiar',
           file: 'guia.html',
           name: 'Guia',
           desc: 'Aprenda na prática: como gravar o primeiro vídeo, escolher microfone e iluminar com o celular.',
@@ -899,6 +922,7 @@
         },
         {
           id: 'pack-publicacao',
+          group: 'publicar',
           file: 'pack-publicacao.html',
           name: 'Pack de Publicação',
           desc: 'Título, descrição, tags e melhor horário prontos pra colar no YouTube — com IA ou sem.',
@@ -907,6 +931,7 @@
         },
         {
           id: 'tracker',
+          group: 'publicar',
           file: 'tracker-resultados.html',
           name: 'Tracker de Resultados',
           desc: 'Anote views, likes e comentários de cada vídeo e descubra o que a sua audiência gosta.',
@@ -915,6 +940,7 @@
         },
         {
           id: 'ia-config',
+          group: 'ajustes',
           file: 'ia-config.html',
           name: 'Configuração da IA',
           desc: 'Cole sua chave do Google Gemini para roteirizar, reescrever e gerar descrições com IA.',
@@ -942,7 +968,16 @@
       const sidebar = document.getElementById('sidebar');
       const menuToggle = document.getElementById('menu-toggle');
 
-      // Build sidebar nav
+      // Build sidebar nav (grouped)
+      const GROUPS = [
+        { id: 'novo', label: 'Novo aqui' },
+        { id: 'planejar', label: 'Planejar' },
+        { id: 'gravar', label: 'Gravar' },
+        { id: 'publicar', label: 'Publicar' },
+        { id: 'apoiar', label: 'Aprender & apoiar' },
+        { id: 'ajustes', label: 'Ajustes' }
+      ];
+
       const homeNavItem = document.createElement('div');
       homeNavItem.className = 'nav-item active';
       homeNavItem.dataset.id = 'home';
@@ -950,13 +985,21 @@
       homeNavItem.addEventListener('click', () => openHome());
       nav.appendChild(homeNavItem);
 
-      TOOLS.forEach(tool => {
-        const item = document.createElement('div');
-        item.className = 'nav-item';
-        item.dataset.id = tool.id;
-        item.innerHTML = `<span class="dot" style="background:${tool.color}"></span>${tool.name}`;
-        item.addEventListener('click', () => openTool(tool));
-        nav.appendChild(item);
+      GROUPS.forEach(g => {
+        const items = TOOLS.filter(t => t.group === g.id);
+        if (!items.length) return;
+        const label = document.createElement('div');
+        label.className = 'nav-group';
+        label.textContent = g.label;
+        nav.appendChild(label);
+        items.forEach(tool => {
+          const item = document.createElement('div');
+          item.className = 'nav-item';
+          item.dataset.id = tool.id;
+          item.innerHTML = `<span class="dot" style="background:${tool.color}"></span>${tool.name}`;
+          item.addEventListener('click', () => openTool(tool));
+          nav.appendChild(item);
+        });
       });
 
       const aboutNavItem = document.createElement('div');

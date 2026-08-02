@@ -14,8 +14,9 @@
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
   <link rel="apple-touch-icon" href="icons/icon-180.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=IBM+Plex+Mono:wght@400;500;600&display=optional"
     rel="stylesheet">
   <style>
     :root {
@@ -474,6 +475,11 @@
       border-radius: 10px;
     }
 
+    #install-row {
+      min-height: 39px;
+      margin: 0 0 22px 0;
+    }
+
     #install-btn {
       font-family: var(--font-display);
       font-weight: 700;
@@ -484,7 +490,7 @@
       border: 1px solid rgba(90, 169, 255, 0.4);
       background: rgba(90, 169, 255, 0.1);
       color: var(--accent-blue);
-      margin: 0 0 22px 0;
+      margin: 0;
     }
 
     #install-btn:hover {
@@ -854,7 +860,7 @@
         <h1>Take Um Studio</h1>
         <div class="sub"><STRong>Ferramentas pensadas pra quem grava e organiza vídeo sozinho: leia seu roteiro sem decorar,
           planeje suas pautas e marque seus takes como numa produção de verdade. SIMPLES E DIRETO!</STRong></div>
-        <button id="install-btn" hidden>📲 Instalar app</button>
+        <div id="install-row"><button id="install-btn" hidden>📲 Instalar app</button></div>
         <div id="journey-banner">
           <div class="jb-icon">★</div>
           <div class="jb-body">

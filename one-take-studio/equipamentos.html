@@ -286,16 +286,21 @@
   // ===== EDITE AQUI: sua chave Pix =====
   const PIX_KEY = '45cc64c0-fb23-4188-9777-8d6812462df8';
 
+  // ===== EDITE AQUI: seu ID de Associado da Amazon =====
+  const TAG = 'takeumstudio-20';
+
   const grid = document.getElementById('grid');
   ITEMS.forEach(item => {
     const el = document.createElement('div');
     el.className = 'item';
+    const sep = item.link.includes('?') ? '&' : '?';
+    const link = item.link + sep + 'tag=' + TAG;
     el.innerHTML = `
       <div class="i-icon">${item.icon}</div>
       <h3>${item.name}</h3>
       <p>${item.desc}</p>
       <div class="price">${item.price}</div>
-      <a href="${item.link}" target="_blank" rel="noopener nofollow sponsored">Ver na Amazon</a>
+      <a href="${link}" target="_blank" rel="noopener nofollow sponsored">Ver na Amazon</a>
     `;
     grid.appendChild(el);
   });

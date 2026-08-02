@@ -93,21 +93,57 @@
   .item{
     background: var(--panel);
     border: 1px solid var(--panel-line);
-    border-radius: 10px;
-    padding: 16px;
+    border-radius: 12px;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    box-shadow: 0 6px 18px rgba(0,0,0,.25);
+    transition: transform .15s ease, border-color .15s ease;
   }
-  .item .i-icon{
-    width: 34px;
-    height: 34px;
-    border-radius: 8px;
-    background: rgba(255,176,32,.1);
+  .item:hover{
+    transform: translateY(-2px);
+    border-color: rgba(255,176,32,.4);
+  }
+  .item .shot{
+    position: relative;
+    height: 120px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 17px;
+  }
+  .item .shot::after{
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(10,10,12,.15), rgba(10,10,12,.5));
+  }
+  .item .big-icon{
+    position: relative;
+    z-index: 1;
+    font-size: 46px;
+    filter: drop-shadow(0 6px 14px rgba(0,0,0,.4));
+  }
+  .item .price-tag{
+    position: absolute;
+    z-index: 2;
+    right: 10px;
+    bottom: 10px;
+    font-size: 11px;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    background: rgba(10,10,12,.7);
+    border: 1px solid rgba(255,255,255,.12);
+    color: var(--accent-amber);
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-weight: 600;
+  }
+  .item .body{
+    padding: 14px 16px 16px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
   }
   .item h3{
     font-family: var(--font-display);
@@ -120,12 +156,6 @@
     font-size: 12.5px;
     line-height: 1.6;
     margin: 0;
-  }
-  .item .price{
-    font-size: 11px;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    color: var(--accent-amber);
   }
   .item a{
     margin-top: auto;
@@ -244,6 +274,7 @@
       name: 'Microfone de lapela com fio (P2)',
       desc: 'O item que mais melhora seu vídeo. Som claro por pouco dinheiro — essencial pra quem grava com o celular.',
       price: 'R$ 50–90',
+      bg: ['#ff8a1f', '#ffb020'],
       link: 'https://www.amazon.com.br/dp/B0htHF7yi/'
     },
     {
@@ -251,6 +282,7 @@
       name: 'Microfone de lapela sem fio',
       desc: 'Liberdade total pra gravar de qualquer ângulo, sem fio na frente da câmera. Ótimo pra quem se movimenta.',
       price: 'R$ 130–280',
+      bg: ['#5a7bff', '#8a5aff'],
       link: 'https://www.amazon.com.br/dp/B09ytpOO2/'
     },
     {
@@ -258,6 +290,7 @@
       name: 'Luz de anel (ring light)',
       desc: 'Iluminação uniforme que valoriza o rosto e evita aquele sombreado feio de cima pra baixo.',
       price: 'R$ 100–200',
+      bg: ['#2fd97a', '#39ff88'],
       link: 'https://www.amazon.com.br/dp/B09rSJ9n6/'
     },
     {
@@ -265,6 +298,7 @@
       name: 'Tripé para celular com controle',
       desc: 'Mão livre na hora de gravar. Com controle remoto você dispara a gravação sem tocar no aparelho.',
       price: 'R$ 80–150',
+      bg: ['#ffb020', '#ffd84d'],
       link: 'https://www.amazon.com.br/dp/B00cKolYU/'
     },
     {
@@ -272,6 +306,7 @@
       name: 'Suporte de mesa articulado',
       desc: 'Deixa o celular na altura dos olhos com um braço articulado preso à mesa — ideal pra falar com a câmera.',
       price: 'R$ 40–90',
+      bg: ['#b06aff', '#ff6bbf'],
       link: 'https://www.amazon.com.br/dp/B0iOEOTHp/'
     },
     {
@@ -279,6 +314,7 @@
       name: 'Power bank',
       desc: 'Nada de perder o take por bateria. Com gravações longas e takes repetidos, é o herói da sessão.',
       price: 'R$ 80–160',
+      bg: ['#ff3b30', '#ff7a45'],
       link: 'https://www.amazon.com.br/dp/B0bvEWdpf/'
     },
     {
@@ -286,6 +322,7 @@
       name: 'Cartão de memória',
       desc: 'Armazenamento extra pra quem grava bastante vídeo e não quer depender de nuvem nem apagar takes.',
       price: 'R$ 50–150',
+      bg: ['#5aa9ff', '#39ff88'],
       link: 'https://www.amazon.com.br/dp/B08lkeO66/'
     }
   ];
@@ -303,11 +340,15 @@
     const sep = item.link.includes('?') ? '&' : '?';
     const link = item.link + sep + 'tag=' + TAG;
     el.innerHTML = `
-      <div class="i-icon">${item.icon}</div>
-      <h3>${item.name}</h3>
-      <p>${item.desc}</p>
-      <div class="price">${item.price}</div>
-      <a href="${link}" target="_blank" rel="noopener nofollow sponsored">Ver na Amazon</a>
+      <div class="shot" style="background: linear-gradient(160deg, ${item.bg[0]}, ${item.bg[1]});">
+        <span class="big-icon">${item.icon}</span>
+        <span class="price-tag">${item.price}</span>
+      </div>
+      <div class="body">
+        <h3>${item.name}</h3>
+        <p>${item.desc}</p>
+        <a href="${link}" target="_blank" rel="noopener nofollow sponsored">Ver na Amazon</a>
+      </div>
     `;
     grid.appendChild(el);
   });

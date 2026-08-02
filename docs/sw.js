@@ -1,4 +1,4 @@
-const CACHE = 'takeum-v4';
+const CACHE = 'takeum-v5';
 
 const ASSETS = [
   './',
@@ -16,6 +16,7 @@ const ASSETS = [
   './checklist-gravacao.html',
   './roteirizador.html',
   './banco-ideias.html',
+  './equipamentos.html',
   './ia-config.html',
   './sobre.html'
 ];

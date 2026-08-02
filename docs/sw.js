@@ -1,4 +1,4 @@
-const CACHE = 'takeum-v3';
+const CACHE = 'takeum-v4';
 
 const ASSETS = [
   './',
@@ -6,7 +6,6 @@ const ASSETS = [
   './db.js',
   './ia.js',
   './manifest.json',
-  './logo.svg',
   './icons/icon-192.png',
   './icons/icon-512.png',
   './jornada.html',

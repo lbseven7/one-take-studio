@@ -13,6 +13,8 @@
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
   <link rel="apple-touch-icon" href="icons/icon-180.png">
+  <link rel="preload" as="font" type="font/woff2" href="fonts/archivo-500.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="fonts/plexmono-400.woff2" crossorigin>
   <link rel="stylesheet" href="fonts.css">
   <style>
     :root {
@@ -105,6 +107,8 @@
       display: flex;
       flex-direction: column;
       gap: 2px;
+      flex: 1;
+      min-height: 0;
       overflow-y: auto;
       overflow-x: hidden;
       padding-bottom: 8px;
@@ -151,14 +155,69 @@
       flex-shrink: 0;
     }
 
-    #sidebar-footer {
-      margin-top: auto;
-      padding: 12px 10px 4px 10px;
-      font-size: 10px;
+    #sidebar-data {
+      flex-shrink: 0;
+      margin-top: 10px;
+      padding: 12px 10px;
+      background: var(--card);
+      border: 1px solid var(--panel-line);
+      border-radius: 8px;
+    }
+
+    #sidebar-data .sd-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 12px;
+      color: var(--accent-amber);
+      letter-spacing: 0.02em;
+      margin: 0 0 5px 0;
+    }
+
+    #sidebar-data p {
+      margin: 0 0 10px 0;
+      font-size: 10.5px;
+      line-height: 1.55;
       color: var(--text-dim);
-      letter-spacing: 0.04em;
-      line-height: 1.6;
-      border-top: 1px solid var(--panel-line);
+    }
+
+    #sidebar-data .sd-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    #sidebar-data .sd-actions button {
+      flex: 1;
+      min-width: 0;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 11px;
+      padding: 8px 6px;
+      border-radius: 6px;
+      cursor: pointer;
+      border: 1px solid var(--panel-line);
+      background: var(--panel);
+      color: var(--text-main);
+      white-space: nowrap;
+      transition: border-color .15s ease, color .15s ease;
+    }
+
+    #sidebar-data .sd-actions button:hover {
+      border-color: var(--accent-amber);
+      color: var(--accent-amber);
+    }
+
+    #sidebar-data #sd-msg {
+      margin-top: 8px;
+      font-size: 10.5px;
+      line-height: 1.5;
+    }
+
+    #sidebar-data #sd-msg.ok {
+      color: var(--accent-green);
+    }
+
+    #sidebar-data #sd-msg.err {
+      color: var(--accent-red);
     }
 
     #menu-toggle {
@@ -231,6 +290,8 @@
       margin-top: 44px;
       padding-top: 28px;
       border-top: 1px solid var(--panel-line);
+      content-visibility: auto;
+      contain-intrinsic-size: auto 340px;
     }
 
     #backup-section h2 {
@@ -321,6 +382,8 @@
     #testimonials {
       max-width: 900px;
       margin-top: 44px;
+      content-visibility: auto;
+      contain-intrinsic-size: auto 500px;
     }
 
     #testimonials h2 {
@@ -553,6 +616,8 @@
       background: rgba(255, 176, 32, 0.05);
       border: 1px solid rgba(255, 176, 32, 0.25);
       border-radius: 10px;
+      content-visibility: auto;
+      contain-intrinsic-size: auto 90px;
     }
 
     #support-banner .sb-icon {
@@ -659,6 +724,8 @@
       background: var(--card);
       border: 1px dashed rgba(90, 169, 255, 0.35);
       border-radius: 10px;
+      content-visibility: auto;
+      contain-intrinsic-size: auto 220px;
     }
 
     #newsletter .nl-title {
@@ -847,8 +914,42 @@
         <img class="mark" src="icons/icon-192.png" alt="Take Um Studio">
         <div class="name">Take Um<small>studio</small></div>
       </div>
-      <nav id="nav"></nav>
-      <div id="sidebar-footer">Take Um Studio · Seus dados ficam no seu navegador. Baixe um backup na home para levá-los com você.</div>
+      <nav id="nav">
+        <div class="nav-item active" data-id="home"><span class="dot" style="background:var(--text-dim)"></span>Início</div>
+        <div class="nav-group">Novo aqui</div>
+        <div class="nav-item" data-id="jornada" data-file="jornada.html" data-name="Primeiro Vídeo"><span class="dot" style="background:var(--accent-green)"></span>Primeiro Vídeo</div>
+        <div class="nav-group">Planejar</div>
+        <div class="nav-item" data-id="pauta" data-file="painel-pauta.html" data-name="Painel de Pauta"><span class="dot" style="background:var(--accent-blue)"></span>Painel de Pauta</div>
+        <div class="nav-item" data-id="calendario" data-file="calendario.html" data-name="Calendário de Conteúdo"><span class="dot" style="background:var(--accent-amber)"></span>Calendário de Conteúdo</div>
+        <div class="nav-item" data-id="roteirizador" data-file="roteirizador.html" data-name="Roteirizador"><span class="dot" style="background:var(--accent-amber)"></span>Roteirizador</div>
+        <div class="nav-item" data-id="ideias" data-file="banco-ideias.html" data-name="Banco de Ideias"><span class="dot" style="background:var(--accent-purple)"></span>Banco de Ideias</div>
+        <div class="nav-group">Gravar</div>
+        <div class="nav-item" data-id="teleprompter" data-file="teleprompter.html" data-name="Teleprompter"><span class="dot" style="background:var(--accent-amber)"></span>Teleprompter</div>
+        <div class="nav-item" data-id="claquete" data-file="claquete-digital.html" data-name="Claquete Digital"><span class="dot" style="background:var(--accent-purple)"></span>Claquete Digital</div>
+        <div class="nav-item" data-id="checklist" data-file="checklist-gravacao.html" data-name="Checklist"><span class="dot" style="background:var(--accent-green)"></span>Checklist</div>
+        <div class="nav-group">Publicar</div>
+        <div class="nav-item" data-id="capa" data-file="capa.html" data-name="Gerador de Capa"><span class="dot" style="background:var(--accent-red)"></span>Gerador de Capa</div>
+        <div class="nav-item" data-id="capa-vertical" data-file="capa-vertical.html" data-name="Capa Vertical"><span class="dot" style="background:var(--accent-purple)"></span>Capa Vertical</div>
+        <div class="nav-item" data-id="checklist-divulgacao" data-file="checklist-divulgacao.html" data-name="Checklist de Divulgação"><span class="dot" style="background:var(--accent-green)"></span>Checklist de Divulgação</div>
+        <div class="nav-item" data-id="pack-publicacao" data-file="pack-publicacao.html" data-name="Pack de Publicação"><span class="dot" style="background:var(--accent-green)"></span>Pack de Publicação</div>
+        <div class="nav-item" data-id="tracker" data-file="tracker-resultados.html" data-name="Tracker de Resultados"><span class="dot" style="background:var(--accent-blue)"></span>Tracker de Resultados</div>
+        <div class="nav-group">Aprender &amp; apoiar</div>
+        <div class="nav-item" data-id="equipamentos" data-file="equipamentos.html" data-name="Equipamentos"><span class="dot" style="background:var(--accent-amber)"></span>Equipamentos</div>
+        <div class="nav-item" data-id="guia" data-file="guia.html" data-name="Guia"><span class="dot" style="background:var(--accent-amber)"></span>Guia</div>
+        <div class="nav-group">Ajustes</div>
+        <div class="nav-item" data-id="ia-config" data-file="ia-config.html" data-name="Configuração da IA"><span class="dot" style="background:var(--accent-amber)"></span>Configuração da IA</div>
+        <div class="nav-item" data-id="sobre" data-file="sobre.html" data-name="Sobre"><span class="dot" style="background:var(--text-dim)"></span>Sobre</div>
+      </nav>
+      <div id="sidebar-data">
+        <div class="sd-title">Seus dados</div>
+        <p>Seus dados ficam salvos só neste navegador. Para nunca perdê-los e poder levar para outro celular ou computador, faça um backup.</p>
+        <div class="sd-actions">
+          <button id="sd-backup-btn" type="button">⬇ Baixar backup</button>
+          <button id="sd-restore-btn" type="button">⬆ Restaurar</button>
+        </div>
+        <input type="file" id="sd-backup-file" accept=".json,application/json" hidden>
+        <div id="sd-msg"></div>
+      </div>
     </aside>
 
     <main id="main">
@@ -865,7 +966,93 @@
           </div>
           <button id="journey-btn">Começar</button>
         </div>
-        <div id="tool-grid"></div>
+        <div id="tool-grid">
+          <div class="tool-card featured" data-id="jornada" data-file="jornada.html" data-name="Primeiro Vídeo">
+            <div class="badge">Comece aqui</div><div class="icon" style="background:var(--accent-green)22; color:var(--accent-green);">★</div>
+            <h3>Primeiro Vídeo</h3>
+            <p>Sua trilha guiada do zero até o primeiro vídeo publicado, passo a passo com as ferramentas do estúdio.</p>
+          </div>
+          <div class="tool-card" data-id="teleprompter" data-file="teleprompter.html" data-name="Teleprompter">
+            <div class="icon" style="background:var(--accent-amber)22; color:var(--accent-amber);">▤</div>
+            <h3>Teleprompter</h3>
+            <p>Leia seu roteiro rolando na tela enquanto grava, com câmera embutida e gravação direto do navegador.</p>
+          </div>
+          <div class="tool-card" data-id="capa" data-file="capa.html" data-name="Gerador de Capa">
+            <div class="icon" style="background:var(--accent-red)22; color:var(--accent-red);">▣</div>
+            <h3>Gerador de Capa</h3>
+            <p>Crie a capa do seu vídeo no navegador: título, emoji, cor de fundo e baixe o PNG pronto.</p>
+          </div>
+          <div class="tool-card" data-id="capa-vertical" data-file="capa-vertical.html" data-name="Capa Vertical">
+            <div class="icon" style="background:var(--accent-purple)22; color:var(--accent-purple);">▯</div>
+            <h3>Capa Vertical</h3>
+            <p>Capa 9:16 para Shorts e Reels: título, emoji, cor de fundo e área segura — baixe o PNG pronto.</p>
+          </div>
+          <div class="tool-card" data-id="pauta" data-file="painel-pauta.html" data-name="Painel de Pauta">
+            <div class="icon" style="background:var(--accent-blue)22; color:var(--accent-blue);">◫</div>
+            <h3>Painel de Pauta</h3>
+            <p>Organize suas ideias de vídeo num quadro por etapas: ideia, roteiro, gravado, editado e postado.</p>
+          </div>
+          <div class="tool-card" data-id="calendario" data-file="calendario.html" data-name="Calendário de Conteúdo">
+            <div class="icon" style="background:var(--accent-amber)22; color:var(--accent-amber);">▦</div>
+            <h3>Calendário de Conteúdo</h3>
+            <p>Planeje o mês: coloque cada vídeo no dia em que vai planejar, gravar ou publicar e acompanhe as etapas.</p>
+          </div>
+          <div class="tool-card" data-id="claquete" data-file="claquete-digital.html" data-name="Claquete Digital">
+            <div class="icon" style="background:var(--accent-purple)22; color:var(--accent-purple);">◧</div>
+            <h3>Claquete Digital</h3>
+            <p>Contagem regressiva, bate-claquete com som e cronômetro de take, com histórico de gravações.</p>
+          </div>
+          <div class="tool-card" data-id="checklist" data-file="checklist-gravacao.html" data-name="Checklist">
+            <div class="icon" style="background:var(--accent-green)22; color:var(--accent-green);">✓</div>
+            <h3>Checklist</h3>
+            <p>Checklist pré-gravação: nunca mais esqueça bateria, microfone, luz, isolamento e muito mais.</p>
+          </div>
+          <div class="tool-card" data-id="checklist-divulgacao" data-file="checklist-divulgacao.html" data-name="Checklist de Divulgação">
+            <div class="icon" style="background:var(--accent-green)22; color:var(--accent-green);">☑</div>
+            <h3>Checklist de Divulgação</h3>
+            <p>O que fazer depois de publicar: divulgar, responder comentários, stories e acompanhar os resultados.</p>
+          </div>
+          <div class="tool-card" data-id="roteirizador" data-file="roteirizador.html" data-name="Roteirizador">
+            <div class="icon" style="background:var(--accent-amber)22; color:var(--accent-amber);">✍</div>
+            <h3>Roteirizador</h3>
+            <p>Estruture seu roteiro em etapas: gancho, problema, solução com marcadores de tempo e CTA.</p>
+          </div>
+          <div class="tool-card" data-id="ideias" data-file="banco-ideias.html" data-name="Banco de Ideias">
+            <div class="icon" style="background:var(--accent-purple)22; color:var(--accent-purple);">✎</div>
+            <h3>Banco de Ideias</h3>
+            <p>Capture ideias de vídeo na hora, antes que sumam, e envie para o Painel de Pauta quando quiser.</p>
+          </div>
+          <div class="tool-card" data-id="equipamentos" data-file="equipamentos.html" data-name="Equipamentos">
+            <div class="icon" style="background:var(--accent-amber)22; color:var(--accent-amber);">⚙</div>
+            <h3>Equipamentos</h3>
+            <p>Guia de equipamentos com ótimo custo-benefício pra começar: microfone, luz, tripé e mais.</p>
+          </div>
+          <div class="tool-card" data-id="guia" data-file="guia.html" data-name="Guia">
+            <div class="icon" style="background:var(--accent-amber)22; color:var(--accent-amber);">◈</div>
+            <h3>Guia</h3>
+            <p>Aprenda na prática: como gravar o primeiro vídeo, escolher microfone e iluminar com o celular.</p>
+          </div>
+          <div class="tool-card" data-id="pack-publicacao" data-file="pack-publicacao.html" data-name="Pack de Publicação">
+            <div class="icon" style="background:var(--accent-green)22; color:var(--accent-green);">✉</div>
+            <h3>Pack de Publicação</h3>
+            <p>Título, descrição, tags e melhor horário prontos pra colar no YouTube — com IA ou sem.</p>
+          </div>
+          <div class="tool-card" data-id="tracker" data-file="tracker-resultados.html" data-name="Tracker de Resultados">
+            <div class="icon" style="background:var(--accent-blue)22; color:var(--accent-blue);">◈</div>
+            <h3>Tracker de Resultados</h3>
+            <p>Anote views, likes e comentários de cada vídeo e descubra o que a sua audiência gosta.</p>
+          </div>
+          <div class="tool-card" data-id="ia-config" data-file="ia-config.html" data-name="Configuração da IA">
+            <div class="icon" style="background:var(--accent-amber)22; color:var(--accent-amber);">✦</div>
+            <h3>Configuração da IA</h3>
+            <p>Cole sua chave do Google Gemini para roteirizar, reescrever e gerar descrições com IA.</p>
+          </div>
+          <div class="tool-card" data-id="sobre" data-file="sobre.html" data-name="Sobre">
+            <div class="icon" style="background:var(--text-dim)22; color:var(--text-dim);">?</div>
+            <h3>Sobre</h3>
+            <p>O que é o Take Um Studio, pra quem é e como seus dados são guardados.</p>
+          </div>
+        </div>
         <div id="testimonials">
           <h2>Quem já usou a Jornada</h2>
           <p>Depoimentos de quem saiu da ideia e publicou o primeiro vídeo usando as ferramentas do Take Um Studio.</p>
@@ -951,165 +1138,9 @@
     </main>
   </div>
 
-  <script src="db.js"></script>
+  <script src="db.js" defer></script>
   <script>
     (function () {
-      const TOOLS = [
-        {
-          id: 'jornada',
-          group: 'novo',
-          file: 'jornada.html',
-          name: 'Primeiro Vídeo',
-          desc: 'Sua trilha guiada do zero até o primeiro vídeo publicado, passo a passo com as ferramentas do estúdio.',
-          color: 'var(--accent-green)',
-          icon: '★',
-          featured: true
-        },
-        {
-          id: 'teleprompter',
-          group: 'gravar',
-          file: 'teleprompter.html',
-          name: 'Teleprompter',
-          desc: 'Leia seu roteiro rolando na tela enquanto grava, com câmera embutida e gravação direto do navegador.',
-          color: 'var(--accent-amber)',
-          icon: '▤'
-        },
-        {
-          id: 'capa',
-          group: 'publicar',
-          file: 'capa.html',
-          name: 'Gerador de Capa',
-          desc: 'Crie a capa do seu vídeo no navegador: título, emoji, cor de fundo e baixe o PNG pronto.',
-          color: 'var(--accent-red)',
-          icon: '▣'
-        },
-        {
-          id: 'capa-vertical',
-          group: 'publicar',
-          file: 'capa-vertical.html',
-          name: 'Capa Vertical',
-          desc: 'Capa 9:16 para Shorts e Reels: título, emoji, cor de fundo e área segura — baixe o PNG pronto.',
-          color: 'var(--accent-purple)',
-          icon: '▯'
-        },
-        {
-          id: 'pauta',
-          group: 'planejar',
-          file: 'painel-pauta.html',
-          name: 'Painel de Pauta',
-          desc: 'Organize suas ideias de vídeo num quadro por etapas: ideia, roteiro, gravado, editado e postado.',
-          color: 'var(--accent-blue)',
-          icon: '◫'
-        },
-        {
-          id: 'calendario',
-          group: 'planejar',
-          file: 'calendario.html',
-          name: 'Calendário de Conteúdo',
-          desc: 'Planeje o mês: coloque cada vídeo no dia em que vai planejar, gravar ou publicar e acompanhe as etapas.',
-          color: 'var(--accent-amber)',
-          icon: '▦'
-        },
-        {
-          id: 'claquete',
-          group: 'gravar',
-          file: 'claquete-digital.html',
-          name: 'Claquete Digital',
-          desc: 'Contagem regressiva, bate-claquete com som e cronômetro de take, com histórico de gravações.',
-          color: 'var(--accent-purple)',
-          icon: '◧'
-        },
-        {
-          id: 'checklist',
-          group: 'gravar',
-          file: 'checklist-gravacao.html',
-          name: 'Checklist',
-          desc: 'Checklist pré-gravação: nunca mais esqueça bateria, microfone, luz, isolamento e muito mais.',
-          color: 'var(--accent-green)',
-          icon: '✓'
-        },
-        {
-          id: 'checklist-divulgacao',
-          group: 'publicar',
-          file: 'checklist-divulgacao.html',
-          name: 'Checklist de Divulgação',
-          desc: 'O que fazer depois de publicar: divulgar, responder comentários, stories e acompanhar os resultados.',
-          color: 'var(--accent-green)',
-          icon: '☑'
-        },
-        {
-          id: 'roteirizador',
-          group: 'planejar',
-          file: 'roteirizador.html',
-          name: 'Roteirizador',
-          desc: 'Estruture seu roteiro em etapas: gancho, problema, solução com marcadores de tempo e CTA.',
-          color: 'var(--accent-amber)',
-          icon: '✍'
-        },        {
-          id: 'ideias',
-          group: 'planejar',
-          file: 'banco-ideias.html',
-          name: 'Banco de Ideias',
-          desc: 'Capture ideias de vídeo na hora, antes que sumam, e envie para o Painel de Pauta quando quiser.',
-          color: 'var(--accent-purple)',
-          icon: '✎'
-        },
-        {
-          id: 'equipamentos',
-          group: 'apoiar',
-          file: 'equipamentos.html',
-          name: 'Equipamentos',
-          desc: 'Guia de equipamentos com ótimo custo-benefício pra começar: microfone, luz, tripé e mais.',
-          color: 'var(--accent-amber)',
-          icon: '⚙'
-        },
-        {
-          id: 'guia',
-          group: 'apoiar',
-          file: 'guia.html',
-          name: 'Guia',
-          desc: 'Aprenda na prática: como gravar o primeiro vídeo, escolher microfone e iluminar com o celular.',
-          color: 'var(--accent-amber)',
-          icon: '◈'
-        },
-        {
-          id: 'pack-publicacao',
-          group: 'publicar',
-          file: 'pack-publicacao.html',
-          name: 'Pack de Publicação',
-          desc: 'Título, descrição, tags e melhor horário prontos pra colar no YouTube — com IA ou sem.',
-          color: 'var(--accent-green)',
-          icon: '✉'
-        },
-        {
-          id: 'tracker',
-          group: 'publicar',
-          file: 'tracker-resultados.html',
-          name: 'Tracker de Resultados',
-          desc: 'Anote views, likes e comentários de cada vídeo e descubra o que a sua audiência gosta.',
-          color: 'var(--accent-blue)',
-          icon: '◈'
-        },
-        {
-          id: 'ia-config',
-          group: 'ajustes',
-          file: 'ia-config.html',
-          name: 'Configuração da IA',
-          desc: 'Cole sua chave do Google Gemini para roteirizar, reescrever e gerar descrições com IA.',
-          color: 'var(--accent-amber)',
-          icon: '✦'
-        }
-      ];
-
-      const ABOUT = {
-        id: 'sobre',
-        file: 'sobre.html',
-        name: 'Sobre',
-        desc: 'O que é o Take Um Studio, pra quem é e como seus dados são guardados.',
-        color: 'var(--text-dim)',
-        icon: '?'
-      };
-
       const nav = document.getElementById('nav');
       const toolGrid = document.getElementById('tool-grid');
       const homeView = document.getElementById('home-view');
@@ -1119,71 +1150,6 @@
       const backBtn = document.getElementById('back-btn');
       const sidebar = document.getElementById('sidebar');
       const menuToggle = document.getElementById('menu-toggle');
-
-      // Build sidebar nav (grouped)
-      const GROUPS = [
-        { id: 'novo', label: 'Novo aqui' },
-        { id: 'planejar', label: 'Planejar' },
-        { id: 'gravar', label: 'Gravar' },
-        { id: 'publicar', label: 'Publicar' },
-        { id: 'apoiar', label: 'Aprender & apoiar' },
-        { id: 'ajustes', label: 'Ajustes' }
-      ];
-
-      const homeNavItem = document.createElement('div');
-      homeNavItem.className = 'nav-item active';
-      homeNavItem.dataset.id = 'home';
-      homeNavItem.innerHTML = '<span class="dot" style="background:var(--text-dim)"></span>Início';
-      homeNavItem.addEventListener('click', () => openHome());
-      nav.appendChild(homeNavItem);
-
-      GROUPS.forEach(g => {
-        const items = TOOLS.filter(t => t.group === g.id);
-        if (!items.length) return;
-        const label = document.createElement('div');
-        label.className = 'nav-group';
-        label.textContent = g.label;
-        nav.appendChild(label);
-        items.forEach(tool => {
-          const item = document.createElement('div');
-          item.className = 'nav-item';
-          item.dataset.id = tool.id;
-          item.innerHTML = `<span class="dot" style="background:${tool.color}"></span>${tool.name}`;
-          item.addEventListener('click', () => openTool(tool));
-          nav.appendChild(item);
-        });
-      });
-
-      const aboutNavItem = document.createElement('div');
-      aboutNavItem.className = 'nav-item';
-      aboutNavItem.dataset.id = ABOUT.id;
-      aboutNavItem.innerHTML = `<span class="dot" style="background:${ABOUT.color}"></span>${ABOUT.name}`;
-      aboutNavItem.addEventListener('click', () => openTool(ABOUT));
-      nav.appendChild(aboutNavItem);
-
-      // Build home cards
-      TOOLS.forEach(tool => {
-        const card = document.createElement('div');
-        card.className = 'tool-card' + (tool.featured ? ' featured' : '');
-        const badge = tool.featured ? '<div class="badge">Comece aqui</div>' : '';
-        card.innerHTML = `
-      ${badge}<div class="icon" style="background:${tool.color}22; color:${tool.color};">${tool.icon}</div>
-      <h3>${tool.name}</h3>
-      <p>${tool.desc}</p>
-    `;
-        card.addEventListener('click', () => openTool(tool));
-        toolGrid.appendChild(card);
-      });
-
-      const aboutCard = document.createElement('div');
-      aboutCard.className = 'tool-card';
-      aboutCard.innerHTML = `
-    <div class="icon" style="background:${ABOUT.color}22; color:${ABOUT.color};">${ABOUT.icon}</div>
-    <h3>${ABOUT.name}</h3>
-    <p>${ABOUT.desc}</p>
-  `;
-      aboutCard.addEventListener('click', () => openTool(ABOUT));
-      toolGrid.appendChild(aboutCard);
 
       function setActiveNav(id) {
         [...nav.children].forEach(el => el.classList.toggle('active', el.dataset.id === id));
@@ -1197,19 +1163,37 @@
         closeSidebarOnMobile();
       }
 
-      function openTool(tool) {
-        toolFrame.src = tool.file;
-        toolName.textContent = tool.name;
+      function openTool(file, name, id) {
+        toolFrame.src = file;
+        toolName.textContent = name;
         homeView.classList.remove('active');
         toolView.classList.add('active');
-        setActiveNav(tool.id);
+        setActiveNav(id);
         closeSidebarOnMobile();
       }
 
-      function openToolById(id) {
-        const tool = TOOLS.find(t => t.id === id);
-        if (tool) openTool(tool);
+      function openToolFromElement(el) {
+        openTool(el.dataset.file, el.dataset.name, el.dataset.id);
       }
+
+      function openToolById(id) {
+        const el = toolGrid.querySelector('.tool-card[data-id="' + id + '"]') ||
+                   nav.querySelector('.nav-item[data-id="' + id + '"]');
+        if (el) openToolFromElement(el);
+      }
+
+      nav.addEventListener('click', (e) => {
+        const item = e.target.closest('.nav-item');
+        if (!item) return;
+        if (item.dataset.id === 'home') openHome();
+        else openToolFromElement(item);
+      });
+
+      toolGrid.addEventListener('click', (e) => {
+        const card = e.target.closest('.tool-card');
+        if (!card) return;
+        openToolFromElement(card);
+      });
 
       window.TakeUmShell = {
         openToolById,
@@ -1244,14 +1228,9 @@
       });
 
       // ---------- BACKUP ----------
-      const backupExportBtn = document.getElementById('backup-export-btn');
-      const backupImportBtn = document.getElementById('backup-import-btn');
-      const backupFile = document.getElementById('backup-file');
-      const backupMsg = document.getElementById('backup-msg');
-
-      backupExportBtn.addEventListener('click', async () => {
-        backupMsg.className = '';
-        backupMsg.textContent = 'Gerando backup...';
+      async function doExport(msgEl, okMsg) {
+        msgEl.className = '';
+        msgEl.textContent = 'Gerando backup...';
         try {
           const data = await TakeUmBackup.exportAll();
           const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -1262,40 +1241,61 @@
           a.click();
           a.remove();
           URL.revokeObjectURL(a.href);
-          backupMsg.className = 'ok';
-          backupMsg.textContent = 'Backup baixado! Envie esse arquivo para você mesmo no WhatsApp ou guarde no Drive.';
+          msgEl.className = 'ok';
+          msgEl.textContent = okMsg || 'Backup baixado! Envie esse arquivo para você mesmo no WhatsApp ou guarde no Drive.';
         } catch (e) {
-          backupMsg.className = 'err';
-          backupMsg.textContent = 'Erro ao gerar backup: ' + e.message;
+          msgEl.className = 'err';
+          msgEl.textContent = 'Erro ao gerar backup: ' + e.message;
         }
-      });
+      }
 
-      backupImportBtn.addEventListener('click', () => backupFile.click());
-
-      backupFile.addEventListener('change', async (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-        backupMsg.className = '';
-        backupMsg.textContent = 'Lendo arquivo...';
+      async function doImport(file, msgEl) {
+        msgEl.className = '';
+        msgEl.textContent = 'Lendo arquivo...';
         try {
           const payload = JSON.parse(await file.text());
           if (payload.format !== 'takeum-backup') {
             throw new Error('Este arquivo não é um backup do Take Um Studio');
           }
           if (!window.confirm('Isso vai substituir todos os dados salvos neste navegador pelos dados do backup. Continuar?')) {
-            backupMsg.textContent = '';
+            msgEl.textContent = '';
             return;
           }
           await TakeUmBackup.importAll(payload);
-          backupMsg.className = 'ok';
-          backupMsg.textContent = 'Backup restaurado com sucesso!';
+          msgEl.className = 'ok';
+          msgEl.textContent = 'Backup restaurado com sucesso!';
         } catch (err) {
-          backupMsg.className = 'err';
-          backupMsg.textContent = 'Falha ao restaurar: ' + err.message;
-        } finally {
-          backupFile.value = '';
+          msgEl.className = 'err';
+          msgEl.textContent = 'Falha ao restaurar: ' + err.message;
         }
-      });
+      }
+
+      function wireBackup(exportBtn, importBtn, fileInput, msgEl, okMsg) {
+        exportBtn.addEventListener('click', () => doExport(msgEl, okMsg));
+        importBtn.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', (e) => {
+          const file = e.target.files[0];
+          if (file) doImport(file, msgEl);
+          e.target.value = '';
+        });
+      }
+
+      // Seção na home (com instruções detalhadas)
+      wireBackup(
+        document.getElementById('backup-export-btn'),
+        document.getElementById('backup-import-btn'),
+        document.getElementById('backup-file'),
+        document.getElementById('backup-msg')
+      );
+
+      // Seção na barra lateral (sempre visível, mensagem curta)
+      wireBackup(
+        document.getElementById('sd-backup-btn'),
+        document.getElementById('sd-restore-btn'),
+        document.getElementById('sd-backup-file'),
+        document.getElementById('sd-msg'),
+        'Backup baixado! Guarde em local seguro.'
+      );
 
       menuToggle.addEventListener('click', () => sidebar.classList.toggle('open'));
       function closeSidebarOnMobile() {

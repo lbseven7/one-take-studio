@@ -123,6 +123,14 @@
     font-size: 46px;
     filter: drop-shadow(0 6px 14px rgba(0,0,0,.4));
   }
+  .item .prod-img{
+    position: relative;
+    z-index: 1;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 6px 14px rgba(0,0,0,.35));
+  }
   .item .price-tag{
     position: absolute;
     z-index: 2;
@@ -334,14 +342,16 @@
   const TAG = 'takeumstudio-20';
 
   const grid = document.getElementById('grid');
-  ITEMS.forEach(item => {
+  ITEMS.forEach((item, i) => {
     const el = document.createElement('div');
     el.className = 'item';
     const sep = item.link.includes('?') ? '&' : '?';
     const link = item.link + sep + 'tag=' + TAG;
     el.innerHTML = `
       <div class="shot" style="background: linear-gradient(160deg, ${item.bg[0]}, ${item.bg[1]});">
-        <span class="big-icon">${item.icon}</span>
+        <img class="prod-img" src="image/prod-${i + 1}.jpg" alt="${item.name}" loading="lazy"
+             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <span class="big-icon" style="display:none;">${item.icon}</span>
         <span class="price-tag">${item.price}</span>
       </div>
       <div class="body">

@@ -1,4 +1,4 @@
-const CACHE = 'takeum-v6';
+const CACHE = 'takeum-v7';
 
 const ASSETS = [
   './',
@@ -8,6 +8,13 @@ const ASSETS = [
   './manifest.json',
   './icons/icon-192.png',
   './icons/icon-512.png',
+  './image/prod-1.jpg',
+  './image/prod-2.jpg',
+  './image/prod-3.jpg',
+  './image/prod-4.jpg',
+  './image/prod-5.jpg',
+  './image/prod-6.jpg',
+  './image/prod-7.jpg',
   './jornada.html',
   './teleprompter.html',
   './capa.html',

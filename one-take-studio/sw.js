@@ -1,4 +1,4 @@
-const CACHE = 'takeum-v15';
+const CACHE = 'takeum-v16';
 
 const ASSETS = [
   './',
@@ -25,6 +25,7 @@ const ASSETS = [
   './capa.html',
   './capa-vertical.html',
   './painel-pauta.html',
+  './calendario.html',
   './claquete-digital.html',
   './checklist-gravacao.html',
   './checklist-divulgacao.html',

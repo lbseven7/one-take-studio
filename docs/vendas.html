@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Take Um Studio Pro · R$12,90/mês — Ferramentas para quem grava vídeo sozinho</title>
+<meta name="description" content="O Take Um Studio é grátis. O plano Pro desbloqueia o estúdio completo: IA sem chave, capas e gravações sem marca d'água, backup na nuvem, recursos ilimitados e suporte prioritário. R$12,90/mês.">
+<meta name="robots" content="index, follow">
+<link rel="stylesheet" href="fonts.css">
+<script async src="https://js.stripe.com/v3/buy-button.js"></script>
+<link rel="canonical" href="https://lbseven7.github.io/one-take-studio/vendas.html">
+<meta property="og:type" content="product">
+<meta property="og:title" content="Take Um Studio Pro — R$12,90/mês">
+<meta property="og:description" content="IA sem chave, sem marca d'água, backup na nuvem, recursos ilimitados e suporte prioritário para quem grava vídeo sozinho.">
+<meta property="og:url" content="https://lbseven7.github.io/one-take-studio/vendas.html">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "Take Um Studio Pro",
+  "description": "Plano pago do Take Um Studio: IA sem chave, capas e gravações sem marca d'água, backup na nuvem, recursos ilimitados e suporte prioritário.",
+  "brand": { "@type": "Organization", "name": "Take Um Studio" },
+  "offers": {
+    "@type": "Offer",
+    "price": "12.90",
+    "priceCurrency": "BRL",
+    "availability": "https://schema.org/InStock",
+    "url": "https://lbseven7.github.io/one-take-studio/vendas.html"
+  }
+}
+</script>
+<style>
+  :root{
+    --bg: #0a0a0c;
+    --panel: #141417;
+    --panel-line: #232328;
+    --card: #1a1a1e;
+    --text-main: #f5f4ef;
+    --text-dim: #8a8a92;
+    --accent-amber: #ffb020;
+    --accent-green: #39ff88;
+    --accent-blue: #5aa9ff;
+    --accent-red: #ff3b30;
+    --font-display: 'Archivo', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+  }
+
+  *{ box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html, body{
+    margin: 0; padding: 0;
+    min-height: 100%;
+    background: var(--bg);
+    color: var(--text-main);
+    font-family: var(--font-mono);
+  }
+  body{ overflow-y: auto; }
+
+  #app{ max-width: 720px; margin: 0 auto; padding: 0 24px 72px; }
+
+  /* ---------- TOP BAR ---------- */
+  #topbar{
+    position: sticky; top: 0; z-index: 10;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 16px 0;
+    background: linear-gradient(to bottom, var(--bg) 80%, transparent);
+  }
+  #topbar .brand{
+    display: flex; align-items: center; gap: 10px;
+    text-decoration: none; color: var(--text-main);
+  }
+  #topbar .brand img{
+    width: 26px; height: 26px; border-radius: 6px; display: block;
+  }
+  #topbar .brand .name{
+    font-family: var(--font-display); font-weight: 900; font-size: 15px;
+    letter-spacing: -0.01em; line-height: 1.1;
+  }
+  #topbar .brand .name small{
+    display: block; font-family: var(--font-mono); font-weight: 400;
+    font-size: 9px; color: var(--text-dim); letter-spacing: .08em;
+    text-transform: uppercase; margin-top: 2px;
+  }
+  #topbar .back{
+    color: var(--text-dim); font-size: 11px; text-decoration: none;
+    letter-spacing: .04em; text-transform: uppercase; white-space: nowrap;
+  }
+  #topbar .back:hover{ color: var(--accent-amber); }
+
+  /* ---------- HERO ---------- */
+  #hero{ padding: 34px 0 26px; }
+  .badge{
+    display: inline-block; font-size: 11px; letter-spacing: .1em;
+    text-transform: uppercase; color: #1a1200; font-weight: 700;
+    background: var(--accent-amber); border-radius: 4px; padding: 4px 10px;
+    margin-bottom: 16px;
+  }
+  h1{
+    font-family: var(--font-display); font-weight: 900;
+    font-size: clamp(28px, 5.5vw, 40px); line-height: 1.12;
+    margin: 0 0 14px 0; letter-spacing: -0.02em;
+  }
+  h1 em{ font-style: normal; color: var(--accent-amber); }
+  .sub{
+    color: var(--text-dim); font-size: 14px; line-height: 1.7; margin: 0;
+    max-width: 560px;
+  }
+  .sub strong{ color: var(--text-main); font-weight: 600; }
+
+  /* ---------- PRICE CARD ---------- */
+  #price-card{
+    background: var(--card);
+    border: 1px solid rgba(255,176,32,.35);
+    border-radius: 14px;
+    padding: 26px 24px;
+    margin: 26px 0 10px;
+    display: flex; align-items: center; justify-content: space-between; gap: 18px;
+    flex-wrap: wrap;
+    transition: border-color .2s ease, transform .2s ease;
+  }
+  #price-card:hover{ border-color: var(--accent-amber); transform: translateY(-2px); }
+  .price .amount{
+    font-family: var(--font-display); font-weight: 900; font-size: 34px;
+    letter-spacing: -0.02em; line-height: 1;
+  }
+  .price .amount small{
+    font-size: 15px; color: var(--text-dim); font-weight: 600;
+  }
+  .price .per{ color: var(--text-dim); font-size: 12px; margin-top: 6px; }
+  .price .per strong{ color: var(--accent-green); font-weight: 600; }
+
+  .cta-btn{
+    display: inline-block; font-family: var(--font-display); font-weight: 700;
+    font-size: 15px; color: #1a1200; background: var(--accent-amber);
+    border-radius: 8px; padding: 14px 30px; text-decoration: none;
+    transition: filter .15s ease, transform .15s ease;
+  }
+  .cta-btn:hover{ filter: brightness(1.1); transform: translateY(-1px); }
+  .cta-btn:active{ transform: translateY(0); }
+
+  #price-notes{
+    color: var(--text-dim); font-size: 11.5px; line-height: 1.6;
+    margin: 0 0 6px 0;
+  }
+  #price-notes strong{ color: var(--text-main); font-weight: 600; }
+
+  /* ---------- SECTIONS ---------- */
+  section{ margin-top: 44px; }
+  h2{
+    font-family: var(--font-display); font-weight: 700; font-size: 17px;
+    letter-spacing: -0.01em; margin: 0 0 6px 0;
+  }
+  .sec-sub{ color: var(--text-dim); font-size: 12.5px; line-height: 1.6; margin: 0 0 18px 0; }
+
+  /* features grid */
+  #features{ display: grid; grid-template-columns: 1fr; gap: 10px; }
+  @media (min-width: 560px){ #features{ grid-template-columns: 1fr 1fr; } }
+
+  .feat{
+    background: var(--card); border: 1px solid var(--panel-line);
+    border-radius: 10px; padding: 16px 16px 14px;
+    transition: border-color .15s ease;
+  }
+  .feat:hover{ border-color: var(--accent-amber); }
+  .feat .f-icon{
+    width: 30px; height: 30px; border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; margin-bottom: 10px;
+  }
+  .feat h3{
+    font-family: var(--font-display); font-weight: 700; font-size: 13.5px;
+    margin: 0 0 5px 0;
+  }
+  .feat p{ font-size: 11.5px; line-height: 1.6; margin: 0; color: var(--text-dim); }
+
+  /* comparison table */
+  table{
+    width: 100%; border-collapse: collapse; margin-top: 6px; font-size: 12.5px;
+  }
+  th{
+    font-family: var(--font-display); font-weight: 700; font-size: 12px;
+    text-align: left; color: var(--text-main); background: var(--panel);
+    padding: 10px 12px; border: 1px solid var(--panel-line);
+  }
+  th .pro-tag{ color: var(--accent-amber); }
+  td{
+    color: var(--text-dim); padding: 10px 12px; border: 1px solid var(--panel-line);
+    line-height: 1.6; vertical-align: top;
+  }
+  td .yes{ color: var(--accent-green); font-weight: 700; }
+  td .no{ color: var(--text-dim); }
+  td strong{ color: var(--text-main); font-weight: 600; }
+
+  /* steps */
+  #steps{ display: flex; flex-direction: column; gap: 10px; }
+  .step{
+    display: flex; gap: 14px; align-items: flex-start;
+    background: var(--card); border: 1px solid var(--panel-line);
+    border-radius: 10px; padding: 14px 16px;
+  }
+  .step .n{
+    font-family: var(--font-display); font-weight: 900; font-size: 15px;
+    color: var(--accent-amber); flex-shrink: 0;
+    width: 26px; height: 26px; border-radius: 7px;
+    background: rgba(255,176,32,.1); display: flex; align-items: center; justify-content: center;
+  }
+  .step h3{ font-family: var(--font-display); font-weight: 700; font-size: 13.5px; margin: 1px 0 4px 0; }
+  .step p{ font-size: 12px; line-height: 1.6; color: var(--text-dim); margin: 0; }
+
+  /* faq */
+  details{
+    background: var(--card); border: 1px solid var(--panel-line);
+    border-radius: 10px; padding: 14px 16px; margin-bottom: 8px;
+  }
+  details summary{
+    cursor: pointer; font-family: var(--font-display); font-weight: 700;
+    font-size: 13px; list-style: none; display: flex; justify-content: space-between;
+    align-items: center; gap: 10px;
+  }
+  details summary::-webkit-details-marker{ display: none; }
+  details summary::after{ content: '+'; color: var(--accent-amber); font-size: 15px; font-family: var(--font-mono); }
+  details[open] summary::after{ content: '–'; }
+  details p{ color: var(--text-dim); font-size: 12px; line-height: 1.7; margin: 10px 0 0 0; }
+  details p strong{ color: var(--text-main); font-weight: 600; }
+
+  /* final cta */
+  #final-cta{
+    margin-top: 48px; text-align: center;
+    padding: 30px 20px;
+    background: rgba(255,176,32,.05);
+    border: 1px solid rgba(255,176,32,.25);
+    border-radius: 14px;
+  }
+  #final-cta h2{ margin-bottom: 8px; }
+  #final-cta p{ color: var(--text-dim); font-size: 12.5px; line-height: 1.7; margin: 0 0 18px 0; }
+  #final-cta .cta-btn{ font-size: 15px; }
+
+  footer{
+    margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--panel-line);
+    color: var(--text-dim); font-size: 11px; line-height: 1.7; text-align: center;
+  }
+  footer a{ color: var(--accent-blue); text-decoration: none; }
+  footer a:hover{ text-decoration: underline; }
+
+  @media (max-width: 560px){
+    table{ font-size: 11.5px; }
+    th, td{ padding: 8px 9px; }
+    #price-card{ padding: 20px 18px; }
+    #price-card stripe-buy-button{ width: 100%; }
+  }
+
+  /* Stripe Buy Button */
+  #price-card stripe-buy-button,
+  #final-cta stripe-buy-button{
+    display: inline-block;
+  }
+  #final-cta stripe-buy-button{
+    margin: 0 auto;
+  }
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <div id="topbar">
+    <a class="brand" href="index.html" target="_top">
+      <img src="icons/icon-192.png" alt="Take Um Studio">
+      <span class="name">Take Um Studio<small>plano pro</small></span>
+    </a>
+    <a class="back" href="index.html" target="_top">← Voltar ao estúdio</a>
+  </div>
+
+  <div id="hero">
+    <div class="badge">Plano Pro</div>
+    <h1>Grave como profissional.<br><em>Pague só o que precisa.</em></h1>
+    <p class="sub">
+      O <strong>Take Um Studio é grátis</strong> — e vai continuar. O plano Pro desbloqueia o estúdio
+      completo para quem quer produzir em ritmo de profissional: IA sem chave, sem marca d'água,
+      backup na nuvem e suporte de verdade.
+    </p>
+  </div>
+
+  <div id="price-card">
+    <div class="price">
+      <div class="amount">R$ 12,90<small>/mês</small></div>
+      <div class="per"><strong>Sem fidelidade</strong> · cancele quando quiser</div>
+    </div>
+    <stripe-buy-button
+      buy-button-id="buy_btn_1U08dG3cyLwfo7JCVLHT8vfg"
+      publishable-key="pk_live_51U07kp3cyLwfo7JCezyM9BLDgIzAJUbN3nGwuIpyTByhpNVuNPdzbG9xOgVAZDWiFi5DpHvnKNlMGaLN4c9rgkcC00OY4MJpEs">
+    </stripe-buy-button>
+  </div>
+  <p id="price-notes">Aceita <strong>Pix</strong> e <strong>cartão</strong>. Pagamento seguro processado pelo Stripe.</p>
+
+  <section>
+    <h2>O que você ganha no Pro</h2>
+    <p class="sec-sub">Tudo do plano grátis, mais o que destrava o seu ritmo de produção.</p>
+    <div id="features">
+      <div class="feat">
+        <div class="f-icon" style="background:var(--accent-purple)22; color:var(--accent-purple)">✦</div>
+        <h3>IA sem precisar de chave</h3>
+        <p>Roteiros, descrições e packs de publicação prontos pela IA — sem colar a sua chave do Gemini.</p>
+      </div>
+      <div class="feat">
+        <div class="f-icon" style="background:var(--accent-blue)22; color:var(--accent-blue)">▣</div>
+        <h3>Sem marca d'água</h3>
+        <p>Capas e gravações do teleprompter limpas, prontas para publicar.</p>
+      </div>
+      <div class="feat">
+        <div class="f-icon" style="background:var(--accent-green)22; color:var(--accent-green)">☁</div>
+        <h3>Backup na nuvem</h3>
+        <p>Seus dados sincronizados entre celular e computador, sem arquivo manual.</p>
+      </div>
+      <div class="feat">
+        <div class="f-icon" style="background:var(--accent-amber)22; color:var(--accent-amber)">∞</div>
+        <h3>Recursos ilimitados</h3>
+        <p>Pautas, ideias, roteiros e vídeos no tracker sem nenhum limite.</p>
+      </div>
+      <div class="feat">
+        <div class="f-icon" style="background:var(--accent-red)22; color:var(--accent-red)">★</div>
+        <h3>Suporte prioritário</h3>
+        <p>Atendimento direto e prioridade em novos recursos do estúdio.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Grátis vs. Pro</h2>
+    <p class="sec-sub">O essencial nunca sai do grátis. O Pro é pra quem quer ir além.</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Recurso</th>
+          <th>Grátis</th>
+          <th><span class="pro-tag">Pro</span> · R$12,90/mês</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Todas as ferramentas</strong> (teleprompter, capa, pauta, calendário, claquete, checklists, tracker)</td>
+          <td><span class="yes">✓</span></td>
+          <td><span class="yes">✓</span></td>
+        </tr>
+        <tr>
+          <td><strong>IA</strong> (roteiros e descrições)</td>
+          <td>com sua chave</td>
+          <td><span class="yes">✓ incluída</span></td>
+        </tr>
+        <tr>
+          <td><strong>Capas e gravações</strong></td>
+          <td>com marca d'água</td>
+          <td><span class="yes">✓ sem marca</span></td>
+        </tr>
+        <tr>
+          <td><strong>Backup</strong></td>
+          <td>manual (arquivo)</td>
+          <td><span class="yes">✓ automático na nuvem</span></td>
+        </tr>
+        <tr>
+          <td><strong>Pautas, ideias e roteiros</strong></td>
+          <td>essencial</td>
+          <td><span class="yes">✓ ilimitados</span></td>
+        </tr>
+        <tr>
+          <td><strong>Suporte</strong></td>
+          <td>comunidade</td>
+          <td><span class="yes">✓ prioritário</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Como funciona</h2>
+    <p class="sec-sub">Três passos e o estúdio completo é seu.</p>
+    <div id="steps">
+      <div class="step">
+        <div class="n">1</div>
+        <div>
+          <h3>Escolha o plano</h3>
+          <p>Clique em "Assinar agora" e você vai para o checkout seguro do Stripe.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="n">2</div>
+        <div>
+          <h3>Pague com Pix ou cartão</h3>
+          <p>R$12,90/mês, sem fidelidade. Pix cai na hora; cartão renova sozinho todo mês.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="n">3</div>
+        <div>
+          <h3>Ative o Pro e use tudo</h3>
+          <p>Receba sua chave de ativação no e-mail, cole no estúdio e pronto: todos os recursos liberados.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Perguntas frequentes</h2>
+    <p class="sec-sub">Tudo o que você precisa saber antes de assinar.</p>
+    <details>
+      <summary>Posso cancelar quando quiser?</summary>
+      <p>Sim. <strong>Sem fidelidade, sem multa.</strong> Se pagou por cartão, é só cancelar no painel do Stripe — a cobrança para no próximo ciclo. Se pagou via Pix, o acesso vale pelo mês pago.</p>
+    </details>
+    <details>
+      <summary>Aceita Pix mesmo?</summary>
+      <p>Sim. O checkout do Stripe aceita <strong>Pix e cartão de crédito</strong> — os dois métodos mais usados no Brasil.</p>
+    </details>
+    <details>
+      <summary>Preciso criar conta no Take Um?</summary>
+      <p>Não. O estúdio continua <strong>sem conta e sem cadastro</strong>. A única conta é a de pagamento do Stripe, usada só para a assinatura.</p>
+    </details>
+    <details>
+      <summary>E se eu quiser continuar no grátis?</summary>
+      <p>Perfeito, é pra isso que ele existe. <strong>Todas as ferramentas continuam gratuitas para sempre.</strong> O Pro é um upgrade opcional para quem quer produzir em ritmo profissional.</p>
+    </details>
+  </section>
+
+  <div id="final-cta">
+    <h2>Seu próximo vídeo começa aqui</h2>
+    <p>R$12,90/mês · sem fidelidade · Pix ou cartão<br>O essencial continua grátis para sempre.</p>
+    <stripe-buy-button
+      buy-button-id="buy_btn_1U08dG3cyLwfo7JCVLHT8vfg"
+      publishable-key="pk_live_51U07kp3cyLwfo7JCezyM9BLDgIzAJUbN3nGwuIpyTByhpNVuNPdzbG9xOgVAZDWiFi5DpHvnKNlMGaLN4c9rgkcC00OY4MJpEs">
+    </stripe-buy-button>
+  </div>
+
+  <footer>
+    Take Um Studio · Feito pra quem grava vídeo sozinho.
+    <br>Ainda não é Pro? <a href="index.html" target="_top">Use o estúdio grátis</a>.
+  </footer>
+
+</div>
+
+</body>
+</html>

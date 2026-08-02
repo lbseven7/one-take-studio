@@ -501,6 +501,7 @@
 
 <div id="toast"></div>
 
+<script src="pro.js"></script>
 <script src="db.js"></script>
 <script src="ia.js"></script>
 <script>
@@ -546,7 +547,13 @@
   }
 
   async function saveIdea(idea){
+    const check = TakeUmPro.checkLimit('banco_ideias', ideas.length);
+    if(!check.ok){
+      TakeUmPro.limitToast('banco_ideias', ideas.length);
+      return false;
+    }
     await OneTakeDB.put('banco_ideias', idea);
+    return true;
   }
 
   function buildPlatformPicker(){
@@ -631,6 +638,12 @@
       if(idea.notes) el.querySelector('.notes').textContent = idea.notes;
 
       el.querySelector('.pauta-btn').addEventListener('click', async () => {
+        const pautaCount = await OneTakeDB.getAll('pauta_cards') || [];
+        const pautaCheck = TakeUmPro.checkLimit('pauta_cards', pautaCount.length);
+        if(!pautaCheck.ok){
+          TakeUmPro.limitToast('pauta_cards', pautaCount.length);
+          return;
+        }
         const card = {
           id: uid(),
           title: idea.title,
@@ -652,6 +665,12 @@
       });
 
       el.querySelector('.ai-btn').addEventListener('click', async (e) => {
+        const roteiroCount = await OneTakeDB.getAll('roteirizador_scripts') || [];
+        const roteiroCheck = TakeUmPro.checkLimit('roteirizador_scripts', roteiroCount.length);
+        if(!roteiroCheck.ok){
+          TakeUmPro.limitToast('roteirizador_scripts', roteiroCount.length);
+          return;
+        }
         const btn = e.currentTarget;
         btn.disabled = true;
         btn.textContent = 'Gerando...';
@@ -734,7 +753,8 @@
       platform: selectedPlatform,
       createdAt: Date.now()
     };
-    await saveIdea(idea);
+    const saved = await saveIdea(idea);
+    if(!saved) return;
     ideas.unshift(idea);
     clearCapture();
     render();
@@ -780,7 +800,11 @@
           platform: platformInfo(s.platform).id,
           createdAt: Date.now()
         };
-        await saveIdea(idea);
+        const saved = await saveIdea(idea);
+        if(!saved){
+          btn.disabled = false;
+          return;
+        }
         ideas.unshift(idea);
         btn.textContent = '✓';
         showToast('Ideia guardada no banco!');

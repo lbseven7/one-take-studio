@@ -540,6 +540,76 @@
       border-color: rgba(57, 255, 136, 0.4);
     }
 
+    #newsletter {
+      max-width: 900px;
+      margin-top: 22px;
+      padding: 18px;
+      background: var(--card);
+      border: 1px dashed rgba(90, 169, 255, 0.35);
+      border-radius: 10px;
+    }
+
+    #newsletter .nl-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--text-main);
+      margin-bottom: 6px;
+    }
+
+    #newsletter p {
+      color: var(--text-dim);
+      font-size: 12px;
+      line-height: 1.55;
+      margin: 0;
+    }
+
+    #newsletter form {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    #newsletter input[type="email"] {
+      flex: 1;
+      min-width: 200px;
+      background: var(--panel);
+      border: 1px solid var(--panel-line);
+      color: var(--text-main);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      padding: 12px 14px;
+      border-radius: 6px;
+    }
+
+    #newsletter input[type="email"]:focus {
+      outline: none;
+      border-color: var(--accent-amber);
+    }
+
+    #newsletter button {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 13px;
+      padding: 12px 20px;
+      border-radius: 6px;
+      border: none;
+      background: var(--accent-amber);
+      color: #1a1200;
+      cursor: pointer;
+    }
+
+    #newsletter button:hover {
+      filter: brightness(1.08);
+    }
+
+    #newsletter .nl-note {
+      margin-top: 10px;
+      font-size: 11px;
+      color: var(--text-dim);
+    }
+
     @media (max-width: 560px) {
       #support-banner {
         flex-wrap: wrap;
@@ -716,6 +786,19 @@
             <span id="pix-key"></span>
             <button id="pix-copy">Copiar chave</button>
           </div>
+        </div>
+        <div id="newsletter">
+          <div class="nl-title">📮 1 dica por semana pra gravar melhor</div>
+          <p>Dicas curtas de roteiro, luz, som e constância, direto no seu e-mail. Grátis e sem spam — cancele quando quiser.</p>
+          <form action="https://formsubmit.co/takeumst@gmail.com" method="POST" target="_blank">
+            <input type="hidden" name="_subject" value="Nova inscrição na newsletter Take Um Studio">
+            <input type="hidden" name="_captcha" value="false">
+            <input type="hidden" name="_next" value="https://lbseven7.github.io/one-take-studio/newsletter-obrigado.html">
+            <input type="email" name="email" placeholder="Seu melhor e-mail" required>
+            <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
+            <button type="submit">Quero receber</button>
+          </form>
+          <div class="nl-note">Seu e-mail fica só com você — não é vendido nem compartilhado.</div>
         </div>
       </div>
 

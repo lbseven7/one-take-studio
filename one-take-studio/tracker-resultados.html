@@ -464,6 +464,7 @@
 
 <div id="toast"></div>
 
+<script src="pro.js"></script>
 <script src="db.js"></script>
 <script>
 (function(){
@@ -652,6 +653,10 @@
   async function save(){
     const titulo = fTitulo.value.trim();
     if(!titulo){ showToast('Digite o título do vídeo.'); fTitulo.focus(); return; }
+    if(!editingId){
+      const check = TakeUmPro.checkLimit('tracker_videos', videos.length);
+      if(!check.ok){ TakeUmPro.limitToast('tracker_videos', videos.length); return; }
+    }
     const record = {
       id: editingId || (Date.now().toString(36) + Math.random().toString(36).slice(2, 8)),
       titulo: titulo,

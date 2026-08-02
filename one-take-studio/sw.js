@@ -1,10 +1,17 @@
-const CACHE = 'takeum-v17';
+const CACHE = 'takeum-v18';
 
 const ASSETS = [
   './',
   './index.html',
   './db.js',
   './ia.js',
+  './fonts.css',
+  './fonts/archivo-500.woff2',
+  './fonts/archivo-700.woff2',
+  './fonts/archivo-900.woff2',
+  './fonts/plexmono-400.woff2',
+  './fonts/plexmono-500.woff2',
+  './fonts/plexmono-600.woff2',
   './manifest.json',
   './icons/icon-192.png',
   './icons/icon-512.png',

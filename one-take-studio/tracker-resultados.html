@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Take Um Studio · Tracker de Resultados</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0a0a0c;
+    --panel: #141417;
+    --panel-line: #232328;
+    --card: #1a1a1e;
+    --text-main: #f5f4ef;
+    --text-dim: #8a8a92;
+    --accent-amber: #ffb020;
+    --accent-red: #ff3b30;
+    --accent-green: #39ff88;
+    --accent-blue: #5aa9ff;
+    --accent-purple: #c084fc;
+    --font-display: 'Archivo', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+  }
+
+  *{ box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html, body{
+    margin: 0; padding: 0;
+    height: 100%;
+    background: var(--bg);
+    color: var(--text-main);
+    font-family: var(--font-mono);
+  }
+
+  #app{
+    height: 100vh;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    max-width: 760px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 20px;
+    background: var(--panel);
+    border-bottom: 1px solid var(--panel-line);
+    flex-shrink: 0;
+  }
+  header h1{
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 16px;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  header .count{
+    color: var(--text-dim);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  #content{
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+  }
+
+  .intro{
+    color: var(--text-dim);
+    font-size: 13px;
+    line-height: 1.7;
+    margin: 0 0 18px 0;
+  }
+  .intro strong{ color: var(--text-main); font-weight: 600; }
+
+  .form-card{
+    background: var(--panel);
+    border: 1px solid var(--panel-line);
+    border-radius: 12px;
+    padding: 18px;
+    margin-bottom: 20px;
+  }
+  .form-card .row{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  @media (max-width: 520px){ .form-card .row{ grid-template-columns: 1fr; } }
+  .form-card label{
+    display: block;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 12px;
+    margin: 0 0 5px 0;
+    color: var(--text-main);
+  }
+  .form-card label .opt{ color: var(--text-dim); font-weight: 400; }
+  .form-card input, .form-card select, .form-card textarea{
+    width: 100%;
+    background: var(--card);
+    border: 1px solid var(--panel-line);
+    border-radius: 8px;
+    color: var(--text-main);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    padding: 10px 12px;
+    margin-bottom: 12px;
+  }
+  .form-card input:focus, .form-card select:focus, .form-card textarea:focus{
+    outline: none;
+    border-color: var(--accent-amber);
+  }
+  .form-card textarea{ resize: vertical; min-height: 44px; }
+  .form-card select{ appearance: none; }
+
+  .form-actions{
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  #save-btn{
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 13px;
+    padding: 12px 20px;
+    border-radius: 8px;
+    border: none;
+    background: var(--accent-amber);
+    color: #1a1200;
+    cursor: pointer;
+  }
+  #save-btn:hover{ filter: brightness(1.08); }
+  #cancel-btn{
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 12px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--panel-line);
+    background: var(--card);
+    color: var(--text-main);
+    cursor: pointer;
+    display: none;
+  }
+  #cancel-btn.show{ display: inline-block; }
+
+  /* ---- insights ---- */
+  #insights{ margin-bottom: 20px; }
+  #insights.hidden{ display: none; }
+  .stats-grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .stat{
+    background: var(--panel);
+    border: 1px solid var(--panel-line);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .stat .s-label{
+    font-size: 10.5px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+  }
+  .stat .s-value{
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 20px;
+    letter-spacing: -0.01em;
+    color: var(--text-main);
+    word-break: break-word;
+  }
+  .stat .s-sub{ font-size: 11px; color: var(--text-dim); margin-top: 3px; }
+
+  .insight-card{
+    background: var(--panel);
+    border: 1px solid var(--panel-line);
+    border-radius: 12px;
+    padding: 16px 18px;
+    margin-bottom: 14px;
+  }
+  .insight-card h3{
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    margin: 0 0 10px 0;
+  }
+  .insight-card h3 .hint{ color: var(--text-dim); font-weight: 400; font-size: 11px; margin-left: 6px; }
+
+  .rank-list{ list-style: none; margin: 0; padding: 0; }
+  .rank-list li{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 0;
+    border-top: 1px solid var(--panel-line);
+  }
+  .rank-list li:first-child{ border-top: none; }
+  .rank-list .pos{
+    width: 24px; height: 24px;
+    border-radius: 6px;
+    background: rgba(255,176,32,.12);
+    color: var(--accent-amber);
+    font-weight: 700;
+    font-size: 12px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .rank-list .r-info{ flex: 1; min-width: 0; }
+  .rank-list .r-name{
+    font-size: 12.5px;
+    color: var(--text-main);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .rank-list .r-meta{ font-size: 11px; color: var(--text-dim); }
+  .rank-list .r-views{
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--accent-amber);
+    flex-shrink: 0;
+  }
+  .rank-list .r-views small{
+    display: block;
+    font-family: var(--font-mono);
+    font-weight: 400;
+    font-size: 10px;
+    color: var(--text-dim);
+  }
+
+  .platform-bars{ display: flex; flex-direction: column; gap: 8px; }
+  .platform-bar .p-head{
+    display: flex;
+    justify-content: space-between;
+    font-size: 11.5px;
+    color: var(--text-dim);
+    margin-bottom: 3px;
+  }
+  .platform-bar .p-head strong{ color: var(--text-main); }
+  .platform-bar .track{
+    height: 8px;
+    border-radius: 4px;
+    background: var(--card);
+    overflow: hidden;
+  }
+  .platform-bar .fill{
+    height: 100%;
+    border-radius: 4px;
+    background: var(--accent-amber);
+  }
+
+  /* ---- list ---- */
+  #video-list{ display: flex; flex-direction: column; gap: 10px; }
+  #empty{
+    text-align: center;
+    padding: 34px 18px;
+    color: var(--text-dim);
+    font-size: 13px;
+    line-height: 1.7;
+    border: 1px dashed var(--panel-line);
+    border-radius: 12px;
+  }
+  #empty strong{ color: var(--text-main); font-weight: 600; }
+
+  .vcard{
+    background: var(--panel);
+    border: 1px solid var(--panel-line);
+    border-radius: 12px;
+    padding: 14px 16px;
+  }
+  .vcard .v-head{
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .vcard .v-name{
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 1.35;
+    flex: 1;
+    min-width: 0;
+  }
+  .vcard .v-meta{
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 6px;
+  }
+  .vcard .v-meta span{
+    font-size: 10.5px;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    border: 1px solid var(--panel-line);
+    border-radius: 4px;
+    padding: 3px 8px;
+  }
+  .vcard .v-nums{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .vcard .v-num{
+    background: var(--card);
+    border-radius: 8px;
+    padding: 9px 11px;
+  }
+  .vcard .v-num .n-label{ font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: .05em; }
+  .vcard .v-num .n-value{ font-family: var(--font-display); font-weight: 700; font-size: 15px; margin-top: 2px; }
+  .vcard .v-num .n-value.eng{ color: var(--accent-green); }
+  .vcard .v-note{
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.6;
+    background: var(--card);
+    border-radius: 8px;
+    padding: 9px 11px;
+  }
+  .vcard .v-note strong{ color: var(--accent-amber); font-weight: 600; }
+  .vcard .v-actions{
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .vcard .v-actions button{
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 11.5px;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 1px solid var(--panel-line);
+    background: var(--card);
+    color: var(--text-main);
+  }
+  .vcard .v-actions button:hover{ border-color: var(--accent-amber); }
+  .vcard .v-actions .del{ color: var(--accent-red); border-color: rgba(255,59,48,.3); }
+  .vcard .v-actions .del:hover{ border-color: var(--accent-red); }
+
+  #toast{
+    position: fixed;
+    bottom: 22px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--card);
+    border: 1px solid var(--panel-line);
+    color: var(--text-main);
+    font-size: 12.5px;
+    padding: 11px 18px;
+    border-radius: 8px;
+    opacity: 0;
+    transition: opacity .2s ease, transform .2s ease;
+    pointer-events: none;
+    z-index: 50;
+    max-width: 86vw;
+  }
+  #toast.show{ opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <header>
+    <h1>Tracker de Resultados</h1>
+    <div class="count">o que funciona no seu canal</div>
+  </header>
+
+  <div id="content">
+    <p class="intro">Anote <strong>views, likes, comentários e compartilhamentos</strong> de cada vídeo e descubra
+      o que a sua audiência gosta de verdade — em vez de adivinhar.</p>
+
+    <div class="form-card">
+      <div class="row">
+        <div>
+          <label for="f-titulo">Título do vídeo</label>
+          <input id="f-titulo" type="text" placeholder="ex.: Como gravar meu primeiro vídeo" autocomplete="off">
+        </div>
+        <div>
+          <label for="f-plataforma">Plataforma</label>
+          <select id="f-plataforma">
+            <option value="YouTube">YouTube</option>
+            <option value="Shorts">Shorts</option>
+            <option value="TikTok">TikTok</option>
+            <option value="Reels">Reels</option>
+            <option value="Outro">Outro</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label for="f-data">Data de publicação</label>
+          <input id="f-data" type="date">
+        </div>
+        <div>
+          <label for="f-views">Views</label>
+          <input id="f-views" type="number" min="0" placeholder="0" inputmode="numeric">
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label for="f-likes">Likes</label>
+          <input id="f-likes" type="number" min="0" placeholder="0" inputmode="numeric">
+        </div>
+        <div>
+          <label for="f-coment">Comentários</label>
+          <input id="f-coment" type="number" min="0" placeholder="0" inputmode="numeric">
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label for="f-compart">Compartilhamentos <span class="opt">(opcional)</span></label>
+          <input id="f-compart" type="number" min="0" placeholder="0" inputmode="numeric">
+        </div>
+        <div>
+          <label for="f-nota">O que funcionou <span class="opt">(opcional)</span></label>
+          <textarea id="f-nota" rows="2" placeholder="ex.: gancho perguntando pro espectador"></textarea>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button id="save-btn">+ Salvar vídeo</button>
+        <button id="cancel-btn">Cancelar edição</button>
+      </div>
+    </div>
+
+    <div id="insights" class="hidden">
+      <div class="stats-grid" id="stats-grid"></div>
+      <div class="insight-card">
+        <h3>🏆 Os 3 vídeos com mais views</h3>
+        <ul class="rank-list" id="rank-list"></ul>
+      </div>
+      <div class="insight-card">
+        <h3>📊 Média de views por plataforma</h3>
+        <div class="platform-bars" id="platform-bars"></div>
+      </div>
+    </div>
+
+    <h3 style="font-family:var(--font-display);font-weight:700;font-size:13px;margin:0 0 10px 0;">Seus vídeos</h3>
+    <div id="video-list"></div>
+    <div id="empty">
+      <strong>Nenhum vídeo anotado ainda.</strong><br>
+      Preencha o formulário acima e salve o primeiro resultado. Quanto mais vídeos, melhor o insight.
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script src="db.js"></script>
+<script>
+(function(){
+  const STORE = 'tracker_videos';
+
+  const fTitulo = document.getElementById('f-titulo');
+  const fPlataforma = document.getElementById('f-plataforma');
+  const fData = document.getElementById('f-data');
+  const fViews = document.getElementById('f-views');
+  const fLikes = document.getElementById('f-likes');
+  const fComent = document.getElementById('f-coment');
+  const fCompart = document.getElementById('f-compart');
+  const fNota = document.getElementById('f-nota');
+  const saveBtn = document.getElementById('save-btn');
+  const cancelBtn = document.getElementById('cancel-btn');
+  const insights = document.getElementById('insights');
+  const statsGrid = document.getElementById('stats-grid');
+  const rankList = document.getElementById('rank-list');
+  const platformBars = document.getElementById('platform-bars');
+  const videoList = document.getElementById('video-list');
+  const emptyEl = document.getElementById('empty');
+  const toast = document.getElementById('toast');
+
+  let videos = [];
+  let editingId = null;
+
+  let toastTimer = null;
+  function showToast(msg){
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 2400);
+  }
+
+  function num(v){ const n = parseInt(v, 10); return isNaN(n) || n < 0 ? 0 : n; }
+
+  function fmt(n){
+    if(n >= 1000000) return (n / 1000000).toFixed(1).replace('.', ',') + 'M';
+    if(n >= 1000) return (n / 1000).toFixed(1).replace('.', ',') + 'k';
+    return String(n);
+  }
+
+  function dateLabel(iso){
+    if(!iso) return '—';
+    const d = new Date(iso + 'T00:00:00');
+    if(isNaN(d)) return iso;
+    return d.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' });
+  }
+
+  function engagement(v){
+    const total = v.views || 0;
+    if(!total) return 0;
+    return Math.round(((v.likes||0) + (v.coment||0) + (v.compart||0)) / total * 100);
+  }
+
+  async function load(){
+    videos = await OneTakeDB.getAll(STORE) || [];
+    videos.sort((a, b) => (b.data || '').localeCompare(a.data || '') || (b.criadoEm || 0) - (a.criadoEm || 0));
+    render();
+  }
+
+  function render(){
+    renderStats();
+    renderList();
+  }
+
+  function renderStats(){
+    if(!videos.length){
+      insights.classList.add('hidden');
+      return;
+    }
+    insights.classList.remove('hidden');
+
+    const totalViews = videos.reduce((s, v) => s + (v.views||0), 0);
+    const avgViews = Math.round(totalViews / videos.length);
+    const avgEng = Math.round(videos.reduce((s, v) => s + engagement(v), 0) / videos.length);
+
+    const sorted = [...videos].sort((a, b) => (b.views||0) - (a.views||0));
+    const best = sorted[0];
+
+    const byPlat = {};
+    videos.forEach(v => {
+      const p = v.plataforma || 'Outro';
+      if(!byPlat[p]) byPlat[p] = { sum: 0, n: 0 };
+      byPlat[p].sum += (v.views||0);
+      byPlat[p].n += 1;
+    });
+    let bestPlat = '—', bestPlatAvg = -1;
+    Object.keys(byPlat).forEach(p => {
+      const avg = Math.round(byPlat[p].sum / byPlat[p].n);
+      if(avg > bestPlatAvg){ bestPlatAvg = avg; bestPlat = p; }
+    });
+
+    const cards = [
+      { label: 'Vídeos', value: String(videos.length) },
+      { label: 'Views totais', value: fmt(totalViews) },
+      { label: 'Média de views', value: fmt(avgViews) },
+      { label: 'Engajamento médio', value: avgEng + '%', sub: 'likes+coment+compart ÷ views' }
+    ];
+    statsGrid.innerHTML = '';
+    cards.forEach(c => {
+      const el = document.createElement('div');
+      el.className = 'stat';
+      el.innerHTML = '<div class="s-label">' + c.label + '</div><div class="s-value">' + c.value + '</div>' + (c.sub ? '<div class="s-sub">' + c.sub + '</div>' : '');
+      statsGrid.appendChild(el);
+    });
+
+    const top3 = sorted.slice(0, 3);
+    rankList.innerHTML = '';
+    top3.forEach((v, i) => {
+      const li = document.createElement('li');
+      li.innerHTML =
+        '<div class="pos">' + (i + 1) + '</div>' +
+        '<div class="r-info"><div class="r-name">' + escapeHtml(v.titulo) + '</div>' +
+        '<div class="r-meta">' + (v.plataforma || 'Outro') + ' · ' + dateLabel(v.data) + ' · eng. ' + engagement(v) + '%</div></div>' +
+        '<div class="r-views">' + fmt(v.views||0) + '<small>views</small></div>';
+      rankList.appendChild(li);
+    });
+
+    const maxAvg = Math.max(1, ...Object.keys(byPlat).map(p => byPlat[p].sum / byPlat[p].n));
+    platformBars.innerHTML = '';
+    Object.keys(byPlat).sort((a, b) => (byPlat[b].sum / byPlat[b].n) - (byPlat[a].sum / byPlat[a].n)).forEach(p => {
+      const avg = Math.round(byPlat[p].sum / byPlat[p].n);
+      const pct = Math.max(4, Math.round(avg / maxAvg * 100));
+      const el = document.createElement('div');
+      el.className = 'platform-bar';
+      el.innerHTML =
+        '<div class="p-head"><strong>' + escapeHtml(p) + '</strong><span>' + fmt(avg) + ' views/vídeo · ' + byPlat[p].n + ' vídeo' + (byPlat[p].n > 1 ? 's' : '') + '</span></div>' +
+        '<div class="track"><div class="fill" style="width:' + pct + '%"></div></div>';
+      platformBars.appendChild(el);
+    });
+  }
+
+  function renderList(){
+    videoList.innerHTML = '';
+    if(!videos.length){
+      emptyEl.style.display = 'block';
+      return;
+    }
+    emptyEl.style.display = 'none';
+    videos.forEach(v => {
+      const card = document.createElement('div');
+      card.className = 'vcard';
+      card.innerHTML =
+        '<div class="v-head"><div class="v-name">' + escapeHtml(v.titulo) + '</div></div>' +
+        '<div class="v-meta">' +
+          '<span>' + escapeHtml(v.plataforma || 'Outro') + '</span>' +
+          '<span>' + dateLabel(v.data) + '</span>' +
+          '<span>eng. ' + engagement(v) + '%</span>' +
+        '</div>' +
+        '<div class="v-nums">' +
+          '<div class="v-num"><div class="n-label">Views</div><div class="n-value">' + fmt(v.views||0) + '</div></div>' +
+          '<div class="v-num"><div class="n-label">Likes</div><div class="n-value">' + fmt(v.likes||0) + '</div></div>' +
+          '<div class="v-num"><div class="n-label">Coment.</div><div class="n-value">' + fmt(v.coment||0) + '</div></div>' +
+          '<div class="v-num"><div class="n-label">Comp.</div><div class="n-value">' + fmt(v.compart||0) + '</div></div>' +
+        '</div>' +
+        (v.nota ? '<div class="v-note"><strong>Funcionou:</strong> ' + escapeHtml(v.nota) + '</div>' : '') +
+        '<div class="v-actions">' +
+          '<button class="edit" data-id="' + v.id + '">Editar</button>' +
+          '<button class="del" data-id="' + v.id + '">Excluir</button>' +
+        '</div>';
+      videoList.appendChild(card);
+    });
+  }
+
+  function escapeHtml(str){
+    const d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+  }
+
+  function resetForm(){
+    editingId = null;
+    saveBtn.textContent = '+ Salvar vídeo';
+    cancelBtn.classList.remove('show');
+    fTitulo.value = '';
+    fPlataforma.value = 'YouTube';
+    fData.value = '';
+    fViews.value = '';
+    fLikes.value = '';
+    fComent.value = '';
+    fCompart.value = '';
+    fNota.value = '';
+  }
+
+  async function save(){
+    const titulo = fTitulo.value.trim();
+    if(!titulo){ showToast('Digite o título do vídeo.'); fTitulo.focus(); return; }
+    const record = {
+      id: editingId || (Date.now().toString(36) + Math.random().toString(36).slice(2, 8)),
+      titulo: titulo,
+      plataforma: fPlataforma.value,
+      data: fData.value,
+      views: num(fViews.value),
+      likes: num(fLikes.value),
+      coment: num(fComent.value),
+      compart: num(fCompart.value),
+      nota: fNota.value.trim(),
+      criadoEm: Date.now()
+    };
+    await OneTakeDB.put(STORE, record);
+    showToast(editingId ? 'Vídeo atualizado!' : 'Vídeo salvo!');
+    resetForm();
+    await load();
+  }
+
+  videoList.addEventListener('click', async (e) => {
+    const btn = e.target.closest('button');
+    if(!btn) return;
+    const id = btn.dataset.id;
+    if(btn.classList.contains('del')){
+      const v = videos.find(x => x.id === id);
+      if(!v) return;
+      if(!confirm('Excluir "' + v.titulo + '"? Essa ação não pode ser desfeita.')) return;
+      await OneTakeDB.del(STORE, id);
+      showToast('Vídeo excluído.');
+      if(editingId === id) resetForm();
+      await load();
+    }else if(btn.classList.contains('edit')){
+      const v = videos.find(x => x.id === id);
+      if(!v) return;
+      editingId = id;
+      fTitulo.value = v.titulo;
+      fPlataforma.value = v.plataforma || 'YouTube';
+      fData.value = v.data || '';
+      fViews.value = v.views || '';
+      fLikes.value = v.likes || '';
+      fComent.value = v.coment || '';
+      fCompart.value = v.compart || '';
+      fNota.value = v.nota || '';
+      saveBtn.textContent = 'Salvar alterações';
+      cancelBtn.classList.add('show');
+      document.getElementById('content').scrollTop = 0;
+      window.scrollTo(0, 0);
+      fTitulo.focus();
+    }
+  });
+
+  saveBtn.addEventListener('click', save);
+  cancelBtn.addEventListener('click', resetForm);
+  fData.value = new Date().toISOString().slice(0, 10);
+
+  load().catch(e => showToast('Erro ao carregar: ' + e.message));
+})();
+</script>
+
+</body>
+</html>

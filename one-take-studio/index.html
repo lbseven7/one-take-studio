@@ -107,6 +107,8 @@
       display: flex;
       flex-direction: column;
       gap: 2px;
+      flex: 1;
+      min-height: 0;
       overflow-y: auto;
       overflow-x: hidden;
       padding-bottom: 8px;
@@ -153,14 +155,69 @@
       flex-shrink: 0;
     }
 
-    #sidebar-footer {
-      margin-top: auto;
-      padding: 12px 10px 4px 10px;
-      font-size: 10px;
+    #sidebar-data {
+      flex-shrink: 0;
+      margin-top: 10px;
+      padding: 12px 10px;
+      background: var(--card);
+      border: 1px solid var(--panel-line);
+      border-radius: 8px;
+    }
+
+    #sidebar-data .sd-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 12px;
+      color: var(--accent-amber);
+      letter-spacing: 0.02em;
+      margin: 0 0 5px 0;
+    }
+
+    #sidebar-data p {
+      margin: 0 0 10px 0;
+      font-size: 10.5px;
+      line-height: 1.55;
       color: var(--text-dim);
-      letter-spacing: 0.04em;
-      line-height: 1.6;
-      border-top: 1px solid var(--panel-line);
+    }
+
+    #sidebar-data .sd-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    #sidebar-data .sd-actions button {
+      flex: 1;
+      min-width: 0;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 11px;
+      padding: 8px 6px;
+      border-radius: 6px;
+      cursor: pointer;
+      border: 1px solid var(--panel-line);
+      background: var(--panel);
+      color: var(--text-main);
+      white-space: nowrap;
+      transition: border-color .15s ease, color .15s ease;
+    }
+
+    #sidebar-data .sd-actions button:hover {
+      border-color: var(--accent-amber);
+      color: var(--accent-amber);
+    }
+
+    #sidebar-data #sd-msg {
+      margin-top: 8px;
+      font-size: 10.5px;
+      line-height: 1.5;
+    }
+
+    #sidebar-data #sd-msg.ok {
+      color: var(--accent-green);
+    }
+
+    #sidebar-data #sd-msg.err {
+      color: var(--accent-red);
     }
 
     #menu-toggle {
@@ -883,7 +940,16 @@
         <div class="nav-item" data-id="ia-config" data-file="ia-config.html" data-name="Configuração da IA"><span class="dot" style="background:var(--accent-amber)"></span>Configuração da IA</div>
         <div class="nav-item" data-id="sobre" data-file="sobre.html" data-name="Sobre"><span class="dot" style="background:var(--text-dim)"></span>Sobre</div>
       </nav>
-      <div id="sidebar-footer">Take Um Studio · Seus dados ficam no seu navegador. Baixe um backup na home para levá-los com você.</div>
+      <div id="sidebar-data">
+        <div class="sd-title">Seus dados</div>
+        <p>Seus dados ficam salvos só neste navegador. Para nunca perdê-los e poder levar para outro celular ou computador, faça um backup.</p>
+        <div class="sd-actions">
+          <button id="sd-backup-btn" type="button">⬇ Baixar backup</button>
+          <button id="sd-restore-btn" type="button">⬆ Restaurar</button>
+        </div>
+        <input type="file" id="sd-backup-file" accept=".json,application/json" hidden>
+        <div id="sd-msg"></div>
+      </div>
     </aside>
 
     <main id="main">
@@ -1162,14 +1228,9 @@
       });
 
       // ---------- BACKUP ----------
-      const backupExportBtn = document.getElementById('backup-export-btn');
-      const backupImportBtn = document.getElementById('backup-import-btn');
-      const backupFile = document.getElementById('backup-file');
-      const backupMsg = document.getElementById('backup-msg');
-
-      backupExportBtn.addEventListener('click', async () => {
-        backupMsg.className = '';
-        backupMsg.textContent = 'Gerando backup...';
+      async function doExport(msgEl, okMsg) {
+        msgEl.className = '';
+        msgEl.textContent = 'Gerando backup...';
         try {
           const data = await TakeUmBackup.exportAll();
           const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -1180,40 +1241,61 @@
           a.click();
           a.remove();
           URL.revokeObjectURL(a.href);
-          backupMsg.className = 'ok';
-          backupMsg.textContent = 'Backup baixado! Envie esse arquivo para você mesmo no WhatsApp ou guarde no Drive.';
+          msgEl.className = 'ok';
+          msgEl.textContent = okMsg || 'Backup baixado! Envie esse arquivo para você mesmo no WhatsApp ou guarde no Drive.';
         } catch (e) {
-          backupMsg.className = 'err';
-          backupMsg.textContent = 'Erro ao gerar backup: ' + e.message;
+          msgEl.className = 'err';
+          msgEl.textContent = 'Erro ao gerar backup: ' + e.message;
         }
-      });
+      }
 
-      backupImportBtn.addEventListener('click', () => backupFile.click());
-
-      backupFile.addEventListener('change', async (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-        backupMsg.className = '';
-        backupMsg.textContent = 'Lendo arquivo...';
+      async function doImport(file, msgEl) {
+        msgEl.className = '';
+        msgEl.textContent = 'Lendo arquivo...';
         try {
           const payload = JSON.parse(await file.text());
           if (payload.format !== 'takeum-backup') {
             throw new Error('Este arquivo não é um backup do Take Um Studio');
           }
           if (!window.confirm('Isso vai substituir todos os dados salvos neste navegador pelos dados do backup. Continuar?')) {
-            backupMsg.textContent = '';
+            msgEl.textContent = '';
             return;
           }
           await TakeUmBackup.importAll(payload);
-          backupMsg.className = 'ok';
-          backupMsg.textContent = 'Backup restaurado com sucesso!';
+          msgEl.className = 'ok';
+          msgEl.textContent = 'Backup restaurado com sucesso!';
         } catch (err) {
-          backupMsg.className = 'err';
-          backupMsg.textContent = 'Falha ao restaurar: ' + err.message;
-        } finally {
-          backupFile.value = '';
+          msgEl.className = 'err';
+          msgEl.textContent = 'Falha ao restaurar: ' + err.message;
         }
-      });
+      }
+
+      function wireBackup(exportBtn, importBtn, fileInput, msgEl, okMsg) {
+        exportBtn.addEventListener('click', () => doExport(msgEl, okMsg));
+        importBtn.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', (e) => {
+          const file = e.target.files[0];
+          if (file) doImport(file, msgEl);
+          e.target.value = '';
+        });
+      }
+
+      // Seção na home (com instruções detalhadas)
+      wireBackup(
+        document.getElementById('backup-export-btn'),
+        document.getElementById('backup-import-btn'),
+        document.getElementById('backup-file'),
+        document.getElementById('backup-msg')
+      );
+
+      // Seção na barra lateral (sempre visível, mensagem curta)
+      wireBackup(
+        document.getElementById('sd-backup-btn'),
+        document.getElementById('sd-restore-btn'),
+        document.getElementById('sd-backup-file'),
+        document.getElementById('sd-msg'),
+        'Backup baixado! Guarde em local seguro.'
+      );
 
       menuToggle.addEventListener('click', () => sidebar.classList.toggle('open'));
       function closeSidebarOnMobile() {

@@ -392,7 +392,6 @@
   </div>
 </div>
 
-<script src="pro.js"></script>
 <script src="db.js"></script>
 <script>
 (function(){
@@ -616,8 +615,6 @@
       card.platform = selectedPlatform;
       await OneTakeDB.put('pauta_cards', card);
     } else {
-      const check = TakeUmPro.checkLimit('pauta_cards', cards.length);
-      if (!check.ok) { TakeUmPro.limitToast('pauta_cards', cards.length); return; }
       const card = {
         id: uid(),
         title,

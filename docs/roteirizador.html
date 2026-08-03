@@ -502,7 +502,6 @@
 
 <div id="toast"></div>
 
-<script src="pro.js"></script>
 <script src="db.js"></script>
 <script src="ia.js"></script>
 <script>
@@ -631,24 +630,13 @@
     clearTimeout(autoSaveTimer);
     autoSaveTimer = setTimeout(() => {
       const script = getCurrentScript();
-      if(!scripts.some(s => s.id === script.id)){
-        const check = TakeUmPro.checkLimit('roteirizador_scripts', scripts.length);
-        if(!check.ok){ TakeUmPro.limitToast('roteirizador_scripts', scripts.length); return; }
-      }
       OneTakeDB.put('roteirizador_scripts', script);
-      if(!scripts.some(s => s.id === script.id)) scripts.push(script);
-      currentId = script.id;
     }, 600);
   }
 
   async function saveScript(){
     const script = getCurrentScript();
-    if(!scripts.some(s => s.id === script.id)){
-      const check = TakeUmPro.checkLimit('roteirizador_scripts', scripts.length);
-      if(!check.ok){ TakeUmPro.limitToast('roteirizador_scripts', scripts.length); return; }
-    }
     await OneTakeDB.put('roteirizador_scripts', script);
-    if(!scripts.some(s => s.id === script.id)) scripts.push(script);
     currentId = script.id;
   }
 

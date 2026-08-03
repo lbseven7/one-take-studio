@@ -501,26 +501,6 @@
     color: var(--text-dim);
   }
   #retake-btn:hover{ color: var(--text-main); border-color: var(--accent-amber); }
-
-  /* ---------- PRO LOCK ---------- */
-  #camera-toggle.locked{ opacity: .55; }
-  #camera-toggle.locked span::after{ content: ' 🔒 PRO'; color: var(--accent-amber); font-size: 10px; }
-
-  #pro-lock{
-    display: none;
-    margin-top: 14px;
-    padding: 12px 14px;
-    background: var(--panel);
-    border: 1px solid rgba(255,176,32,0.4);
-    border-radius: 6px;
-    font-size: 12px;
-    line-height: 1.6;
-    color: var(--text-dim);
-  }
-  #pro-lock.show{ display: block; }
-  #pro-lock strong{ color: var(--text-main); }
-  #pro-lock a{ color: var(--accent-amber); font-weight: 700; text-decoration: none; white-space: nowrap; }
-  #pro-lock a:hover{ text-decoration: underline; }
 </style>
 </head>
 <body>
@@ -567,7 +547,6 @@ Ex: Olá, seja bem-vindo ao vídeo de hoje. Vamos falar sobre..."></textarea>
       <button id="start-btn" disabled>Iniciar leitura</button>
     </div>
     <div id="camera-note" style="display:none;">O navegador vai pedir permissão de câmera e microfone. O texto some do vídeo gravado — ele aparece só na sua tela, como guia de leitura.</div>
-    <div id="pro-lock">🔒 <strong>Gravação com câmera</strong> é um recurso do Plano Pro. <a href="vendas.html">Conhecer o Pro →</a></div>
   </div>
 
   <!-- PROMPTER VIEW -->
@@ -622,7 +601,6 @@ Ex: Olá, seja bem-vindo ao vídeo de hoje. Vamos falar sobre..."></textarea>
 
 </div>
 
-<script src="pro.js"></script>
 <script src="db.js"></script>
 <script>
 (function(){
@@ -752,12 +730,6 @@ Ex: Olá, seja bem-vindo ao vídeo de hoje. Vamos falar sobre..."></textarea>
   });
 
   cameraToggle.addEventListener('click', () => {
-    const proLock = document.getElementById('pro-lock');
-    if(!TakeUmPro.isPro()){
-      if(proLock) proLock.classList.add('show');
-      return;
-    }
-    if(proLock) proLock.classList.remove('show');
     state.useCamera = !state.useCamera;
     cameraToggle.classList.toggle('active', state.useCamera);
     cameraNote.style.display = state.useCamera ? 'block' : 'none';
@@ -1025,10 +997,6 @@ Ex: Olá, seja bem-vindo ao vídeo de hoje. Vamos falar sobre..."></textarea>
     mirrorToggle.classList.toggle('active', state.mirrored);
     scriptDisplay.classList.toggle('mirrored', state.mirrored);
     countdownToggle.classList.toggle('active', state.useCountdown);
-    if(!TakeUmPro.isPro()){
-      state.useCamera = false;
-      cameraToggle.classList.add('locked');
-    }
     cameraToggle.classList.toggle('active', state.useCamera);
     cameraNote.style.display = state.useCamera ? 'block' : 'none';
     startBtn.textContent = state.useCamera ? 'Iniciar com câmera' : 'Iniciar leitura';

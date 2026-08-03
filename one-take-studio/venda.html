@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Take Um Studio Pro · Licença Vitalícia</title>
+<meta name="description" content="Take Um Studio Pro: criação ilimitada em todas as ferramentas para quem grava vídeo sozinho. Licença vitalícia, pagamento único, entrega automática por e-mail.">
+<meta name="theme-color" content="#0a0a0c">
+<link rel="stylesheet" href="fonts.css">
+<style>
+  :root{
+    --bg: #0a0a0c;
+    --panel: #141417;
+    --panel-line: #232328;
+    --card: #1a1a1e;
+    --text-main: #f5f4ef;
+    --text-dim: #8a8a92;
+    --accent-amber: #ffb020;
+    --accent-red: #ff3b30;
+    --accent-green: #39ff88;
+    --font-display: 'Archivo', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+  }
+
+  *{ box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html, body{
+    margin: 0; padding: 0;
+    background: var(--bg);
+    color: var(--text-main);
+    font-family: var(--font-mono);
+    font-size: 14px;
+  }
+
+  #page{
+    max-width: 720px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  header{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 20px;
+    background: var(--panel);
+    border-bottom: 1px solid var(--panel-line);
+  }
+  header .mark{
+    width: 26px; height: 26px;
+    border-radius: 6px;
+    object-fit: cover;
+    display: block;
+  }
+  header .brand-name{
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 15px;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+    flex: 1;
+  }
+  header .brand-name small{
+    display: block;
+    font-family: var(--font-mono);
+    font-weight: 400;
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  header .back{
+    color: var(--text-dim);
+    font-size: 11px;
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  header .back:hover{ color: var(--text-main); }
+
+  #content{ padding: 24px 20px 40px 20px; }
+
+  .hero{ text-align: center; padding: 8px 0 24px 0; }
+  .hero .eyebrow{
+    display: inline-block;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent-green);
+    border: 1px solid rgba(57,255,136,0.35);
+    border-radius: 20px;
+    padding: 5px 12px;
+    margin-bottom: 18px;
+  }
+  .hero h1{
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 30px;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin: 0 0 10px 0;
+  }
+  .hero .lead{
+    color: var(--text-dim);
+    line-height: 1.7;
+    margin: 0 auto 20px auto;
+    max-width: 480px;
+  }
+
+  .price-card{
+    background: var(--panel);
+    border: 1px solid var(--panel-line);
+    border-radius: 10px;
+    padding: 24px 20px;
+    margin-bottom: 24px;
+  }
+  .price-row{
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+  .price-row .price{
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 42px;
+    color: var(--accent-amber);
+  }
+  .price-row .once{
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+  .price-note{
+    text-align: center;
+    font-size: 11px;
+    color: var(--text-dim);
+    margin: 0 0 18px 0;
+  }
+  .buy-btn{
+    display: block;
+    background: var(--accent-amber);
+    color: #1a1200;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    text-align: center;
+    text-decoration: none;
+    padding: 15px;
+    border-radius: 6px;
+  }
+  .buy-btn:hover{ filter: brightness(1.1); }
+  .secure-note{
+    text-align: center;
+    font-size: 11px;
+    color: var(--text-dim);
+    margin: 10px 0 0 0;
+  }
+
+  .section{ margin-bottom: 28px; }
+  .section h2{
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 16px;
+    margin: 0 0 4px 0;
+  }
+  .section .sub{
+    color: var(--text-dim);
+    font-size: 12px;
+    line-height: 1.6;
+    margin: 0 0 14px 0;
+  }
+
+  .card{
+    background: var(--panel);
+    border: 1px solid var(--panel-line);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+
+  .feat-list{ list-style: none; margin: 0; padding: 0; }
+  .feat-list li{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 4px;
+    border-bottom: 1px solid var(--panel-line);
+    font-size: 13px;
+  }
+  .feat-list li:last-child{ border-bottom: none; }
+  .feat-list .check{
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: rgba(57,255,136,0.12);
+    color: var(--accent-green);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    flex-shrink: 0;
+  }
+  .feat-list .hl{ color: var(--accent-amber); font-weight: 700; }
+
+  .steps{ counter-reset: step; }
+  .step{
+    display: flex;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--panel-line);
+  }
+  .step:last-child{ border-bottom: none; }
+  .step .num{
+    counter-increment: step;
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    border: 1px solid var(--accent-amber);
+    color: var(--accent-amber);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    flex-shrink: 0;
+  }
+  .step .txt b{ display: block; font-size: 13px; margin-bottom: 2px; }
+  .step .txt span{ color: var(--text-dim); font-size: 12px; line-height: 1.6; }
+
+  .faq details{
+    border-bottom: 1px solid var(--panel-line);
+    padding: 12px 2px;
+  }
+  .faq details:last-child{ border-bottom: none; }
+  .faq summary{
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--text-main);
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .faq summary::-webkit-details-marker{ display: none; }
+  .faq summary::after{ content: '+'; color: var(--accent-amber); font-size: 15px; }
+  .faq details[open] summary::after{ content: '–'; }
+  .faq details p{
+    color: var(--text-dim);
+    font-size: 12px;
+    line-height: 1.7;
+    margin: 8px 0 0 0;
+  }
+
+  .bottom-cta{
+    text-align: center;
+    background: var(--panel);
+    border: 1px solid var(--panel-line);
+    border-radius: 10px;
+    padding: 26px 20px;
+    margin-top: 8px;
+  }
+  .bottom-cta h2{
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 20px;
+    margin: 0 0 6px 0;
+  }
+  .bottom-cta .price-line{
+    font-size: 12px;
+    color: var(--text-dim);
+    margin: 0 0 18px 0;
+  }
+  .bottom-cta .price-line b{ color: var(--accent-amber); font-size: 15px; }
+
+  footer{
+    border-top: 1px solid var(--panel-line);
+    padding: 18px 20px;
+    text-align: center;
+    font-size: 11px;
+    color: var(--text-dim);
+    line-height: 1.7;
+  }
+  footer a{ color: var(--text-dim); }
+</style>
+</head>
+<body>
+<div id="page">
+  <header>
+    <img class="mark" src="icons/icon-192.png" alt="Take Um Studio">
+    <div class="brand-name">
+      Take Um Studio
+      <small>Para quem grava sozinho</small>
+    </div>
+    <a class="back" href="./index.html">Voltar ao app</a>
+  </header>
+
+  <div id="content">
+    <section class="hero">
+      <span class="eyebrow">Licença vitalícia · pagamento único</span>
+      <h1>Take Um Studio<br>PRO</h1>
+      <p class="lead">O kit completo de ferramentas para quem grava e organiza vídeo sozinho — agora com criação ilimitada, sem limite de usos.</p>
+    </section>
+
+    <div class="price-card">
+      <div class="price-row">
+        <span class="price">R$ 67</span>
+        <span class="once">pagamento<br>único</span>
+      </div>
+      <p class="price-note">Sem mensalidade. Seu por toda a vida.</p>
+      <a class="buy-btn" href="https://pay.hotmart.com/XXXXXXXXXX" target="_blank" rel="noopener">Comprar agora</a>
+      <p class="secure-note">Pagamento processado pela Hotmart · chave entregue por e-mail</p>
+    </div>
+
+    <section class="section">
+      <h2>O que você desbloqueia</h2>
+      <p class="sub">Todas as ferramentas do Take Um Studio sem o limite gratuito de 7 usos.</p>
+      <div class="card">
+        <ul class="feat-list">
+          <li><span class="check">✓</span> Roteirizador de vídeos com IA</li>
+          <li><span class="check">✓</span> Descrições de vídeo geradas por IA</li>
+          <li><span class="check">✓</span> Capas 16:9 e 9:16 prontas para postar</li>
+          <li><span class="check">✓</span> Pack de publicação completo</li>
+          <li><span class="check">✓</span> Teleprompter com rolagem e gravação</li>
+          <li><span class="check">✓</span> Banco de ideias com roteirização</li>
+          <li><span class="check">✓</span> Funciona offline e continua após atualizações</li>
+          <li><span class="check">✓</span> <span class="hl">Criação ILIMITADA em todas as ferramentas</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Como funciona</h2>
+      <p class="sub">A compra e a entrega são automáticas.</p>
+      <div class="card">
+        <div class="steps">
+          <div class="step">
+            <span class="num"></span>
+            <div class="txt"><b>Você faz a compra</b><span>Na Hotmart, com pagamento seguro via Pix ou cartão.</span></div>
+          </div>
+          <div class="step">
+            <span class="num"></span>
+            <div class="txt"><b>Sua chave chega por e-mail</b><span>Assim que o pagamento é confirmado, automaticamente.</span></div>
+          </div>
+          <div class="step">
+            <span class="num"></span>
+            <div class="txt"><b>Cole na página Plano Pro</b><span>No site, abra Plano Pro, cole a chave e clique em Ativar. Pronto.</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Dúvidas frequentes</h2>
+      <div class="card faq">
+        <details>
+          <summary>Preciso instalar alguma coisa?</summary>
+          <p>Não. O Take Um Studio roda no navegador do seu celular ou computador.</p>
+        </details>
+        <details>
+          <summary>A chave expira?</summary>
+          <p>Não. A licença é vitalícia: depois de ativada, fica valendo para sempre.</p>
+        </details>
+        <details>
+          <summary>Funciona offline?</summary>
+          <p>Sim. Depois de ativado, o plano Pro fica salvo no dispositivo e funciona mesmo sem internet.</p>
+        </details>
+        <details>
+          <summary>E se eu trocar de celular?</summary>
+          <p>Basta colar a sua chave na página Plano Pro do novo aparelho. A chave é pessoal e intransferível.</p>
+        </details>
+      </div>
+    </section>
+
+    <div class="bottom-cta">
+      <h2>Pronto para criar sem limites?</h2>
+      <p class="price-line">Licença vitalícia · <b>R$ 67</b> pagamento único</p>
+      <a class="buy-btn" href="https://pay.hotmart.com/XXXXXXXXXX" target="_blank" rel="noopener">Comprar agora</a>
+    </div>
+  </div>
+
+  <footer>
+    Take Um Studio · feito para quem grava vídeo sozinho<br>
+    Compra segura e entrega automática via <a href="https://hotmart.com" target="_blank" rel="noopener">Hotmart</a>
+  </footer>
+</div>
+</body>
+</html>

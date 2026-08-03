@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Take Um Studio · Recuperar minha chave</title>
-<meta name="description" content="Recupere sua chave de ativação do Take Um Studio Pro com o código do pedido da sua compra na Hotmart.">
+<meta name="description" content="Recupere sua chave de ativação do Take Um Studio Pro com o número da transação da sua compra na Hotmart.">
 <link rel="stylesheet" href="fonts.css">
 <style>
   :root{
@@ -229,12 +229,12 @@
   <div id="content">
     <div class="card">
       <h2><span class="star">🔑</span> Recuperar minha chave Pro</h2>
-      <p class="sub">Digite o <strong>código do pedido</strong> da sua compra. Ele está no recibo que você recebeu da Hotmart e também em <em>Minhas compras</em> no painel da Hotmart. Sua chave é gerada aqui, na hora.</p>
+      <p class="sub">Digite o <strong>número da transação</strong> (o "código do pedido") da sua compra. Ele está no recibo que você recebeu da Hotmart e também em <em>Minhas compras</em> no painel da Hotmart. Sua chave é gerada aqui, na hora.</p>
 
       <div class="field">
-        <label>Código do pedido</label>
+        <label>Número da transação (código do pedido)</label>
         <div class="code-row">
-          <input type="text" id="codigo-input" placeholder="Ex.: 12345678" autocomplete="off" spellcheck="false">
+          <input type="text" id="codigo-input" placeholder="Ex.: HP3670477666" autocomplete="off" spellcheck="false">
         </div>
       </div>
 
@@ -252,15 +252,15 @@
     </div>
 
     <div class="help">
-      <strong>Onde encontrar o código do pedido</strong>
-      <p>O código é informado no <em>recibo da compra</em> (e-mail de confirmação da Hotmart) e dentro da sua conta Hotmart em <em>Minhas compras</em>. Qualquer número ou código único que apareça no recibo funciona.</p>
+      <strong>Onde encontrar o número da transação</strong>
+      <p>No <em>recibo da compra</em> (e-mail de confirmação da Hotmart) ele aparece como <em>"Número da Transação"</em> — por exemplo, <em>HP3670477666</em>. Também fica em <em>Minhas compras</em> na sua conta Hotmart. Qualquer número ou código único do recibo funciona, desde que você use sempre o mesmo.</p>
       <strong>Como ativar</strong>
       <ol>
-        <li>Cole o código acima e toque em <em>Recuperar minha chave</em>.</li>
+        <li>Digite o número da transação acima e toque em <em>Recuperar minha chave</em>.</li>
         <li>Copie a chave gerada.</li>
         <li>Abra a página <em>Plano Pro</em>, cole a chave em "Ativar com chave" e pronto.</li>
       </ol>
-      <p>O mesmo código sempre gera a mesma chave, então você pode recuperar a qualquer momento, em qualquer aparelho.</p>
+      <p>O mesmo número sempre gera a mesma chave, então você pode recuperar a qualquer momento, em qualquer aparelho.</p>
       <p>Precisa de ajuda? Responda ao e-mail de confirmação da compra ou fale com a gente pela página <a href="./sobre.html" style="color:var(--accent-amber);">Sobre</a>.</p>
     </div>
   </div>
@@ -283,7 +283,7 @@
 
   function recover(){
     const codigo = input.value.trim();
-    if(!codigo){ setMsg('Digite o código do pedido do seu recibo.', 'err'); return; }
+    if(!codigo){ setMsg('Digite o número da transação do seu recibo.', 'err'); return; }
     if(codigo.length < 4){ setMsg('Esse código parece curto demais. Confira o código no recibo da Hotmart.', 'err'); return; }
     const chave = window.TakeUmChave.gerarDeCodigo(codigo);
     if(!chave){ setMsg('Não consegui gerar a chave com esse código. Confira e tente de novo.', 'err'); return; }

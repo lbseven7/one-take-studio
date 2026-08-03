@@ -38,6 +38,18 @@
     return 'TAKEUM-' + p.slice(0,5) + '-' + p.slice(5,10) + '-' + p.slice(10,15) + '-' + p.slice(15,20) + '-' + checksum(p);
   }
 
+  function gerarDeCodigo(codigo){
+    var src = normalize(String(codigo || ''));
+    if(!src) return null;
+    var seed = fnv1a(src + SALT);
+    var p = '';
+    for(var i = 0; i < 20; i++){
+      var h = fnv1a(src + ':' + i, seed + Math.imul(i + 1, 2654435761));
+      p += ALPHABET[h % 32];
+    }
+    return 'TAKEUM-' + p.slice(0,5) + '-' + p.slice(5,10) + '-' + p.slice(10,15) + '-' + p.slice(15,20) + '-' + checksum(p);
+  }
+
   function validar(key){
     var n = normalize(key);
     if(n.slice(0, 6) !== 'TAKEUM') return false;
@@ -51,7 +63,7 @@
     return diff === 0;
   }
 
-  var api = { gerar: gerar, validar: validar, normalize: normalize, checksum: checksum };
+  var api = { gerar: gerar, gerarDeCodigo: gerarDeCodigo, validar: validar, normalize: normalize, checksum: checksum };
   if(typeof module !== 'undefined' && module.exports){ module.exports = api; }
   if(typeof window !== 'undefined'){ window.TakeUmChave = api; }
 })(typeof globalThis !== 'undefined' ? globalThis : this);

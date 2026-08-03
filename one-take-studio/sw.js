@@ -1,10 +1,11 @@
-const CACHE = 'takeum-v29';
+const CACHE = 'takeum-v33';
 
 const ASSETS = [
   './',
   './index.html',
   './db.js',
   './ia.js',
+  './analytics.js',
   './chave-core.js',
   './limite.js',
   './fonts.css',
@@ -27,6 +28,9 @@ const ASSETS = [
   './venda.html',
   './guias/guia.html',
   './blog/mercado-criadores-de-video-solo.html',
+  './blog/teleprompter-gratis-online.html',
+  './blog/gerador-de-capa-para-youtube-gratis.html',
+  './blog/roteirizador-de-video-com-ia.html',
   './guias/guia-primeiro-video.html',
   './guias/guia-microfone.html',
   './guias/guia-iluminacao.html',

@@ -1,4 +1,4 @@
-const CACHE = 'takeum-v23';
+const CACHE = 'takeum-v24';
 
 const ASSETS = [
   './',
@@ -71,10 +71,10 @@ self.addEventListener('fetch', e => {
       fetch(e.request)
         .then(res => {
           const copy = res.clone();
-          caches.open(CACHE).then(c => c.put('./index.html', copy));
+          caches.open(CACHE).then(c => c.put(e.request, copy));
           return res;
         })
-        .catch(() => caches.match('./index.html'))
+        .catch(() => caches.match(e.request).then(c => c || caches.match('./index.html')))
     );
     return;
   }

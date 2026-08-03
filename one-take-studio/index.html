@@ -1306,10 +1306,8 @@
       const installBtn = document.getElementById('install-btn');
       let deferredPrompt = null;
 
-      function showIOSHint() {
-        installBtn.hidden = false;
-        installBtn.textContent = '📲 Instalar no celular';
-      }
+      const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+      if (!isStandalone) installBtn.hidden = false;
 
       window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
@@ -1336,20 +1334,13 @@
           window.alert('Para instalar o Take Um no iPhone/iPad: toque no botão Compartilhar e escolha "Adicionar à Tela de Início".');
           return;
         }
-        if (navigator.userAgent.indexOf('Safari') > -1) {
-          window.alert('Para instalar: use o navegador Chrome no celular ou computador.');
-          return;
-        }
+        window.alert('Para instalar o Take Um no computador/celular: use o botão "Instalar" na barra de endereço do navegador (Chrome/Edge).');
       });
 
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
           navigator.serviceWorker.register('sw.js').catch(() => {});
         });
-      }
-
-      if (!('beforeinstallprompt' in window) && /iphone|ipad|ipod/i.test(navigator.userAgent)) {
-        showIOSHint();
       }
     })();
   </script>

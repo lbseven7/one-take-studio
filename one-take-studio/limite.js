@@ -2,7 +2,7 @@
   if(!window.OneTakeDB) return;
 
   var STORE = 'app_state';
-  var LIMIT = 7;
+  var LIMIT = 5;
   var PRECO = 'R$ 67';
   var CHECKOUT_URL = 'https://lbseven7.github.io/one-take-studio/venda.html';
 
@@ -41,6 +41,42 @@
     if(await ehPro()) return;
     const u = await usos(acao);
     await OneTakeDB.put(STORE, { id: 'uso-' + acao, count: u + 1 });
+    pintarContadores();
+  }
+
+  function pintarContadores(){
+    const els = document.querySelectorAll('[data-tu-count]');
+    for(let i = 0; i < els.length; i++){
+      (function(el){
+        const acao = el.getAttribute('data-tu-count');
+        podeUsar(acao).then(function(r){
+          if(r.pro){ el.style.display = 'none'; return; }
+          if(r.restantes > 0){
+            el.textContent = r.restantes + ' de ' + r.limite + ' grátis';
+            el.classList.remove('ex');
+          } else {
+            el.textContent = 'limite atingido';
+            el.classList.add('ex');
+          }
+        });
+      })(els[i]);
+    }
+  }
+
+  function initContadores(){
+    if(!document.querySelector('style[data-tu-count-style]')){
+      const s = document.createElement('style');
+      s.setAttribute('data-tu-count-style', '1');
+      s.textContent = '.tu-count{display:inline-block;font-size:10px;line-height:1;color:inherit;opacity:.55;font-weight:600;margin-left:6px;letter-spacing:.04em;text-transform:uppercase;vertical-align:middle;white-space:nowrap;} .tu-count.ex{opacity:1;color:#ff3b30;}';
+      document.head.appendChild(s);
+    }
+    pintarContadores();
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', initContadores);
+  } else {
+    initContadores();
   }
 
   async function resgatar(chave){
@@ -135,6 +171,7 @@
     podeUsar: podeUsar,
     usar: usar,
     resgatar: resgatar,
-    mostrarUpsell: mostrarUpsell
+    mostrarUpsell: mostrarUpsell,
+    pintarContadores: pintarContadores
   };
 })();

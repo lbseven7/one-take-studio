@@ -15,8 +15,8 @@ while (fs.existsSync(caminho)) {
   caminho = path.join(dir, nome);
 }
 
-const linhas = ['chave,usada'];
-for (let i = 0; i < qtd; i++) linhas.push(gerar() + ',');
+const linhas = ['chave,usada,email,data'];
+for (let i = 0; i < qtd; i++) linhas.push(gerar() + ',,,');
 fs.writeFileSync(caminho, linhas.join('\n') + '\n', 'utf8');
 
 console.log('Geradas ' + qtd + ' chaves em venda-hotmart/' + nome);

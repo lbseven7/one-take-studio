@@ -653,6 +653,15 @@
       line-height: 1.55;
     }
 
+    #support-banner .sb-body p a {
+      color: var(--accent-amber);
+      font-weight: 700;
+      text-decoration: none;
+    }
+    #support-banner .sb-body p a:hover {
+      text-decoration: underline;
+    }
+
     #support-banner button {
       font-family: var(--font-display);
       font-weight: 700;
@@ -898,6 +907,7 @@
       }
     }
   </style>
+<script src="analytics.js"></script>
 </head>
 
 <body>
@@ -1104,11 +1114,11 @@
           </div>
           <div id="backup-msg"></div>
         </div>
-        <div id="support-banner">
+          <div id="support-banner">
           <div class="sb-icon">☕</div>
           <div class="sb-body">
             <strong>Gostou? Apoie o Take Um Studio.</strong>
-            <p>Um Pix de qualquer valor ajuda a manter tudo de graça pra todo mundo.</p>
+            <p>Um Pix de qualquer valor ajuda a manter tudo grátis — ou desbloqueie a criação ilimitada com o <a href="venda.html">Take Um Pro</a>.</p>
           </div>
           <button id="pix-btn">☕ Apoiar</button>
         </div>
@@ -1222,6 +1232,7 @@
       pixCopy.addEventListener('click', async () => {
         try {
           await navigator.clipboard.writeText(PIX_KEY);
+          if(window.tuTrack){ window.tuTrack('pix_click'); }
           pixCopy.textContent = '✓ Chave copiada';
           pixCopy.classList.add('ok');
           setTimeout(() => {
@@ -1232,6 +1243,14 @@
           pixCopy.textContent = 'Copiar manualmente';
         }
       });
+
+      // ---------- NEWSLETTER ----------
+      const nlForm = document.querySelector('#newsletter form');
+      if (nlForm) {
+        nlForm.addEventListener('submit', () => {
+          if(window.tuTrack){ window.tuTrack('newsletter_signup'); }
+        });
+      }
 
       // ---------- BACKUP ----------
       async function doExport(msgEl, okMsg) {

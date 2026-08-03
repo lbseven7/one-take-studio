@@ -250,6 +250,7 @@
     .card{ padding: 16px; }
   }
 </style>
+<script src="analytics.js"></script>
 </head>
 <body>
 
@@ -361,6 +362,7 @@
     if(r.ok){
       setStatus(true);
       await renderUses();
+      if(window.tuTrack){ window.tuTrack('pro_activated'); }
     }
   });
 

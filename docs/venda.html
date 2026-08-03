@@ -284,6 +284,7 @@
   }
   footer a{ color: var(--text-dim); }
 </style>
+<script src="analytics.js"></script>
 </head>
 <body>
 <div id="page">
@@ -398,5 +399,15 @@
   </footer>
 </div>
 <script src="https://cta-widget-user-form.hp.hotmart.com/widget/widget.iife.js"></script>
+<script>
+  (function(){
+    document.addEventListener('click', function(e){
+      var a = e.target && e.target.closest ? e.target.closest('a.buy-btn') : null;
+      if(a && window.tuTrack){
+        window.tuTrack('begin_checkout', { item: 'take_um_pro', currency: 'BRL', value: 67 });
+      }
+    });
+  })();
+</script>
 </body>
 </html>

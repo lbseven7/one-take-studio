@@ -67,6 +67,7 @@
   }
   .btn:hover{ filter: brightness(1.08); }
 </style>
+<script src="analytics.js"></script>
 </head>
 <body>
 
@@ -78,5 +79,8 @@
   <a class="btn" href="index.html">Voltar ao estúdio</a>
 </div>
 
+<script>
+  if(window.tuTrack){ window.tuTrack('newsletter_signup'); }
+</script>
 </body>
 </html>

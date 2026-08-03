@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Take Um Studio · Equipamentos</title>
-<link rel="stylesheet" href="fonts.css">
+<link rel="stylesheet" href="../fonts.css">
 <style>
   :root{
     --bg: #0a0a0c;
@@ -349,7 +349,7 @@
     const link = hasTag ? item.link : item.link + sep + 'tag=' + TAG;
     el.innerHTML = `
       <div class="shot" style="background: linear-gradient(160deg, ${item.bg[0]}, ${item.bg[1]});">
-        <img class="prod-img" src="image/prod-${i + 1}.jpg" alt="${item.name}" loading="lazy"
+        <img class="prod-img" src="../image/prod-${i + 1}.jpg" alt="${item.name}" loading="lazy"
              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
         <span class="big-icon" style="display:none;">${item.icon}</span>
         <span class="price-tag">${item.price}</span>

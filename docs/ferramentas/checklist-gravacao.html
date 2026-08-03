@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Take Um Studio · Checklist de Divulgação</title>
-<link rel="stylesheet" href="fonts.css">
+<title>Take Um Studio · Checklist de Gravação</title>
+<link rel="stylesheet" href="../fonts.css">
 <style>
   :root{
     --bg: #0a0a0c;
@@ -85,15 +85,14 @@
     padding: 12px 16px;
   }
 
-  .section-label{
-    font-size: 10px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+  .empty-hint{
     color: var(--text-dim);
-    padding: 16px 14px 8px 14px;
-    opacity: 0.8;
+    font-size: 12px;
+    text-align: center;
+    padding: 40px 16px;
+    line-height: 1.6;
+    opacity: 0.7;
   }
-  .section-label:first-child{ padding-top: 4px; }
 
   .item{
     display: flex;
@@ -156,6 +155,15 @@
   }
   .item:hover .del-item{ opacity: 1; }
   .del-item:hover{ color: var(--accent-red); }
+
+  .section-label{
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    padding: 16px 14px 8px 14px;
+    opacity: 0.7;
+  }
 
   #add-row{
     display: flex;
@@ -231,7 +239,7 @@
 
 <div id="app">
   <header>
-    <h1>Take Um Studio · Divulgação</h1>
+    <h1>Take Um Studio · Checklist</h1>
     <div class="count"><span class="done" id="done-count">0</span> / <span id="total-count">0</span></div>
   </header>
   <div id="progress-bar"><div id="progress-fill"></div></div>
@@ -245,34 +253,27 @@
 
   <div id="footer-actions">
     <button id="reset-btn">Desmarcar todos</button>
-    <button id="clear-btn">Restaurar padrão</button>
+    <button id="clear-btn">Limpar todos</button>
   </div>
 </div>
 
-<script src="db.js"></script>
+<script src="../db.js"></script>
 <script>
 (function(){
   const DEFAULT_ITEMS = [
-    { id: 'titulo-capa', label: 'Título, capa e descrição conferidos antes de publicar', section: 'publicar', default: true },
-    { id: 'horario', label: 'Publicou no horário de pico do seu público', section: 'publicar', default: true },
-    { id: 'link-bio', label: 'Link do vídeo na bio / perfil (se for o caso)', section: 'publicar', default: true },
-    { id: 'stories', label: 'Compartilhou nos Stories com enquete ou adesivo', section: 'divulgar', default: true },
-    { id: 'grupos', label: 'Mandou nos grupos (WhatsApp, amigos, comunidade)', section: 'divulgar', default: true },
-    { id: 'teaser', label: 'Postou teaser / clipe no perfil de outra rede', section: 'divulgar', default: true },
-    { id: 'fixar', label: 'Fixou comentário com pergunta para gerar conversa', section: 'divulgar', default: true },
-    { id: 'responder', label: 'Respondeu os comentários das primeiras horas', section: 'responder', default: true },
-    { id: 'dm', label: 'Respondeu DMs sobre o vídeo', section: 'responder', default: true },
-    { id: 'agradecer', label: 'Agradeceu quem comentou / repostou / compartilhou', section: 'responder', default: true },
-    { id: 'tracker', label: 'Anotou as métricas no Tracker de Resultados', section: 'acompanhar', default: true },
-    { id: 'feedback', label: 'Guardou o feedback para o próximo vídeo', section: 'acompanhar', default: true }
+    { id: 'bateria',   label: 'Bateria carregada / celular carregando', default: true },
+    { id: 'cartao',    label: 'Cartão de memória ok', default: true },
+    { id: 'microfone', label: 'Microfone funcionando', default: true },
+    { id: 'luz',       label: 'Iluminação ligada', default: true },
+    { id: 'cenario',   label: 'Cenário arrumado', default: true },
+    { id: 'roupa',     label: 'Roupa / figurino', default: true },
+    { id: 'isolamento',label: 'Janelas fechadas (isolamento acústico)', default: true },
+    { id: 'notif',     label: 'Notificações do celular silenciadas', default: true },
+    { id: 'roteiro',   label: 'Roteiro aberto no teleprompter', default: true },
+    { id: 'claquete',  label: 'Claquete configurada', default: true },
+    { id: 'lente',     label: 'Lente limpa', default: true },
+    { id: 'agua',      label: 'Copo d\'água por perto', default: true }
   ];
-
-  const SECTION_LABELS = {
-    publicar: 'Publicar',
-    divulgar: 'Divulgar',
-    responder: 'Responder',
-    acompanhar: 'Acompanhar'
-  };
 
   const list = document.getElementById('list');
   const doneCount = document.getElementById('done-count');
@@ -287,7 +288,7 @@
 
   async function loadItems(){
     try{
-      const stored = await OneTakeDB.get('checklist_state', 'divulgacao');
+      const stored = await OneTakeDB.get('checklist_state', 'items');
       if(stored && stored.list && stored.list.length > 0){
         items = stored.list;
         return;
@@ -298,24 +299,15 @@
   }
 
   async function saveItems(){
-    await OneTakeDB.put('checklist_state', { id: 'divulgacao', list: items });
+    await OneTakeDB.put('checklist_state', { id: 'items', list: items });
   }
 
   function render(){
     list.innerHTML = '';
     let done = 0;
-    let renderedSections = {};
 
     items.forEach(item => {
       if(item.checked) done++;
-
-      if(!renderedSections[item.section || 'outros']){
-        const secLabel = document.createElement('div');
-        secLabel.className = 'section-label';
-        secLabel.textContent = SECTION_LABELS[item.section || 'outros'] || 'Outros';
-        list.appendChild(secLabel);
-        renderedSections[item.section || 'outros'] = true;
-      }
 
       const el = document.createElement('div');
       el.className = 'item' + (item.checked ? ' checked' : '');
@@ -363,7 +355,6 @@
     items.push({
       id: 'custom_' + Date.now() + Math.random().toString(36).slice(2,6),
       label,
-      section: 'acompanhar',
       checked: false,
       default: false
     });

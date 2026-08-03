@@ -4,7 +4,7 @@
   var STORE = 'app_state';
   var LIMIT = 7;
   var PRECO = 'R$ 67';
-  var CHECKOUT_URL = 'https://sua-loja-aqui.com/produto/take-um-pro';
+  var CHECKOUT_URL = 'https://lbseven7.github.io/one-take-studio/venda.html';
 
   var ACOES = {
     'roteirizador-gerar': 'Reescrever roteiro com IA',

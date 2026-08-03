@@ -391,6 +391,8 @@
 </div>
 
 <script src="../db.js"></script>
+<script src="../chave-core.js"></script>
+<script src="../limite.js"></script>
 <script>
 (function(){
   const STATE_ID = 'state';
@@ -685,7 +687,11 @@
   }
 
   // ---------- DOWNLOAD ----------
-  downloadBtn.addEventListener('click', () => {
+  downloadBtn.addEventListener('click', async () => {
+    if(window.TakeUmLimite && !(await window.TakeUmLimite.podeUsar('capa-gerar')).ok){
+      window.TakeUmLimite.mostrarUpsell('capa-gerar');
+      return;
+    }
     const fmt = FORMATS[state.format];
     const slug = (state.title || 'capa').toLowerCase()
       .replace(/[^a-z0-9áéíóúãõâêç]+/gi, '-')
@@ -701,6 +707,7 @@
       URL.revokeObjectURL(a.href);
       msgEl.className = 'ok';
       msgEl.textContent = 'Imagem baixada! Agora é só fazer o upload na plataforma.';
+      if(window.TakeUmLimite){ window.TakeUmLimite.usar('capa-gerar').catch(function(){}); }
     }, 'image/png');
   });
 

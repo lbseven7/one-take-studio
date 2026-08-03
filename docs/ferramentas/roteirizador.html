@@ -504,6 +504,8 @@
 
 <script src="../db.js"></script>
 <script src="../ia.js"></script>
+<script src="../chave-core.js"></script>
+<script src="../limite.js"></script>
 <script>
 (function(){
   const SECTION_DEFS = [
@@ -725,6 +727,10 @@
       showToast('Escreva algo no roteiro antes de pedir a IA.');
       return;
     }
+    if(window.TakeUmLimite && !(await window.TakeUmLimite.podeUsar('roteirizador-gerar')).ok){
+      window.TakeUmLimite.mostrarUpsell('roteirizador-gerar');
+      return;
+    }
     rewriteBtn.disabled = true;
     const original = rewriteBtn.textContent;
     rewriteBtn.textContent = 'Gerando...';
@@ -743,6 +749,7 @@
       syncUIFromState();
       updateTotal();
       await saveScript();
+      if(window.TakeUmLimite){ window.TakeUmLimite.usar('roteirizador-gerar').catch(function(){}); }
       showToast('Roteiro reescrito com IA!');
     }catch(err){
       showToast(err.message);
@@ -765,6 +772,10 @@
       showToast('Escreva algo no roteiro antes de gerar a descrição.');
       return;
     }
+    if(window.TakeUmLimite && !(await window.TakeUmLimite.podeUsar('roteirizador-desc')).ok){
+      window.TakeUmLimite.mostrarUpsell('roteirizador-desc');
+      return;
+    }
     descBtn.disabled = true;
     const original = descBtn.textContent;
     descBtn.textContent = 'Gerando...';
@@ -775,6 +786,7 @@
           sections.map(s => '[' + s.name + ']\n' + (s.content || '')).join('\n\n')
       });
       openDescription(text);
+      if(window.TakeUmLimite){ window.TakeUmLimite.usar('roteirizador-desc').catch(function(){}); }
     }catch(err){
       showToast(err.message);
     }finally{

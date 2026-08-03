@@ -381,6 +381,8 @@
 
 <script src="../db.js"></script>
 <script src="../ia.js"></script>
+<script src="../chave-core.js"></script>
+<script src="../limite.js"></script>
 <script>
 (function(){
   const temaEl = document.getElementById('tema');
@@ -466,6 +468,10 @@
   async function generateWithAI(){
     const tema = String(temaEl.value || '').trim();
     if(!tema){ showToast('Digite o tema do vídeo primeiro.'); return; }
+    if(window.TakeUmLimite && !(await window.TakeUmLimite.podeUsar('pack-gerar')).ok){
+      window.TakeUmLimite.mostrarUpsell('pack-gerar');
+      return;
+    }
     setButtonLoading(aiBtn, true);
     try{
       const hasKey = await TakeUmAI.hasKey();
@@ -491,6 +497,7 @@
       };
       renderResults();
       showToast('Pack gerado com IA!');
+      if(window.TakeUmLimite){ window.TakeUmLimite.usar('pack-gerar').catch(function(){}); }
     }catch(err){
       showToast(err.message);
     }finally{
@@ -498,11 +505,16 @@
     }
   }
 
-  function generateFallback(){
+  async function generateFallback(){
+    if(window.TakeUmLimite && !(await window.TakeUmLimite.podeUsar('pack-gerar')).ok){
+      window.TakeUmLimite.mostrarUpsell('pack-gerar');
+      return;
+    }
     current = buildFallback();
     if(!current) return;
     renderResults();
     showToast('Pack gerado (sem IA)!');
+    if(window.TakeUmLimite){ window.TakeUmLimite.usar('pack-gerar').catch(function(){}); }
   }
 
   function renderResults(){

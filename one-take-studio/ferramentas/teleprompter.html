@@ -602,6 +602,8 @@ Ex: Olá, seja bem-vindo ao vídeo de hoje. Vamos falar sobre..."></textarea>
 </div>
 
 <script src="../db.js"></script>
+<script src="../chave-core.js"></script>
+<script src="../limite.js"></script>
 <script>
 (function(){
   const editView = document.getElementById('edit-view');
@@ -868,14 +870,19 @@ Ex: Olá, seja bem-vindo ao vídeo de hoje. Vamos falar sobre..."></textarea>
     if(isRecording){ stopRecording(); } else { startRecording(); setPlaying(true); }
   });
 
-  downloadBtn.addEventListener('click', () => {
+  downloadBtn.addEventListener('click', async () => {
     if(!lastBlobUrl) return;
+    if(window.TakeUmLimite && !(await window.TakeUmLimite.podeUsar('teleprompter-baixar')).ok){
+      window.TakeUmLimite.mostrarUpsell('teleprompter-baixar');
+      return;
+    }
     const a = document.createElement('a');
     a.href = lastBlobUrl;
     a.download = downloadBtn.dataset.filename || 'gravacao-teleprompter.webm';
     document.body.appendChild(a);
     a.click();
     a.remove();
+    if(window.TakeUmLimite){ window.TakeUmLimite.usar('teleprompter-baixar').catch(function(){}); }
   });
 
   retakeBtn.addEventListener('click', () => {

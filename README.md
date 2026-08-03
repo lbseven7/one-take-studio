@@ -79,7 +79,7 @@ git commit -m "sua mudança"
 git push
 ```
 
-> **Atenção:** quando mudar `index.html`, `sw.js` ou qualquer asset precacheado, **bump a versão** do cache no topo do `sw.js` (ex.: `const CACHE = 'takeum-v23'`) para os usuários receberem a versão nova.
+> **Atenção:** quando mudar `index.html`, `sw.js` ou qualquer asset precacheado, **bump a versão** do cache no topo do `sw.js` (ex.: `const CACHE = 'takeum-v25'`) para os usuários receberem a versão nova.
 
 ---
 

@@ -503,6 +503,8 @@
 
 <script src="../db.js"></script>
 <script src="../ia.js"></script>
+<script src="../chave-core.js"></script>
+<script src="../limite.js"></script>
 <script>
 (function(){
   const PLATFORMS = [
@@ -653,6 +655,10 @@
 
       el.querySelector('.ai-btn').addEventListener('click', async (e) => {
         const btn = e.currentTarget;
+        if(window.TakeUmLimite && !(await window.TakeUmLimite.podeUsar('banco-ideias-roteirizar')).ok){
+          window.TakeUmLimite.mostrarUpsell('banco-ideias-roteirizar');
+          return;
+        }
         btn.disabled = true;
         btn.textContent = 'Gerando...';
         try{
@@ -674,6 +680,7 @@
             updatedAt: Date.now()
           };
           await OneTakeDB.put('roteirizador_scripts', script);
+          if(window.TakeUmLimite){ window.TakeUmLimite.usar('banco-ideias-roteirizar').catch(function(){}); }
           showToast('Roteiro gerado! Abra o Roteirizador na home.');
         }catch(err){
           showToast(err.message);
@@ -794,6 +801,10 @@
   async function suggest(){
     const theme = themeInput.value.trim();
     if(!theme) return;
+    if(window.TakeUmLimite && !(await window.TakeUmLimite.podeUsar('banco-ideias-sugerir')).ok){
+      window.TakeUmLimite.mostrarUpsell('banco-ideias-sugerir');
+      return;
+    }
     suggestBtn.disabled = true;
     renderSuggestionLoading();
     try{
@@ -805,6 +816,7 @@
       const items = (data && Array.isArray(data.ideas)) ? data.ideas : [];
       if(items.length === 0) throw new Error('A IA não retornou ideias. Tente outro tema.');
       renderSuggestions(items);
+      if(window.TakeUmLimite){ window.TakeUmLimite.usar('banco-ideias-sugerir').catch(function(){}); }
     }catch(err){
       renderSuggestionError(err.message);
     }finally{

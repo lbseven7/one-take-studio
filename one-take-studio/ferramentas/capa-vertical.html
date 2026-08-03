@@ -374,6 +374,8 @@
 </div>
 
 <script src="../db.js"></script>
+<script src="../chave-core.js"></script>
+<script src="../limite.js"></script>
 <script>
 (function(){
   const STATE_ID = 'state-vt';
@@ -637,7 +639,11 @@
     });
   }
 
-  downloadBtn.addEventListener('click', () => {
+  downloadBtn.addEventListener('click', async () => {
+    if(window.TakeUmLimite && !(await window.TakeUmLimite.podeUsar('capa-vertical-gerar')).ok){
+      window.TakeUmLimite.mostrarUpsell('capa-vertical-gerar');
+      return;
+    }
     const slug = (state.title || 'capa').toLowerCase()
       .replace(/[^a-z0-9áéíóúãõâêç]+/gi, '-')
       .replace(/^-+|-+$/g, '')
@@ -652,6 +658,7 @@
       URL.revokeObjectURL(a.href);
       msgEl.className = 'ok';
       msgEl.textContent = 'Imagem baixada! Agora é só fazer o upload no Shorts/Reels.';
+      if(window.TakeUmLimite){ window.TakeUmLimite.usar('capa-vertical-gerar').catch(function(){}); }
     }, 'image/png');
   });
 

@@ -1,10 +1,12 @@
-const CACHE = 'takeum-v24';
+const CACHE = 'takeum-v25';
 
 const ASSETS = [
   './',
   './index.html',
   './db.js',
   './ia.js',
+  './chave-core.js',
+  './limite.js',
   './fonts.css',
   './fonts/archivo-500.woff2',
   './fonts/plexmono-400.woff2',
@@ -21,6 +23,7 @@ const ASSETS = [
   './image/prod-6.jpg',
   './image/prod-7.jpg',
   './newsletter-obrigado.html',
+  './pro.html',
   './guias/guia.html',
   './blog/mercado-criadores-de-video-solo.html',
   './guias/guia-primeiro-video.html',

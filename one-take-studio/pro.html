@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Take Um Studio · Plano Pro</title>
+<link rel="stylesheet" href="fonts.css">
+<style>
+  :root{
+    --bg: #0a0a0c;
+    --panel: #141417;
+    --panel-line: #232328;
+    --card: #1a1a1e;
+    --text-main: #f5f4ef;
+    --text-dim: #8a8a92;
+    --accent-amber: #ffb020;
+    --accent-red: #ff3b30;
+    --accent-green: #39ff88;
+    --font-display: 'Archivo', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+  }
+
+  *{ box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html, body{
+    margin: 0; padding: 0;
+    height: 100%;
+    background: var(--bg);
+    color: var(--text-main);
+    font-family: var(--font-mono);
+  }
+
+  #app{
+    height: 100vh;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    max-width: 720px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  header{
+    display: flex;
+    align-items: center;
+    padding: 16px 20px;
+    background: var(--panel);
+    border-bottom: 1px solid var(--panel-line);
+    flex-shrink: 0;
+  }
+  header h1{
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 16px;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+
+  #content{
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+  }
+
+  .card{
+    background: var(--panel);
+    border: 1px solid var(--panel-line);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .card h2{
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 14px;
+    margin: 0 0 4px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card h2 .star{ color: var(--accent-amber); }
+  .card .sub{
+    color: var(--text-dim);
+    font-size: 12px;
+    line-height: 1.6;
+    margin: 0 0 16px 0;
+  }
+
+  .status-chip{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid var(--panel-line);
+    color: var(--text-dim);
+    margin-bottom: 16px;
+  }
+  .status-chip .dot{
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--text-dim);
+  }
+  .status-chip.configured{ color: var(--accent-green); border-color: rgba(57,255,136,0.35); }
+  .status-chip.configured .dot{ background: var(--accent-green); }
+  .status-chip.missing{ color: var(--accent-amber); border-color: rgba(255,176,32,0.35); }
+  .status-chip.missing .dot{ background: var(--accent-amber); }
+
+  .pro-price{
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin: 2px 0 12px 0;
+  }
+  .pro-price .price{
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 30px;
+    color: var(--accent-amber);
+  }
+  .pro-price .once{
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+  .buy-btn{
+    display: block;
+    background: var(--accent-amber);
+    color: #1a1200;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    text-align: center;
+    text-decoration: none;
+    padding: 13px;
+    border-radius: 6px;
+    margin-bottom: 4px;
+  }
+  .buy-btn:hover{ filter: brightness(1.1); }
+  .buy-note{
+    font-size: 11px;
+    color: var(--text-dim);
+    line-height: 1.6;
+    margin: 8px 0 0 0;
+  }
+
+  .use-list{ margin-top: 4px; }
+  .use-row{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--panel-line);
+    font-size: 12px;
+  }
+  .use-row:last-child{ border-bottom: none; }
+  .use-row .use-label{ color: var(--text-main); }
+  .use-row .use-count{ color: var(--text-dim); white-space: nowrap; }
+  .use-row .use-count.pro{ color: var(--accent-green); }
+  .use-row .use-count.done{ color: var(--accent-red); }
+
+  .field{
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+  .field label{
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+  .key-row{ display: flex; gap: 8px; }
+  .key-row input{
+    flex: 1;
+    background: var(--card);
+    border: 1px solid var(--panel-line);
+    border-radius: 4px;
+    color: var(--text-main);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    padding: 11px 12px;
+    outline: none;
+  }
+  .key-row input:focus{ border-color: var(--accent-amber); }
+  .key-row input::placeholder{ color: #55555c; }
+
+  .actions{ display: flex; gap: 10px; flex-wrap: wrap; }
+  .actions button{
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 11px 18px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  #activate-btn{
+    background: var(--accent-green);
+    border: none;
+    color: #062a14;
+    font-weight: 600;
+  }
+  #activate-btn:hover{ filter: brightness(1.1); }
+
+  #msg{
+    margin-top: 14px;
+    font-size: 12px;
+    line-height: 1.5;
+    min-height: 18px;
+  }
+  #msg.ok{ color: var(--accent-green); }
+  #msg.err{ color: var(--accent-red); }
+  #msg.loading{ color: var(--text-dim); }
+
+  .help{
+    background: var(--card);
+    border: 1px solid var(--panel-line);
+    border-radius: 8px;
+    padding: 16px 18px;
+    font-size: 12.5px;
+    line-height: 1.7;
+    color: var(--text-dim);
+  }
+  .help strong{ color: var(--accent-amber); font-weight: 700; }
+  .help p{ margin: 8px 0 10px 0; color: var(--text-dim); }
+  .help p strong{ color: var(--text-main); }
+  .help ol{ margin: 0; padding-left: 18px; }
+  .help li{ margin-bottom: 8px; }
+  .help a{
+    color: var(--accent-amber);
+    text-decoration: none;
+    font-weight: 600;
+    word-break: break-all;
+  }
+  .help a:hover{ text-decoration: underline; }
+  .help em{ color: var(--text-main); font-style: normal; }
+
+  @media (max-width: 480px){
+    header{ padding: 12px 14px; }
+    header h1{ font-size: 14px; }
+    #content{ padding: 14px; }
+    .card{ padding: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <header><h1>Take Um Studio · Plano Pro</h1></header>
+
+  <div id="content">
+    <div class="card">
+      <h2><span class="star">★</span> Take Um Pro</h2>
+      <p class="sub">Criação de conteúdo sem limites nas ferramentas de geração do Take Um Studio. Pagamento único, chave enviada na hora.</p>
+
+      <div id="status-chip" class="status-chip missing"><span class="dot"></span><span id="status-text">Plano Grátis</span></div>
+
+      <div class="pro-price">
+        <span class="price" id="price-text"></span>
+        <span class="once">pagamento único</span>
+      </div>
+      <a class="buy-btn" id="buy-btn" target="_blank" rel="noopener">Desbloquear Take Um Pro</a>
+      <p class="buy-note">Você paga uma vez só e recebe sua chave na hora (por e-mail). Cole a chave abaixo para ativar neste aparelho.</p>
+    </div>
+
+    <div class="card">
+      <h2><span class="star">✦</span> Seus usos gratuitos</h2>
+      <p class="sub">Cada geração conta 1 uso. O plano grátis libera 7 usos por ferramenta de geração. Com o Pro, fica ilimitado.</p>
+      <div class="use-list" id="uses-list"></div>
+    </div>
+
+    <div class="card">
+      <h2><span class="star">🔑</span> Ativar com chave</h2>
+      <p class="sub">Comprou? Cole aqui a chave que você recebeu para liberar o ilimitado.</p>
+
+      <div class="field">
+        <label>Chave Pro</label>
+        <div class="key-row">
+          <input type="text" id="key-input" placeholder="TAKEUM-XXXXX-XXXXX-XXXXX-XXXXX-XXXXX" autocomplete="off" spellcheck="false">
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="activate-btn">Ativar chave</button>
+      </div>
+      <div id="msg"></div>
+    </div>
+
+    <div class="help">
+      <strong>Como funciona</strong>
+      <ol>
+        <li>As ferramentas de <em>geração</em> (capa, roteiro com IA, descrição, pack, teleprompter e ideias com IA) contam <em>1 uso por geração</em> no plano grátis.</li>
+        <li>Ao atingir as <em>7 gerações</em> de uma ferramenta, aparece a oferta do Pro. Você também pode ir direto na home, em <em>Plano Pro</em>.</li>
+        <li>Pague uma única vez e receba sua chave por e-mail.</li>
+        <li>Cole a chave aqui (ou direto na oferta) e pronto: criação ilimitada, inclusive <em>offline</em>.</li>
+        <li>Fez backup e restaurou em outro aparelho? O <em>Pro vai junto</em> no backup.</li>
+      </ol>
+      <p>Seus dados continuam salvos <strong>apenas neste navegador</strong>. Sua chave fica guardada localmente — nada é enviado para servidores.</p>
+    </div>
+  </div>
+</div>
+
+<script src="db.js"></script>
+<script src="chave-core.js"></script>
+<script src="limite.js"></script>
+<script>
+(function(){
+  const statusChip = document.getElementById('status-chip');
+  const statusText = document.getElementById('status-text');
+  const usesList = document.getElementById('uses-list');
+  const keyInput = document.getElementById('key-input');
+  const activateBtn = document.getElementById('activate-btn');
+  const msg = document.getElementById('msg');
+  const buyBtn = document.getElementById('buy-btn');
+  const priceText = document.getElementById('price-text');
+
+  function setStatus(pro){
+    statusChip.classList.toggle('configured', pro);
+    statusChip.classList.toggle('missing', !pro);
+    statusText.textContent = pro ? 'Take Um Pro ativo' : 'Plano Grátis';
+  }
+
+  function setMsg(text, type){
+    msg.textContent = text;
+    msg.className = type || '';
+  }
+
+  async function renderUses(){
+    usesList.innerHTML = '';
+    const pro = await TakeUmLimite.ehPro();
+    for(const acao of Object.keys(TakeUmLimite.ACOES)){
+      const r = await TakeUmLimite.podeUsar(acao);
+      const row = document.createElement('div');
+      row.className = 'use-row';
+      const label = document.createElement('span');
+      label.className = 'use-label';
+      label.textContent = TakeUmLimite.ACOES[acao];
+      const value = document.createElement('span');
+      value.className = 'use-count' + (pro ? ' pro' : (r.restantes === 0 ? ' done' : ''));
+      value.textContent = pro ? 'Ilimitado' : (r.restantes === 0 ? 'Usado' : r.restantes + ' restantes');
+      row.appendChild(label);
+      row.appendChild(value);
+      usesList.appendChild(row);
+    }
+  }
+
+  activateBtn.addEventListener('click', async () => {
+    const chave = keyInput.value.trim();
+    if(!chave){ setMsg('Cole sua chave primeiro.', 'err'); return; }
+    setMsg('Validando...', 'loading');
+    const r = await TakeUmLimite.resgatar(chave);
+    setMsg(r.msg, r.ok ? 'ok' : 'err');
+    if(r.ok){
+      setStatus(true);
+      await renderUses();
+    }
+  });
+
+  keyInput.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter') activateBtn.click();
+  });
+
+  (async function init(){
+    await OneTakeMigrate();
+    buyBtn.href = TakeUmLimite.CHECKOUT_URL;
+    priceText.textContent = TakeUmLimite.PRECO;
+    const pro = await TakeUmLimite.ehPro();
+    setStatus(pro);
+    await renderUses();
+  })();
+})();
+</script>
+
+</body>
+</html>

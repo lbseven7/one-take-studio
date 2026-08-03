@@ -12,23 +12,23 @@ Leia seu roteiro sem decorar, planeje suas pautas, marque seus takes e publique 
 
 | Etapa | Ferramenta | O que faz |
 |---|---|---|
-| 🆕 **Novo aqui** | **Primeiro Vídeo** (`jornada.html`) | Trilha guiada da ideia até o primeiro vídeo publicado |
-| 🗓 **Planejar** | **Painel de Pauta** (`painel-pauta.html`) | Quadro de ideias por etapas: ideia → roteiro → gravado → editado → postado |
-| | **Calendário de Conteúdo** (`calendario.html`) | Planeje o mês e acompanhe as etapas de cada vídeo |
-| | **Roteirizador** (`roteirizador.html`) | Roteiro em etapas: gancho, problema, solução com tempos e CTA |
-| | **Banco de Ideias** (`banco-ideias.html`) | Capture ideias na hora e envie para o Painel de Pauta |
-| 🎥 **Gravar** | **Teleprompter** (`teleprompter.html`) | Roteiro rolando na tela, com câmera e gravação no navegador |
-| | **Claquete Digital** (`claquete-digital.html`) | Contagem regressiva, bate-claquete com som e cronômetro de take |
-| | **Checklist de Gravação** (`checklist-gravacao.html`) | Bateria, microfone, luz, isolamento — nunca mais esqueça nada |
-| 🚀 **Publicar** | **Gerador de Capa** (`capa.html`) | Capa 16:9 pronta para baixar em PNG |
-| | **Capa Vertical** (`capa-vertical.html`) | Capa 9:16 para Shorts e Reels, com área segura |
-| | **Checklist de Divulgação** (`checklist-divulgacao.html`) | O que fazer depois de publicar |
-| | **Pack de Publicação** (`pack-publicacao.html`) | Título, descrição, tags e melhor horário — com IA ou sem |
-| | **Tracker de Resultados** (`tracker-resultados.html`) | Views, likes e comentários com insights por plataforma |
-| 📚 **Aprender & apoiar** | **Equipamentos** (`equipamentos.html`) | Guia de equipamentos com ótimo custo-benefício |
-| | **Guia** (`guia.html` + guias de vídeo, microfone e iluminação) | Aprenda na prática a gravar o primeiro vídeo |
+| 🆕 **Novo aqui** | **Primeiro Vídeo** (`ferramentas/jornada.html`) | Trilha guiada da ideia até o primeiro vídeo publicado |
+| 🗓 **Planejar** | **Painel de Pauta** (`ferramentas/painel-pauta.html`) | Quadro de ideias por etapas: ideia → roteiro → gravado → editado → postado |
+| | **Calendário de Conteúdo** (`ferramentas/calendario.html`) | Planeje o mês e acompanhe as etapas de cada vídeo |
+| | **Roteirizador** (`ferramentas/roteirizador.html`) | Roteiro em etapas: gancho, problema, solução com tempos e CTA |
+| | **Banco de Ideias** (`ferramentas/banco-ideias.html`) | Capture ideias na hora e envie para o Painel de Pauta |
+| 🎥 **Gravar** | **Teleprompter** (`ferramentas/teleprompter.html`) | Roteiro rolando na tela, com câmera e gravação no navegador |
+| | **Claquete Digital** (`ferramentas/claquete-digital.html`) | Contagem regressiva, bate-claquete com som e cronômetro de take |
+| | **Checklist de Gravação** (`ferramentas/checklist-gravacao.html`) | Bateria, microfone, luz, isolamento — nunca mais esqueça nada |
+| 🚀 **Publicar** | **Gerador de Capa** (`ferramentas/capa.html`) | Capa 16:9 pronta para baixar em PNG |
+| | **Capa Vertical** (`ferramentas/capa-vertical.html`) | Capa 9:16 para Shorts e Reels, com área segura |
+| | **Checklist de Divulgação** (`ferramentas/checklist-divulgacao.html`) | O que fazer depois de publicar |
+| | **Pack de Publicação** (`ferramentas/pack-publicacao.html`) | Título, descrição, tags e melhor horário — com IA ou sem |
+| | **Tracker de Resultados** (`ferramentas/tracker-resultados.html`) | Views, likes e comentários com insights por plataforma |
+| 📚 **Aprender & apoiar** | **Equipamentos** (`ferramentas/equipamentos.html`) | Guia de equipamentos com ótimo custo-benefício |
+| | **Guia** (`guias/guia.html` + guias de vídeo, microfone e iluminação) | Aprenda na prática a gravar o primeiro vídeo |
 | | **Blog** (`blog/`) | Artigos sobre o mercado de criadores e criação de vídeo solo |
-| ⚙️ **Ajustes** | **Configuração da IA** (`ia-config.html`) | Cole sua chave do Google Gemini para roteirizar e gerar descrições |
+| ⚙️ **Ajustes** | **Configuração da IA** (`ferramentas/ia-config.html`) | Cole sua chave do Google Gemini para roteirizar e gerar descrições |
 
 ---
 
@@ -79,7 +79,7 @@ git commit -m "sua mudança"
 git push
 ```
 
-> **Atenção:** quando mudar `index.html`, `sw.js` ou qualquer asset precacheado, **bump a versão** do cache no topo do `sw.js` (ex.: `const CACHE = 'takeum-v22'`) para os usuários receberem a versão nova.
+> **Atenção:** quando mudar `index.html`, `sw.js` ou qualquer asset precacheado, **bump a versão** do cache no topo do `sw.js` (ex.: `const CACHE = 'takeum-v23'`) para os usuários receberem a versão nova.
 
 ---
 
@@ -96,8 +96,10 @@ setup-leob/
     ├── fonts.css + fonts/         # fontes self-hosted
     ├── icons/ + image/            # ícones e imagens do PWA
     ├── blog/                      # artigos de blog
+    ├── ferramentas/               # ferramentas (uma página por ferramenta)
+    ├── guias/                     # guias de aprendizado
     ├── sitemap.xml / robots.txt
-    └── *.html                     # uma página por ferramenta
+    └── sobre.html + newsletter-obligado.html
 ```
 
 ---

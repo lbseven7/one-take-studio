@@ -3,7 +3,7 @@
 
   var STORE = 'app_state';
   var LIMIT = 7;
-  var PRECO = 'R$ 49';
+  var PRECO = 'R$ 67';
   var CHECKOUT_URL = 'https://sua-loja-aqui.com/produto/take-um-pro';
 
   var ACOES = {

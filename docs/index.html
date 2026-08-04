@@ -539,6 +539,10 @@
       margin: 0 0 22px 0;
     }
 
+    #install-btn[hidden] {
+      display: none;
+    }
+
     #install-btn {
       font-family: var(--font-display);
       font-weight: 700;
@@ -1349,9 +1353,8 @@
       installBtn.addEventListener('click', async () => {
         if (deferredPrompt) {
           deferredPrompt.prompt();
-          const choice = await deferredPrompt.userChoice;
+          await deferredPrompt.userChoice;
           deferredPrompt = null;
-          if (choice.outcome !== 'accepted') installBtn.hidden = true;
           return;
         }
         const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);

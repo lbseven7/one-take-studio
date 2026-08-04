@@ -1,0 +1,158 @@
+{
+  "format": "takeum-backup",
+  "version": 1,
+  "exportedAt": "2026-08-04T00:00:00.000Z",
+  "data": {
+    "banco_ideias": [
+      {
+        "id": "ep-1",
+        "title": "O jeito preguiçoso de começar no YouTube",
+        "notes": "Série 'Do Zero ao Primeiro Vídeo'. Duração 5-7 min. Gancho: para gravar 216 vídeos num ano você não precisa de câmera cara, editor nem roteiro perfeito. Ferramenta: Jornada / Painel de Pauta.",
+        "platform": "youtube",
+        "createdAt": 1785542400000
+      },
+      {
+        "id": "ep-2",
+        "title": "O único item caro do seu vídeo é o microfone",
+        "notes": "Duração 4-5 min. Gancho: ninguém abandona um vídeo por imagem feia, abandona por som ruim. Setup fixo, luz barata, cenário não importa. Ferramenta: Checklist de Gravação.",
+        "platform": "youtube",
+        "createdAt": 1785542400000
+      },
+      {
+        "id": "ep-3",
+        "title": "Um mês de vídeos planejado em 30 minutos",
+        "notes": "Duração 5-6 min. Gancho: inspiração é superestimada, você precisa é de um painel. Banco de Ideias -> Painel de Pauta -> Calendário. Frequência mínima: 1/semana. Ferramenta: Calendário.",
+        "platform": "youtube",
+        "createdAt": 1785542400000
+      },
+      {
+        "id": "ep-4",
+        "title": "O roteiro que prende sem parecer roteiro",
+        "notes": "Duração 5 min. Gancho: se seus primeiros 5 segundos não prometem nada, o resto do vídeo existe para ninguém. Estrutura gancho->problema->solucao->cta com IA (Gemini grátis). Ferramenta: Roteirizador.",
+        "platform": "youtube",
+        "createdAt": 1785542400000
+      },
+      {
+        "id": "ep-5",
+        "title": "Como gravar sozinho sem decorar (e sem parecer robô)",
+        "notes": "Duração 5 min. Gancho: branco na frente da câmera? O texto rola na tela enquanto você grava. Frases curtas, olhar na lente, pausas de verdade. Ferramenta: Teleprompter + Claquete.",
+        "platform": "youtube",
+        "createdAt": 1785542400000
+      },
+      {
+        "id": "ep-6",
+        "title": "Capa e publicação sem editor: do take ao post em 5 minutos",
+        "notes": "Duração 5 min. Gancho: vídeo gravado não vale nada até ter capa e descrição. Capa 16:9 + vertical, Pack de Publicação, Checklist de Divulgação. Ferramenta: Gerador de Capa.",
+        "platform": "youtube",
+        "createdAt": 1785542400000
+      },
+      {
+        "id": "ep-7",
+        "title": "Constância e resultados: como o canal vira negócio",
+        "notes": "Duração 6 min. Gancho: canal não morre por falta de vídeo bom, morre por falta de constância. Tracker de Resultados, nunca regravar vídeo antigo, giro para negócio (link na descrição + botão de WhatsApp). Ferramenta: Tracker.",
+        "platform": "youtube",
+        "createdAt": 1785542400000
+      }
+    ],
+    "pauta_cards": [
+      {
+        "id": "card-ep-1",
+        "title": "O jeito preguiçoso de começar no YouTube",
+        "notes": "Série 'Do Zero ao Primeiro Vídeo'. Gancho: 216 vídeos num ano sem câmera cara nem editor. Argumento central: ferramentas espalhadas em dólar vs Take Um Studio grátis em português. Ferramenta: Jornada / Painel de Pauta.",
+        "platform": "youtube",
+        "status": "ideia",
+        "createdAt": 1785542400000
+      },
+      {
+        "id": "card-ep-2",
+        "title": "O único item caro do seu vídeo é o microfone",
+        "notes": "Setup fixo, luz barata, cenário não importa. Microfone é o investimento (lapela com fio ~R$200 como começo). Ferramenta: Checklist de Gravação.",
+        "platform": "youtube",
+        "status": "ideia",
+        "createdAt": 1785542400000
+      },
+      {
+        "id": "card-ep-3",
+        "title": "Um mês de vídeos planejado em 30 minutos",
+        "notes": "Banco de Ideias -> Painel de Pauta -> Calendário. Frequência mínima 1/semana. Constância > perfeição. Mostrar ao vivo. Ferramenta: Calendário.",
+        "platform": "youtube",
+        "status": "ideia",
+        "createdAt": 1785542400000
+      },
+      {
+        "id": "card-ep-4",
+        "title": "O roteiro que prende sem parecer roteiro",
+        "notes": "Estrutura gancho->problema->solucao->cta, com IA e ajuste pra sua voz. Ferramenta: Roteirizador.",
+        "platform": "youtube",
+        "status": "ideia",
+        "createdAt": 1785542400000
+      },
+      {
+        "id": "card-ep-5",
+        "title": "Como gravar sozinho sem decorar (e sem parecer robô)",
+        "notes": "Teleprompter + claquete digital (contagem) + checklist. Frases curtas, olhar na lente, pausas. Ferramenta: Teleprompter.",
+        "platform": "youtube",
+        "status": "ideia",
+        "createdAt": 1785542400000
+      },
+      {
+        "id": "card-ep-6",
+        "title": "Capa e publicação sem editor: do take ao post em 5 minutos",
+        "notes": "Gerador de Capa 16:9 + vertical, Pack de Publicação (título, descrição, tags, horário), Checklist de Divulgação. Ferramenta: Gerador de Capa.",
+        "platform": "youtube",
+        "status": "ideia",
+        "createdAt": 1785542400000
+      },
+      {
+        "id": "card-ep-7",
+        "title": "Constância e resultados: como o canal vira negócio",
+        "notes": "Tracker de Resultados, nunca regravar vídeo antigo, melhorar para o próximo, giro para negócio. Ferramenta: Tracker.",
+        "platform": "youtube",
+        "status": "ideia",
+        "createdAt": 1785542400000
+      }
+    ],
+    "calendario_entries": [
+      { "id": "cal-ep-1", "data": "2026-08-10", "titulo": "EP1 - O jeito preguiçoso de começar no YouTube", "status": "ideia", "plataforma": "YouTube", "nota": "Setup fixo, zero edição, constância. Tour do estúdio.", "criadoEm": 1785542400000 },
+      { "id": "cal-ep-2", "data": "2026-08-17", "titulo": "EP2 - O único item caro do seu vídeo é o microfone", "status": "ideia", "plataforma": "YouTube", "nota": "Setup simples + som bom. Checklist de Gravação.", "criadoEm": 1785542400000 },
+      { "id": "cal-ep-3", "data": "2026-08-24", "titulo": "EP3 - Um mês de vídeos planejado em 30 minutos", "status": "ideia", "plataforma": "YouTube", "nota": "Planejar a série ao vivo no calendário.", "criadoEm": 1785542400000 },
+      { "id": "cal-ep-4", "data": "2026-08-31", "titulo": "EP4 - O roteiro que prende sem parecer roteiro", "status": "ideia", "plataforma": "YouTube", "nota": "Roteirizador com IA. Estrutura gancho/problema/solucao/cta.", "criadoEm": 1785542400000 },
+      { "id": "cal-ep-5", "data": "2026-09-07", "titulo": "EP5 - Como gravar sozinho sem decorar", "status": "ideia", "plataforma": "YouTube", "nota": "Teleprompter + claquete digital.", "criadoEm": 1785542400000 },
+      { "id": "cal-ep-6", "data": "2026-09-14", "titulo": "EP6 - Capa e publicação sem editor", "status": "ideia", "plataforma": "YouTube", "nota": "Gerador de capa + Pack de Publicação.", "criadoEm": 1785542400000 },
+      { "id": "cal-ep-7", "data": "2026-09-21", "titulo": "EP7 - Constância e resultados: canal vira negócio", "status": "ideia", "plataforma": "YouTube", "nota": "Tracker + giro para negócio. Fechamento da série.", "criadoEm": 1785542400000 }
+    ],
+    "roteirizador_scripts": [
+      {
+        "id": "script-ep-1",
+        "title": "EP1 - O jeito preguiçoso de começar no YouTube",
+        "sections": [
+          {
+            "id": "gancho",
+            "name": "Gancho",
+            "content": "Para gravar 216 vídeos em um ano você não precisa de câmera cara, editor, nem roteiro perfeito. Eu vou te mostrar o método que uso — e este vídeo, gravado do jeito que eu vou ensinar, já é a prova dele.",
+            "duration": 15
+          },
+          {
+            "id": "problema",
+            "name": "Problema / Contexto",
+            "content": "Se você quer começar no YouTube, mas acha que precisa de um estúdio montado, alguém para editar e um monte de ferramenta, você vai ficar travado antes mesmo de apertar play. Foi a pergunta de uma médica nos comentários e a conversa num grupo de mentoria que me mostraram isso: por mais óbvio que pareça, muita gente não sabe POR ONDE começar. O resultado é sempre o mesmo: o canal nunca sai do papel.",
+            "duration": 40
+          },
+          {
+            "id": "solucao",
+            "name": "Solução / Conteúdo principal",
+            "content": "O método tem três passos. Primeiro: o setup fixo. A câmera ou o celular fica parado no mesmo lugar, numa base na mesa, com uma luz simples atrás. Nada de montar estúdio a cada vídeo. Segundo: zero edição. Aperta play, fala, aperta pause e posta. Terceiro: constância. Um vídeo por semana já é um bom começo.\n\nFoi assim que este vídeo foi gravado: celular fixo, luz simples, um microfone bom e um take só. Eu não vou editar nada.\n\nE é aqui que entra o Take Um Studio. Para planejar, roteirizar, gravar e publicar sem trocar de aplicativo. Olha o que acontece se você tentar montar esse fluxo com ferramentas soltas: o Notion para planejar, o BIGVU para teleprompter, o CapCut para editar, o Canva para a capa. São quatro aplicativos diferentes, quase todos cobrando em dólar, quase todos em inglês.\n\nAqui você tem tudo em um lugar só, grátis e em português. E eu não estou falando disso do nada: o plano desta série está todo aqui dentro. Os sete vídeos estão no calendário, os cards no painel de pauta, e o roteiro deste episódio está no roteirizador. O produto validando o método que ele ensina.",
+            "duration": 180
+          },
+          {
+            "id": "cta",
+            "name": "CTA",
+            "content": "Se você quer esse fluxo de graça, o link está na descrição. Se inscreve no canal, porque semana que vem eu mostro o setup completo, item por item. E me conta aqui nos comentários: qual é a sua maior trava para começar?",
+            "duration": 25
+          }
+        ],
+        "updatedAt": 1785542400000
+      }
+    ]
+  }
+}

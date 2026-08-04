@@ -1026,8 +1026,11 @@
     fy += Math.round(h * fdy);
     if(layout) layout.face = { cx: fx + d / 2, cy: fy + d / 2, r: d / 2, d: d, baseX: baseFX, baseY: baseFY };
     g.save();
+    // Translate first so the clip circle and the image itself share the
+    // same origin — drawCover always draws at (0,0) in its own space.
+    g.translate(fx, fy);
     g.beginPath();
-    g.arc(fx + d / 2, fy + d / 2, d / 2, 0, Math.PI * 2);
+    g.arc(d / 2, d / 2, d / 2, 0, Math.PI * 2);
     g.strokeStyle = 'rgba(255,255,255,0.95)';
     g.lineWidth = Math.max(2, Math.round(d * 0.05));
     g.stroke();

@@ -42,8 +42,16 @@ Leia seu roteiro sem decorar, planeje suas pautas, marque seus takes e publique 
 ## 🎟 Plano grátis e Take Um Pro
 
 - **Uso grátis:** cada ferramenta paga de IA/geração tem um limite de criações gratuitas (`limite.js`), com contador no topo e aviso de upsell ao atingir o limite.
-- **E-mails capturados** no aviso de limite ficam gravados no IndexedDB e podem ser vistos/exportados em CSV na página admin `ferramentas/leads.html` (fora do menu público).
+- **E-mails capturados** no aviso de limite ficam gravados no IndexedDB e, se o backend estiver configurado, também vão para a nuvem — todos os visitantes. Página admin `ferramentas/leads.html` (fora do menu público) mostra os locais e, com login, os da nuvem; exporta CSV.
 - **Take Um Pro:** uma chave (válida via `chave-core.js`) desbloqueia criações ilimitadas. A chave é resgatada na página `resgatar.html` e ativada no aviso de upsell ou em `pro.html`.
+
+### Backend de leads (opcional, Supabase)
+
+O site continua 100% estático — quando você configura o Supabase, as chamadas vão direto à REST API (sem SDK). Para ativar:
+
+1. Crie um projeto em supabase.com (plano grátis) e rode `one-take-studio/supabase-schema.sql` no SQL Editor (cria a tabela `leads` com RLS: anon só insere, autenticado lê/exclui).
+2. Em **Settings → API**, copie o Project URL e a anon key para `one-take-studio/supabase.js` (`SUPA_URL` / `SUPA_ANON_KEY`).
+3. Crie seu usuário admin em **Authentication → Users → Add user** e use-o para entrar em `ferramentas/leads.html` e ver os leads da nuvem.
 
 ---
 
@@ -100,6 +108,7 @@ setup-leob/
     ├── db.js                      # IndexedDB (OneTakeDB) + backup
     ├── ia.js                      # integração Google Gemini
     ├── limite.js                  # uso grátis, upsell e captura de leads
+    ├── supabase.js                # backend de leads (REST, opcional)
     ├── chave-core.js              # validação da chave Take Um Pro
     ├── analytics.js               # rastreio de uso
     ├── sw.js                      # service worker (precache/offline)

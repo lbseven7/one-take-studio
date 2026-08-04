@@ -20,8 +20,7 @@ Leia seu roteiro sem decorar, planeje suas pautas, marque seus takes e publique 
 | 🎥 **Gravar** | **Teleprompter** (`ferramentas/teleprompter.html`) | Roteiro rolando na tela, com câmera e gravação no navegador |
 | | **Claquete Digital** (`ferramentas/claquete-digital.html`) | Contagem regressiva, bate-claquete com som e cronômetro de take |
 | | **Checklist de Gravação** (`ferramentas/checklist-gravacao.html`) | Bateria, microfone, luz, isolamento — nunca mais esqueça nada |
-| 🚀 **Publicar** | **Gerador de Capa** (`ferramentas/capa.html`) | Capa 16:9 pronta para baixar em PNG |
-| | **Capa Vertical** (`ferramentas/capa-vertical.html`) | Capa 9:16 para Shorts e Reels, com área segura |
+| 🚀 **Publicar** | **Gerador de Capa** (`ferramentas/capa.html`) | Capa 16:9 (e 9:16 vertical via `?vt=1`) para baixar em PNG/JPG/WebP — texto, emoji, foto do rosto e imagem de fundo arrastáveis, com redimensionar, desfazer/refazer (Ctrl+Z), guias de alinhamento com ímã e safe-zone |
 | | **Checklist de Divulgação** (`ferramentas/checklist-divulgacao.html`) | O que fazer depois de publicar |
 | | **Pack de Publicação** (`ferramentas/pack-publicacao.html`) | Título, descrição, tags e melhor horário — com IA ou sem |
 | | **Tracker de Resultados** (`ferramentas/tracker-resultados.html`) | Views, likes e comentários com insights por plataforma |
@@ -34,9 +33,17 @@ Leia seu roteiro sem decorar, planeje suas pautas, marque seus takes e publique 
 
 ## 🔒 Seus dados
 
-- **Local-first:** todos os dados ficam no **IndexedDB** do seu navegador (`OneTakeDB`, versão 6). Nada é enviado para servidores.
+- **Local-first:** todos os dados ficam no **IndexedDB** do seu navegador (`OneTakeDB`, versão 7). Nada é enviado para servidores.
 - **Backup:** exporte um arquivo `.json` com tudo (roteiros, pautas, takes) e restaure em outro aparelho. Os botões ficam na seção **"Seus dados"** da barra lateral (e na home).
 - **IA opcional:** a chave do Gemini fica só no seu navegador e é usada direto na API do Google — não passa por servidor intermediário.
+
+---
+
+## 🎟 Plano grátis e Take Um Pro
+
+- **Uso grátis:** cada ferramenta paga de IA/geração tem um limite de criações gratuitas (`limite.js`), com contador no topo e aviso de upsell ao atingir o limite.
+- **E-mails capturados** no aviso de limite ficam gravados no IndexedDB e podem ser vistos/exportados em CSV na página admin `ferramentas/leads.html` (fora do menu público).
+- **Take Um Pro:** uma chave (válida via `chave-core.js`) desbloqueia criações ilimitadas. A chave é resgatada na página `resgatar.html` e ativada no aviso de upsell ou em `pro.html`.
 
 ---
 
@@ -45,7 +52,7 @@ Leia seu roteiro sem decorar, planeje suas pautas, marque seus takes e publique 
 - **100% estático:** HTML + CSS + JavaScript puro, sem frameworks e sem build.
 - **PWA:** `manifest.json` + `sw.js` (service worker) para instalar no celular e funcionar offline.
 - **Fontes self-hosted** (`fonts.css` + `fonts/*.woff2`): Archivo (variável, pesos 500–900) e IBM Plex Mono — sem dependência de CDN de terceiros.
-- **Newsletter:** formulário via FormSubmit (página `newsletter-obrigado.html`).
+- **Captura de e-mails:** FormSubmit (newsletter em `newsletter-obrigado.html` e leads do upsell).
 
 ---
 
@@ -79,7 +86,7 @@ git commit -m "sua mudança"
 git push
 ```
 
-> **Atenção:** quando mudar `index.html`, `sw.js` ou qualquer asset precacheado, **bump a versão** do cache no topo do `sw.js` (ex.: `const CACHE = 'takeum-v27'`) para os usuários receberem a versão nova.
+> **Atenção:** quando mudar `index.html`, `sw.js` ou qualquer asset precacheado, **bump a versão** do cache no topo do `sw.js` (ex.: `const CACHE = 'takeum-v37'`) para os usuários receberem a versão nova.
 
 ---
 
@@ -92,11 +99,15 @@ setup-leob/
     ├── index.html                 # shell: sidebar + home
     ├── db.js                      # IndexedDB (OneTakeDB) + backup
     ├── ia.js                      # integração Google Gemini
+    ├── limite.js                  # uso grátis, upsell e captura de leads
+    ├── chave-core.js              # validação da chave Take Um Pro
+    ├── analytics.js               # rastreio de uso
     ├── sw.js                      # service worker (precache/offline)
     ├── fonts.css + fonts/         # fontes self-hosted
     ├── icons/ + image/            # ícones e imagens do PWA
     ├── blog/                      # artigos de blog
     ├── ferramentas/               # ferramentas (uma página por ferramenta)
+    │   └── leads.html             # admin: leads capturados + export CSV
     ├── guias/                     # guias de aprendizado
     ├── sitemap.xml / robots.txt
     └── sobre.html + newsletter-obligado.html

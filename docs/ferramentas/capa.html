@@ -587,7 +587,7 @@
         <div id="preview-wrap">
           <canvas id="preview"></canvas>
         </div>
-        <div id="format-hint">Dica: no YouTube o texto precisa dar para ler até em telas pequenas — mantenha o texto curto e de alto contraste. Ative a safe-zone para ver a área de título segura. Tudo fica salvo automaticamente em "Minhas capas".</div>
+        <div id="format-hint">Dica: arraste o texto, o emoji e a foto do rosto para posicionar no preview. No YouTube o texto precisa dar para ler até em telas pequenas — mantenha o texto curto e de alto contraste. Ative a safe-zone para ver a área de título segura. Tudo fica salvo automaticamente em "Minhas capas".</div>
         <div id="msg"></div>
       </div>
 
@@ -649,7 +649,9 @@
       safeZone: false,
       face: null,
       facePos: 'tr',
-      faceSize: 26
+      faceSize: 26,
+      drag: { x: 0, y: 0 },
+      faceDrag: { x: 0, y: 0 }
     };
   }
 
@@ -662,6 +664,7 @@
   let meta = null;
   let currentId = null;
   let saveTimer = null;
+  let layout = null;
 
   const canvas = document.getElementById('preview');
   const ctx = canvas.getContext('2d');
@@ -729,6 +732,8 @@
     b.textContent = tpl.label;
     b.addEventListener('click', () => {
       state = Object.assign(state, cloneState(tpl.state));
+      state.drag = { x: 0, y: 0 };
+      state.faceDrag = { x: 0, y: 0 };
       syncUI();
       render();
       scheduleSave();
@@ -748,15 +753,18 @@
   }
   buildPosRow(document.getElementById('pos-x'), POSX, v => {
     state.posX = v;
+    state.drag = { x: 0, y: 0 };
     syncUI(); render(); scheduleSave();
   });
   buildPosRow(document.getElementById('pos-y'), POSY, v => {
     state.posY = v;
+    state.drag = { x: 0, y: 0 };
     syncUI(); render(); scheduleSave();
   });
   buildPosRow(document.getElementById('face-pos'), FACEPOS, v => {
     if(!state.face) return;
     state.face.pos = v;
+    state.faceDrag = { x: 0, y: 0 };
     syncUI(); render(); scheduleSave();
   });
 
@@ -889,7 +897,7 @@
 
     const posX = state.posX;
     g.textAlign = posX === 'left' ? 'left' : posX === 'right' ? 'right' : 'center';
-    const x = posX === 'left' ? padX : posX === 'right' ? w - padX : w / 2;
+    let x = posX === 'left' ? padX : posX === 'right' ? w - padX : w / 2;
 
     const region = {
       top:    { t: 0.10, b: 0.52 },
@@ -930,6 +938,21 @@
     if(totalH < (blockBottom - blockTop)){
       startY = blockTop + Math.round(((blockBottom - blockTop) - totalH) / 2);
     }
+
+    const dragX = state.drag && isFinite(state.drag.x) ? state.drag.x : 0;
+    const dragY = state.drag && isFinite(state.drag.y) ? state.drag.y : 0;
+    const baseX = x;
+    const baseY = startY;
+    x += Math.round(w * dragX);
+    startY += Math.round(h * dragY);
+
+    const blockY0 = startY;
+    const blockY1 = startY + totalH;
+    const blockX0 = posX === 'left' ? x : posX === 'right' ? x - maxWidth : x - maxWidth / 2;
+    layout = {
+      block: { x0: blockX0, y0: blockY0, x1: blockX0 + maxWidth, y1: blockY1, baseX: baseX, baseY: baseY },
+      emoji: emoji ? { x: x, y: Math.round(startY + emojiSize / 2) } : null
+    };
 
     if(emoji){
       g.font = emojiSize + 'px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
@@ -995,6 +1018,13 @@
     if(p === 'tr'){ fx = w - pad - d; }
     else if(p === 'bl'){ fy = h - pad - d; }
     else if(p === 'br'){ fx = w - pad - d; fy = h - pad - d; }
+    const fdx = state.faceDrag && isFinite(state.faceDrag.x) ? state.faceDrag.x : 0;
+    const fdy = state.faceDrag && isFinite(state.faceDrag.y) ? state.faceDrag.y : 0;
+    const baseFX = fx;
+    const baseFY = fy;
+    fx += Math.round(w * fdx);
+    fy += Math.round(h * fdy);
+    if(layout) layout.face = { cx: fx + d / 2, cy: fy + d / 2, r: d / 2, d: d, baseX: baseFX, baseY: baseFY };
     g.save();
     g.beginPath();
     g.arc(fx + d / 2, fy + d / 2, d / 2, 0, Math.PI * 2);
@@ -1076,6 +1106,8 @@
     if(!rec) return;
     currentId = id;
     state = cloneState(rec.state);
+    if(!state.drag) state.drag = { x: 0, y: 0 };
+    if(!state.faceDrag) state.faceDrag = { x: 0, y: 0 };
     bgImage = null;
     faceImg = null;
     if(state.bgImage) await loadBgImage(state.bgImage);
@@ -1429,6 +1461,105 @@
       msg('err', 'Não consegui copiar a imagem.');
     }
   });
+
+  // ---------- DRAG ITEMS IN PREVIEW ----------
+  const dragState = { target: null, startX: 0, startY: 0, offX: 0, offY: 0 };
+  let dragRaf = false;
+
+  function canvasPoint(e){
+    const rect = canvas.getBoundingClientRect();
+    return {
+      x: (e.clientX - rect.left) * (canvas.width / rect.width),
+      y: (e.clientY - rect.top) * (canvas.height / rect.height)
+    };
+  }
+
+  function hitTest(cx, cy){
+    if(layout && layout.face){
+      const dx = cx - layout.face.cx, dy = cy - layout.face.cy;
+      const r = layout.face.r * 1.2;
+      if(dx * dx + dy * dy <= r * r) return 'face';
+    }
+    if(layout && layout.block){
+      const b = layout.block;
+      if(cx >= b.x0 && cx <= b.x1 && cy >= b.y0 && cy <= b.y1) return 'block';
+    }
+    return null;
+  }
+
+  function clampOff(type, offX, offY){
+    const w = canvas.width, h = canvas.height;
+    if(type === 'face' && layout && layout.face){
+      const f = layout.face;
+      let ax = f.baseX + offX * w;
+      let ay = f.baseY + offY * h;
+      ax = Math.max(0, Math.min(w - f.d, ax));
+      ay = Math.max(0, Math.min(h - f.d, ay));
+      return { x: (ax - f.baseX) / w, y: (ay - f.baseY) / h };
+    }
+    if(type === 'block' && layout && layout.block){
+      const b = layout.block;
+      let ax = b.baseX + offX * w;
+      let ay = b.baseY + offY * h;
+      ax = Math.max(0, Math.min(w, ax));
+      ay = Math.max(0, Math.min(h, ay));
+      return { x: (ax - b.baseX) / w, y: (ay - b.baseY) / h };
+    }
+    return { x: offX, y: offY };
+  }
+
+  function updateCursor(cx, cy){
+    canvas.style.cursor = dragState.target ? 'grabbing' : (hitTest(cx, cy) ? 'grab' : 'default');
+  }
+
+  canvas.addEventListener('pointerdown', (e) => {
+    const p = canvasPoint(e);
+    const t = hitTest(p.x, p.y);
+    if(!t) return;
+    e.preventDefault();
+    try{ canvas.setPointerCapture(e.pointerId); }catch(err){}
+    dragState.target = t;
+    dragState.startX = p.x;
+    dragState.startY = p.y;
+    dragState.offX = t === 'face' ? ((state.faceDrag && state.faceDrag.x) || 0) : ((state.drag && state.drag.x) || 0);
+    dragState.offY = t === 'face' ? ((state.faceDrag && state.faceDrag.y) || 0) : ((state.drag && state.drag.y) || 0);
+    canvas.style.cursor = 'grabbing';
+  });
+
+  canvas.addEventListener('pointermove', (e) => {
+    const p = canvasPoint(e);
+    if(dragState.target){
+      e.preventDefault();
+      const w = canvas.width, h = canvas.height;
+      let nx = dragState.offX + (p.x - dragState.startX) / w;
+      let ny = dragState.offY + (p.y - dragState.startY) / h;
+      const clamped = clampOff(dragState.target, nx, ny);
+      nx = clamped.x;
+      ny = clamped.y;
+      if(dragState.target === 'face'){
+        state.faceDrag = { x: nx, y: ny };
+      } else {
+        state.drag = { x: nx, y: ny };
+      }
+      if(!dragRaf){
+        dragRaf = true;
+        requestAnimationFrame(() => { dragRaf = false; render(); });
+      }
+    } else {
+      updateCursor(p.x, p.y);
+    }
+  });
+
+  function endDrag(e){
+    if(!dragState.target) return;
+    dragState.target = null;
+    scheduleSave();
+    const p = canvasPoint(e);
+    updateCursor(p.x, p.y);
+  }
+  canvas.addEventListener('pointerup', endDrag);
+  canvas.addEventListener('pointercancel', endDrag);
+  canvas.style.touchAction = 'none';
 
   // ---------- INIT ----------
   (async function init(){

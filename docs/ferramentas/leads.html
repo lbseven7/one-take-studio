@@ -125,6 +125,50 @@
     margin-top: 2px;
   }
 
+  .cloud-box{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+    padding: 12px 14px;
+    background: var(--card);
+    border: 1px solid var(--panel-line);
+    border-radius: 6px;
+  }
+  .cloud-info{ font-size: 12px; color: var(--text-dim); flex: 1; }
+  .cloud-info.online{ color: var(--accent-green); }
+  .login-form{ display: flex; gap: 6px; flex-wrap: wrap; }
+  .login-form input{
+    background: var(--bg);
+    border: 1px solid var(--panel-line);
+    border-radius: 4px;
+    color: var(--text-main);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    padding: 8px 10px;
+    outline: none;
+    min-width: 0;
+  }
+  .login-form input:focus{ border-color: var(--accent-amber); }
+  .login-form button, #login-btn, #logout-btn{
+    background: none;
+    border: 1px solid var(--panel-line);
+    color: var(--text-dim);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .login-form button:hover, #login-btn:hover, #logout-btn:hover{
+    color: var(--text-main);
+    border-color: var(--accent-amber);
+  }
+
   #msg{ font-size: 12px; min-height: 18px; margin-bottom: 12px; }
   #msg.ok{ color: var(--accent-green); }
   #msg.err{ color: var(--accent-red); }
@@ -196,7 +240,18 @@
   <div id="content">
     <div class="card">
       <h2>E-mails capturados</h2>
-      <p class="sub">Leads salvos no banco deste navegador (app_state · leads). Só mostra o que foi coletado nesta máquina.</p>
+      <p class="sub">Modo <strong>Local</strong> mostra o que foi coletado neste navegador. Com o backend configurado, faça login para ver todos os leads da <strong>nuvem</strong> (de todos os visitantes).</p>
+
+      <div class="cloud-box">
+        <span class="cloud-info" id="cloud-info">Local — só este navegador</span>
+        <form id="login-form" class="login-form" hidden>
+          <input type="email" id="login-email" placeholder="e-mail" autocomplete="username" required>
+          <input type="password" id="login-pass" placeholder="senha" autocomplete="current-password" required>
+          <button type="submit">Entrar</button>
+        </form>
+        <button id="login-btn">Entrar (nuvem)</button>
+        <button id="logout-btn" hidden>Sair</button>
+      </div>
 
       <div class="stats">
         <div class="stat"><span class="num" id="stat-total">0</span><span class="label">total</span></div>
@@ -218,9 +273,11 @@
 </div>
 
 <script src="../db.js"></script>
+<script src="../supabase.js"></script>
 <script src="../limite.js"></script>
 <script>
 (function(){
+  const cloud = window.SupabaseLeads;
   const tbody = document.getElementById('lead-body');
   const table = document.getElementById('lead-table');
   const empty = document.getElementById('empty');
@@ -229,7 +286,14 @@
   const statToday = document.getElementById('stat-today');
   const refreshBtn = document.getElementById('refresh-btn');
   const csvBtn = document.getElementById('csv-btn');
+  const cloudInfo = document.getElementById('cloud-info');
+  const loginForm = document.getElementById('login-form');
+  const loginBtn = document.getElementById('login-btn');
+  const logoutBtn = document.getElementById('logout-btn');
+  const loginEmail = document.getElementById('login-email');
+  const loginPass = document.getElementById('login-pass');
   let leads = [];
+  let mode = 'local';
 
   function setMsg(text, type){
     msg.textContent = text;
@@ -247,6 +311,29 @@
   function acaoLabel(acao){
     if(window.TakeUmLimite && TakeUmLimite.ACOES[acao]) return TakeUmLimite.ACOES[acao];
     return acao || '—';
+  }
+
+  function setCloudUI(){
+    const hasCloud = cloud.configured();
+    const logged = !!cloud.session();
+    if(!hasCloud){
+      cloudInfo.textContent = 'Local — backend Supabase não configurado';
+      cloudInfo.classList.remove('online');
+      loginBtn.hidden = true;
+      logoutBtn.hidden = true;
+    } else if(logged){
+      mode = 'cloud';
+      cloudInfo.textContent = '☁ Nuvem — todos os visitantes (Supabase)';
+      cloudInfo.classList.add('online');
+      loginBtn.hidden = true;
+      logoutBtn.hidden = false;
+    } else {
+      mode = 'local';
+      cloudInfo.textContent = 'Local — só este navegador. Logado, você vê a nuvem.';
+      cloudInfo.classList.remove('online');
+      loginBtn.hidden = false;
+      logoutBtn.hidden = true;
+    }
   }
 
   function render(){
@@ -299,7 +386,11 @@
   async function load(){
     refreshBtn.disabled = true;
     try{
-      leads = await TakeUmLeads.listar();
+      if(mode === 'cloud' && cloud.configured() && cloud.session()){
+        leads = await cloud.listar();
+      } else {
+        leads = await TakeUmLeads.listar();
+      }
       render();
       setMsg('', '');
     }catch(e){
@@ -312,9 +403,13 @@
   async function removeLead(lead){
     if(!confirm('Excluir ' + lead.email + '?')) return;
     try{
-      const rec = (await OneTakeDB.get('app_state', 'leads')) || { id: 'leads', lista: [] };
-      rec.lista = (rec.lista || []).filter(l => !(l.email === lead.email && l.capturadoEm === lead.capturadoEm));
-      await OneTakeDB.put('app_state', rec);
+      if(mode === 'cloud' && lead.id){
+        await cloud.excluir(lead.id);
+      } else {
+        const rec = (await OneTakeDB.get('app_state', 'leads')) || { id: 'leads', lista: [] };
+        rec.lista = (rec.lista || []).filter(l => !(l.email === lead.email && l.capturadoEm === lead.capturadoEm));
+        await OneTakeDB.put('app_state', rec);
+      }
       await load();
       setMsg('Lead excluído.', 'ok');
     }catch(e){
@@ -345,8 +440,41 @@
 
   refreshBtn.addEventListener('click', load);
 
+  loginBtn.addEventListener('click', () => {
+    loginForm.hidden = !loginForm.hidden;
+  });
+
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = loginEmail.value.trim();
+    const senha = loginPass.value;
+    if(!email || !senha){ setMsg('Preencha e-mail e senha.', 'err'); return; }
+    loginForm.querySelector('button').disabled = true;
+    setMsg('Entrando...', '');
+    try{
+      await cloud.login(email, senha);
+      loginForm.hidden = true;
+      loginForm.querySelector('button').disabled = false;
+      loginPass.value = '';
+      setCloudUI();
+      await load();
+      setMsg('Conectado à nuvem.', 'ok');
+    }catch(err){
+      loginForm.querySelector('button').disabled = false;
+      setMsg('Falha no login: ' + err.message, 'err');
+    }
+  });
+
+  logoutBtn.addEventListener('click', () => {
+    cloud.logout();
+    setCloudUI();
+    load();
+    setMsg('Desconectado da nuvem.', 'ok');
+  });
+
   (async function init(){
     await OneTakeMigrate();
+    setCloudUI();
     await load();
   })();
 })();

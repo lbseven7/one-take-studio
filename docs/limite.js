@@ -179,14 +179,21 @@
   }
 
   // Saves a captured lead email locally (deduped) so it lives in the
-  // app's data store even if the remote FormSubmit call fails.
+  // app's data store even if the remote FormSubmit call fails. When the
+  // Supabase backend is configured, it also sends the lead to the cloud.
   async function salvarLead(email, acao){
     try{
       const rec = (await OneTakeDB.get(STORE, 'leads')) || { id: 'leads', lista: [] };
       if(!rec.lista || !Array.isArray(rec.lista)) rec.lista = [];
-      if(rec.lista.some(l => l.email === email)) return;
-      rec.lista.push({ email: email, acao: acao, capturadoEm: new Date().toISOString() });
-      await OneTakeDB.put(STORE, rec);
+      if(!rec.lista.some(l => l.email === email)){
+        rec.lista.push({ email: email, acao: acao, capturadoEm: new Date().toISOString() });
+        await OneTakeDB.put(STORE, rec);
+      }
+    }catch(e){}
+    try{
+      if(window.SupabaseLeads && SupabaseLeads.configured()){
+        await SupabaseLeads.capture(email, acao);
+      }
     }catch(e){}
   }
 

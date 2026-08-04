@@ -42,6 +42,37 @@
     const u = await usos(acao);
     await OneTakeDB.put(STORE, { id: 'uso-' + acao, count: u + 1 });
     pintarContadores();
+    flashBadge(acao);
+    toastUso(acao, u + 1);
+  }
+
+  function flashBadge(acao){
+    const els = document.querySelectorAll('[data-tu-count="' + acao + '"]');
+    for(let i = 0; i < els.length; i++){
+      (function(el){
+        el.classList.remove('tu-count-flash');
+        void el.offsetWidth;
+        el.classList.add('tu-count-flash');
+        setTimeout(function(){ el.classList.remove('tu-count-flash'); }, 900);
+      })(els[i]);
+    }
+  }
+
+  function toastUso(acao, count){
+    const els = document.querySelectorAll('[data-tu-count="' + acao + '"]');
+    if(!els.length) return;
+    const el = els[els.length - 1];
+    const old = el.parentNode.querySelector('.tu-toast');
+    if(old) old.remove();
+    const t = document.createElement('span');
+    t.className = 'tu-toast';
+    const rest = LIMIT - count;
+    t.textContent = rest > 0 ? '1 uso gasto • restam ' + rest : 'Usos grátis esgotados!';
+    el.parentNode.insertBefore(t, el.nextSibling);
+    setTimeout(function(){
+      t.classList.add('tu-toast-out');
+      setTimeout(function(){ t.remove(); }, 400);
+    }, 1800);
   }
 
   function pintarContadores(){
@@ -67,7 +98,7 @@
     if(!document.querySelector('style[data-tu-count-style]')){
       const s = document.createElement('style');
       s.setAttribute('data-tu-count-style', '1');
-      s.textContent = '.tu-count{display:inline-block;font-size:10px;line-height:1;color:inherit;opacity:.55;font-weight:600;margin-left:6px;letter-spacing:.04em;text-transform:uppercase;vertical-align:middle;white-space:nowrap;} .tu-count.ex{opacity:1;color:#ff3b30;}';
+      s.textContent = '.tu-count{display:inline-block;font-size:10px;line-height:1;color:inherit;opacity:.55;font-weight:600;margin-left:6px;letter-spacing:.04em;text-transform:uppercase;vertical-align:middle;white-space:nowrap;} .tu-count.ex{opacity:1;color:#ff3b30;} .tu-count.tu-count-flash{animation:tuCountFlash .9s ease;} @keyframes tuCountFlash{0%{transform:scale(1);}35%{transform:scale(1.3);color:#ffb020;}100%{transform:scale(1);}} .tu-toast{display:inline-block;margin-left:8px;font-size:11px;font-weight:700;color:#ffb020;background:rgba(255,176,32,0.12);border:1px solid rgba(255,176,32,0.4);border-radius:999px;padding:3px 8px;animation:tuToastIn .25s ease;vertical-align:middle;white-space:nowrap;} @keyframes tuToastIn{from{opacity:0;transform:translateY(3px);}to{opacity:1;transform:translateY(0);}} .tu-toast.tu-toast-out{opacity:0;transition:opacity .35s;}';
       document.head.appendChild(s);
     }
     pintarContadores();
@@ -107,6 +138,16 @@
         '<p class="tu-sub">Você usou as <strong>' + LIMIT + ' criações gratuitas</strong> de <em>' + nome + '</em>. Com o <strong>Take Um Pro</strong>, crie sem limites.</p>' +
         '<div class="tu-price">' + PRECO + '<span>pagamento único</span></div>' +
         '<a class="tu-buy" href="' + CHECKOUT_URL + '" target="_blank" rel="noopener">Desbloquear ilimitado</a>' +
+        '<form class="tu-emailbox" novalidate>' +
+          '<p class="tu-email-title">Não quer comprar agora?</p>' +
+          '<p class="tu-email-sub">Deixa seu e-mail: você não perde seu progresso e recebe dicas para gravar melhor.</p>' +
+          '<div class="tu-email-row">' +
+            '<input type="email" class="tu-email-input" placeholder="Seu melhor e-mail" autocomplete="email" spellcheck="false" required>' +
+            '<button type="submit" class="tu-email-send">Salvar</button>' +
+          '</div>' +
+          '<input type="text" class="tu-honey" tabindex="-1" autocomplete="off" aria-hidden="true">' +
+          '<div class="tu-emailmsg"></div>' +
+        '</form>' +
         '<button type="button" class="tu-key-btn">Já tenho uma chave Pro</button>' +
         '<div class="tu-keybox" hidden>' +
           '<input type="text" class="tu-key-input" placeholder="TAKEUM-XXXXX-XXXXX-XXXXX-XXXXX-XXXXX" autocomplete="off" spellcheck="false">' +
@@ -128,6 +169,19 @@
       '.tu-upsell .tu-price span{display:block;font-size:11px;font-weight:600;color:#8a8a92;letter-spacing:0.05em;text-transform:uppercase;margin-top:2px;}' +
       '.tu-upsell .tu-buy{display:block;background:#ffb020;color:#1a1200;font-weight:700;text-decoration:none;padding:13px;border-radius:6px;margin:14px 0 8px;font-size:13px;}' +
       '.tu-upsell .tu-buy:hover{filter:brightness(1.1);}' +
+      '.tu-upsell .tu-emailbox{margin:0 0 10px;padding:12px;border:1px solid #232328;border-radius:8px;background:#1a1a1e;text-align:left;}' +
+      '.tu-upsell .tu-email-title{margin:0 0 4px;font-size:13px;font-weight:700;color:#f5f4ef;}' +
+      '.tu-upsell .tu-email-sub{margin:0 0 10px;font-size:12px;line-height:1.5;color:#8a8a92;}' +
+      '.tu-upsell .tu-email-row{display:flex;gap:8px;}' +
+      '.tu-upsell .tu-email-input{flex:1;box-sizing:border-box;background:#141417;border:1px solid #232328;border-radius:6px;color:#f5f4ef;font-family:"IBM Plex Mono",monospace;font-size:12px;padding:10px;outline:none;min-width:0;}' +
+      '.tu-upsell .tu-email-input:focus{border-color:#ffb020;}' +
+      '.tu-upsell .tu-email-send{background:#ffb020;border:none;color:#1a1200;font-weight:700;padding:10px 14px;border-radius:6px;cursor:pointer;font-size:12px;white-space:nowrap;}' +
+      '.tu-upsell .tu-email-send:hover{filter:brightness(1.1);}' +
+      '.tu-upsell .tu-email-send:disabled{opacity:.5;cursor:default;}' +
+      '.tu-upsell .tu-honey{display:none;}' +
+      '.tu-upsell .tu-emailmsg{font-size:12px;margin-top:8px;min-height:16px;}' +
+      '.tu-upsell .tu-emailmsg.ok{color:#39ff88;}' +
+      '.tu-upsell .tu-emailmsg.err{color:#ff3b30;}' +
       '.tu-upsell .tu-key-btn{background:transparent;border:none;color:#8a8a92;font-size:12px;cursor:pointer;text-decoration:underline;padding:4px;}' +
       '.tu-upsell .tu-keybox{margin-top:12px;}' +
       '.tu-upsell .tu-keybox input{width:100%;box-sizing:border-box;background:#1a1a1e;border:1px solid #232328;border-radius:4px;color:#f5f4ef;font-family:"IBM Plex Mono",monospace;font-size:12px;padding:10px;outline:none;}' +
@@ -144,6 +198,46 @@
 
     overlay.querySelector('.tu-close').addEventListener('click', () => overlay.remove());
     overlay.addEventListener('click', (e) => { if(e.target === overlay) overlay.remove(); });
+
+    overlay.querySelector('.tu-emailbox').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const box = overlay.querySelector('.tu-emailbox');
+      const input = overlay.querySelector('.tu-email-input');
+      const msgEl = overlay.querySelector('.tu-emailmsg');
+      const sendBtn = overlay.querySelector('.tu-email-send');
+      const email = input.value.trim();
+      if(!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+        msgEl.textContent = 'Digite um e-mail válido.';
+        msgEl.className = 'tu-emailmsg err';
+        return;
+      }
+      sendBtn.disabled = true;
+      msgEl.textContent = 'Enviando...';
+      msgEl.className = 'tu-emailmsg';
+      try{
+        const body = new URLSearchParams();
+        body.set('email', email);
+        body.set('_subject', 'Lead upsell Take Um Studio — ' + nome);
+        body.set('_captcha', 'false');
+        body.set('_honey', '');
+        body.set('_next', 'https://lbseven7.github.io/one-take-studio/');
+        await fetch('https://formsubmit.co/takeumst@gmail.com', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Accept': 'application/json' },
+          body: body.toString()
+        });
+        box.querySelector('.tu-email-title').textContent = 'E-mail salvo!';
+        box.querySelector('.tu-email-sub').textContent = 'Seu progresso fica salvo neste navegador. Boa gravação!';
+        input.style.display = 'none';
+        sendBtn.style.display = 'none';
+        msgEl.textContent = '';
+        if(window.tuTrack){ window.tuTrack('upsell_lead', { tool: acao }); }
+      }catch(err){
+        msgEl.textContent = 'Não deu pra salvar agora. Tente de novo.';
+        msgEl.className = 'tu-emailmsg err';
+        sendBtn.disabled = false;
+      }
+    });
 
     overlay.querySelector('.tu-key-btn').addEventListener('click', () => {
       overlay.querySelector('.tu-keybox').hidden = false;

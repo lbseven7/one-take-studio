@@ -75,6 +75,9 @@
     white-space: nowrap;
   }
   header button:hover{ color: var(--text-main); border-color: var(--accent-amber); }
+  header button:disabled{ opacity: .4; cursor: default; }
+  header button:disabled:hover{ color: var(--text-dim); border-color: var(--panel-line); }
+  #undo-btn, #redo-btn{ color: var(--text-main); }
   #download-btn{
     background: var(--accent-amber);
     color: #1a1200;
@@ -442,6 +445,8 @@
   <header>
     <h1>Take Um Studio · Gerador de Capa</h1>
     <div class="actions">
+      <button id="undo-btn" title="Desfazer (Ctrl+Z)" disabled>↩ Desfazer</button>
+      <button id="redo-btn" title="Refazer (Ctrl+Shift+Z)" disabled>↪ Refazer</button>
       <button id="download-btn">⬇ Baixar PNG</button><span class="tu-count" data-tu-count="capa-gerar"></span>
     </div>
   </header>
@@ -515,13 +520,26 @@
           </div>
           <div id="bg-thumb-wrap" class="hidden">
             <div id="bg-thumb"></div>
-            <span>A imagem preenche a capa inteira. A cor (ou gradiente) vira reserva quando não há imagem.</span>
+            <span>Arraste a imagem no preview para reposicionar. A cor (ou gradiente) vira reserva quando não há imagem.</span>
+          </div>
+          <div class="hidden" id="bg-zoom-row">
+            <div class="slider-row">
+              <span>Zoom</span>
+              <input type="range" id="bg-zoom" min="100" max="300" value="100">
+              <span class="val" id="bg-zoom-val">100%</span>
+            </div>
+            <button class="clear-emoji" id="bg-reset-pos">Redefinir posição</button>
           </div>
           <input type="file" id="bg-image-file" accept="image/*" hidden>
         </div>
 
         <div class="group">
           <label>Texto</label>
+          <div class="slider-row">
+            <span>Tamanho</span>
+            <input type="range" id="text-size" min="40" max="250" value="100">
+            <span class="val" id="text-size-val">100%</span>
+          </div>
           <div class="toggle-row">
             <label class="switch"><input type="checkbox" id="textbg-toggle"><span>Caixa atrás do texto</span></label>
           </div>
@@ -556,7 +574,7 @@
           <div class="pos-row" id="face-pos"></div>
           <div class="slider-row">
             <span>Tamanho</span>
-            <input type="range" id="face-size" min="14" max="45" value="26">
+            <input type="range" id="face-size" min="14" max="60" value="26">
             <span class="val" id="face-size-val">26%</span>
           </div>
           <input type="file" id="face-file" accept="image/*" hidden>
@@ -587,7 +605,7 @@
         <div id="preview-wrap">
           <canvas id="preview"></canvas>
         </div>
-        <div id="format-hint">Dica: arraste o texto, o emoji e a foto do rosto para posicionar no preview. No YouTube o texto precisa dar para ler até em telas pequenas — mantenha o texto curto e de alto contraste. Ative a safe-zone para ver a área de título segura. Tudo fica salvo automaticamente em "Minhas capas".</div>
+        <div id="format-hint">Dica: arraste o texto, o emoji, a foto do rosto e a imagem de fundo para posicionar no preview. Puxe o pontinho amarelo no canto da foto do rosto para redimensioná-la, ou no canto do texto para aumentar/diminuir a fonte. Quando o centro de um elemento passa perto do centro do canvas, uma linha pontilhada aparece e ele "gruda" no centro (ímã). Use Ctrl+Z para desfazer e Ctrl+Shift+Z para refazer — botões no topo também funcionam. Com a imagem de fundo carregada, use a roda do mouse (ou o slider de Zoom) para aproximar/afastar. No YouTube o texto precisa dar para ler até em telas pequenas — mantenha o texto curto e de alto contraste. Ative a safe-zone para ver a área de título segura. Tudo fica salvo automaticamente em "Minhas capas".</div>
         <div id="msg"></div>
       </div>
 
@@ -638,8 +656,10 @@
       gradFrom: '#ff8c42',
       gradTo: '#ff3b30',
       bgImage: null,
+      bgTransform: { scale: 1, x: 0, y: 0 },
       posX: 'center',
       posY: 'middle',
+      textScale: 100,
       textBg: false,
       textBgColor: '#0a0a0c',
       textBgOpacity: 75,
@@ -665,6 +685,11 @@
   let currentId = null;
   let saveTimer = null;
   let layout = null;
+  let undoStack = [];
+  let redoStack = [];
+  let inGesture = false;
+  let gestureTimer = null;
+  let alignGuides = null;
 
   const canvas = document.getElementById('preview');
   const ctx = canvas.getContext('2d');
@@ -681,6 +706,12 @@
   const bgImageFile = document.getElementById('bg-image-file');
   const bgThumbWrap = document.getElementById('bg-thumb-wrap');
   const bgThumb = document.getElementById('bg-thumb');
+  const bgZoomRow = document.getElementById('bg-zoom-row');
+  const bgZoom = document.getElementById('bg-zoom');
+  const bgZoomVal = document.getElementById('bg-zoom-val');
+  const bgResetPos = document.getElementById('bg-reset-pos');
+  const textSize = document.getElementById('text-size');
+  const textSizeVal = document.getElementById('text-size-val');
 
   function msg(cls, text){
     msgEl.className = cls || '';
@@ -691,6 +722,90 @@
     return JSON.parse(JSON.stringify(s));
   }
 
+  function ensureTransforms(){
+    if(!state.drag) state.drag = { x: 0, y: 0 };
+    if(!state.faceDrag) state.faceDrag = { x: 0, y: 0 };
+    if(!state.bgTransform) state.bgTransform = { scale: 1, x: 0, y: 0 };
+  }
+
+  // ---------- UNDO / REDO ----------
+  const undoBtn = document.getElementById('undo-btn');
+  const redoBtn = document.getElementById('redo-btn');
+
+  function updateUndoButtons(){
+    undoBtn.disabled = undoStack.length === 0;
+    redoBtn.disabled = redoStack.length === 0;
+  }
+
+  function pushHistory(){
+    undoStack.push(cloneState(state));
+    if(undoStack.length > 30) undoStack.shift();
+    redoStack = [];
+    updateUndoButtons();
+  }
+
+  // Groups continuous changes (drags, slider moves, typing bursts)
+  // into a single undo step: only the first change in a gesture pushes.
+  function beginChange(){
+    clearTimeout(gestureTimer);
+    if(!inGesture){
+      inGesture = true;
+      pushHistory();
+    }
+    gestureTimer = setTimeout(() => { inGesture = false; }, 600);
+  }
+
+  function applyState(){
+    syncUI();
+    render();
+    scheduleSave();
+    updateUndoButtons();
+  }
+
+  let reloadToken = 0;
+  function reloadImages(){
+    const token = ++reloadToken;
+    return (async () => {
+      bgImage = null;
+      faceImg = null;
+      if(state.bgImage) await loadBgImage(state.bgImage);
+      if(state.face && state.face.src) await loadFaceImage(state.face.src);
+      if(token !== reloadToken) return;
+      applyState();
+    })();
+  }
+
+  function undo(){
+    if(undoStack.length === 0) return;
+    redoStack.push(cloneState(state));
+    state = cloneState(undoStack.pop());
+    updateUndoButtons();
+    reloadImages();
+  }
+
+  function redo(){
+    if(redoStack.length === 0) return;
+    undoStack.push(cloneState(state));
+    state = cloneState(redoStack.pop());
+    updateUndoButtons();
+    reloadImages();
+  }
+
+  undoBtn.addEventListener('click', undo);
+  redoBtn.addEventListener('click', redo);
+
+  window.addEventListener('keydown', (e) => {
+    if(!(e.ctrlKey || e.metaKey)) return;
+    const k = e.key.toLowerCase();
+    if(k === 'z'){
+      e.preventDefault();
+      if(e.shiftKey) redo(); else undo();
+    } else if(k === 'y'){
+      e.preventDefault();
+      redo();
+    }
+  });
+
   // ---------- BUILD STATIC CONTROLS ----------
   function buildSwatches(container, colors, key){
     container.innerHTML = '';
@@ -700,6 +815,7 @@
       b.style.background = color;
       b.dataset.color = color;
       b.addEventListener('click', () => {
+        beginChange();
         state[key] = color;
         syncUI();
         render();
@@ -717,6 +833,7 @@
     b.textContent = emoji;
     b.dataset.emoji = emoji;
     b.addEventListener('click', () => {
+      beginChange();
       state.emoji = emoji;
       syncUI();
       render();
@@ -731,6 +848,7 @@
     b.className = 'tpl-btn';
     b.textContent = tpl.label;
     b.addEventListener('click', () => {
+      beginChange();
       state = Object.assign(state, cloneState(tpl.state));
       state.drag = { x: 0, y: 0 };
       state.faceDrag = { x: 0, y: 0 };
@@ -752,17 +870,20 @@
     });
   }
   buildPosRow(document.getElementById('pos-x'), POSX, v => {
+    beginChange();
     state.posX = v;
     state.drag = { x: 0, y: 0 };
     syncUI(); render(); scheduleSave();
   });
   buildPosRow(document.getElementById('pos-y'), POSY, v => {
+    beginChange();
     state.posY = v;
     state.drag = { x: 0, y: 0 };
     syncUI(); render(); scheduleSave();
   });
   buildPosRow(document.getElementById('face-pos'), FACEPOS, v => {
     if(!state.face) return;
+    beginChange();
     state.face.pos = v;
     state.faceDrag = { x: 0, y: 0 };
     syncUI(); render(); scheduleSave();
@@ -770,6 +891,7 @@
 
   // ---------- SYNC UI ----------
   function syncUI(){
+    ensureTransforms();
     titleEl.value = state.title;
     emojiInput.value = state.emoji;
     bgCustom.value = state.bg;
@@ -818,12 +940,20 @@
     const hasImg = !!state.bgImage;
     bgImageRemove.style.display = hasImg ? 'inline-block' : 'none';
     bgThumbWrap.classList.toggle('hidden', !hasImg);
+    bgZoomRow.classList.toggle('hidden', !hasImg);
     if(hasImg) bgThumb.style.backgroundImage = 'url("' + state.bgImage + '")';
+    const bt = state.bgTransform;
+    const zoomPct = Math.round((bt.scale || 1) * 100);
+    bgZoom.value = zoomPct;
+    bgZoomVal.textContent = zoomPct + '%';
 
     const hasFace = !!state.face;
     faceRemove.style.display = hasFace ? 'inline-block' : 'none';
     faceSize.value = state.face ? state.face.size : state.faceSize;
     faceSizeVal.textContent = (state.face ? state.face.size : state.faceSize) + '%';
+
+    textSize.value = state.textScale || 100;
+    textSizeVal.textContent = (state.textScale || 100) + '%';
 
     downloadBtn.textContent = '⬇ Baixar ' + exportExt.toUpperCase();
   }
@@ -858,6 +988,30 @@
     g.drawImage(img, (w - dw) / 2, (h - dh) / 2, dw, dh);
   }
 
+  // Draws the background image respecting a { scale, x, y } transform.
+  // scale zooms beyond the base "cover" size; x/y are pan offsets as
+  // fractions of the canvas size, clamped so the image always fills it.
+  function drawBgImage(g, img, w, h, transform){
+    const ir = img.width / img.height;
+    const cr = w / h;
+    let baseW, baseH;
+    if(ir > cr){ baseH = h; baseW = h * ir; }
+    else { baseW = w; baseH = w / ir; }
+    const scale = (transform && transform.scale) || 1;
+    const dw = baseW * scale;
+    const dh = baseH * scale;
+    const maxOffX = Math.max(0, (dw - w) / 2);
+    const maxOffY = Math.max(0, (dh - h) / 2);
+    let offX = (transform && isFinite(transform.x)) ? transform.x * w : 0;
+    let offY = (transform && isFinite(transform.y)) ? transform.y * h : 0;
+    offX = Math.max(-maxOffX, Math.min(maxOffX, offX));
+    offY = Math.max(-maxOffY, Math.min(maxOffY, offY));
+    const dx = (w - dw) / 2 + offX;
+    const dy = (h - dh) / 2 + offY;
+    g.drawImage(img, dx, dy, dw, dh);
+    return { dw: dw, dh: dh, dx: dx, dy: dy, maxOffX: maxOffX, maxOffY: maxOffY };
+  }
+
   function rr(g, x, y, w, h, r){
     r = Math.min(r, w / 2, h / 2);
     g.beginPath();
@@ -876,14 +1030,15 @@
     return 'rgba(' + ((n >> 16) & 255) + ',' + ((n >> 8) & 255) + ',' + (n & 255) + ',' + alpha + ')';
   }
 
-  function paint(g, w, h, guides){
+  function paint(g, w, h, guides, interactive){
     const title = state.title.trim();
     const emoji = state.emoji.trim();
     const padX = Math.round(w * 0.07);
     const maxWidth = w - padX * 2;
 
+    let bgLayout = null;
     if(bgImage){
-      drawCover(g, bgImage, w, h);
+      bgLayout = drawBgImage(g, bgImage, w, h, state.bgTransform);
     } else if(state.gradient){
       const grd = g.createLinearGradient(0, 0, 0, h);
       grd.addColorStop(0, state.gradFrom);
@@ -931,6 +1086,16 @@
       }
     }
 
+    const textScale = state.textScale || 100;
+    if(title && textScale !== 100){
+      size = Math.max(Math.round(w * 0.025), Math.round(size * textScale / 100));
+      g.font = '900 ' + size + 'px Archivo, sans-serif';
+      lines = wrap(title, maxWidth, g);
+      lineH = Math.round(size * 1.18);
+      bandPadTB = state.textBg ? Math.round(size * 0.55) : 0;
+      bandPadLR = state.textBg ? Math.round(w * 0.018) : 0;
+    }
+
     const textH = lineH * lines.length + bandPadTB * 2;
     const gapEmoji = emoji ? emojiSize + Math.round(w * 0.02) : 0;
     const totalH = gapEmoji + textH;
@@ -951,7 +1116,8 @@
     const blockX0 = posX === 'left' ? x : posX === 'right' ? x - maxWidth : x - maxWidth / 2;
     layout = {
       block: { x0: blockX0, y0: blockY0, x1: blockX0 + maxWidth, y1: blockY1, baseX: baseX, baseY: baseY },
-      emoji: emoji ? { x: x, y: Math.round(startY + emojiSize / 2) } : null
+      emoji: emoji ? { x: x, y: Math.round(startY + emojiSize / 2) } : null,
+      bgImage: bgLayout
     };
 
     if(emoji){
@@ -990,7 +1156,25 @@
       y += lineH;
     }
 
-    drawFace(g, w, h);
+    if(interactive && title && layout.block){
+      const hr = Math.max(9, Math.round(size * 0.25));
+      const hx = layout.block.x1;
+      const hy = layout.block.y1;
+      layout.text = { handle: { x: hx, y: hy, r: hr } };
+      g.save();
+      g.beginPath();
+      g.arc(hx, hy, hr, 0, Math.PI * 2);
+      g.fillStyle = '#ffb020';
+      g.fill();
+      g.lineWidth = Math.max(2, Math.round(hr * 0.3));
+      g.strokeStyle = '#0a0a0c';
+      g.stroke();
+      g.restore();
+    } else {
+      layout.text = null;
+    }
+
+    drawFace(g, w, h, interactive);
 
     if(guides){
       g.save();
@@ -1006,9 +1190,30 @@
       g.fill();
       g.restore();
     }
+
+    if(interactive && alignGuides && (alignGuides.v || alignGuides.h)){
+      g.save();
+      g.setLineDash([8, 8]);
+      g.strokeStyle = 'rgba(255,176,32,0.95)';
+      g.lineWidth = 2;
+      if(alignGuides.v){
+        g.beginPath();
+        g.moveTo(w / 2, 0);
+        g.lineTo(w / 2, h);
+        g.stroke();
+      }
+      if(alignGuides.h){
+        g.beginPath();
+        g.moveTo(0, h / 2);
+        g.lineTo(w, h / 2);
+        g.stroke();
+      }
+      g.setLineDash([]);
+      g.restore();
+    }
   }
 
-  function drawFace(g, w, h){
+  function drawFace(g, w, h, interactive){
     if(!faceImg) return;
     const sizePct = (state.face && state.face.size) || state.faceSize || 26;
     const d = Math.round(w * sizePct / 100);
@@ -1037,6 +1242,27 @@
     g.clip();
     drawCover(g, faceImg, d, d);
     g.restore();
+
+    // Resize handle: a small dot on the bottom-right edge of the circle,
+    // drawn outside the clip so it stays fully visible and draggable.
+    if(interactive){
+      const handleR = Math.max(9, Math.round(d * 0.07));
+      const handleAngle = Math.PI / 4; // 45°, bottom-right of the circle
+      const hx = fx + d / 2 + Math.cos(handleAngle) * (d / 2);
+      const hy = fy + d / 2 + Math.sin(handleAngle) * (d / 2);
+      if(layout && layout.face) layout.face.handle = { x: hx, y: hy, r: handleR };
+      g.save();
+      g.beginPath();
+      g.arc(hx, hy, handleR, 0, Math.PI * 2);
+      g.fillStyle = '#ffb020';
+      g.fill();
+      g.lineWidth = Math.max(2, Math.round(handleR * 0.3));
+      g.strokeStyle = '#0a0a0c';
+      g.stroke();
+      g.restore();
+    } else {
+      if(layout && layout.face) layout.face.handle = null;
+    }
   }
 
   async function render(){
@@ -1044,7 +1270,7 @@
     canvas.width = fmt.w;
     canvas.height = fmt.h;
     try{ await document.fonts.ready; }catch(e){}
-    paint(ctx, fmt.w, fmt.h, !!state.safeZone);
+    paint(ctx, fmt.w, fmt.h, !!state.safeZone, true);
   }
 
   function renderExport(){
@@ -1053,7 +1279,7 @@
     c.width = fmt.w;
     c.height = fmt.h;
     const g = c.getContext('2d');
-    paint(g, fmt.w, fmt.h, false);
+    paint(g, fmt.w, fmt.h, false, false);
     return c;
   }
 
@@ -1108,9 +1334,11 @@
     const rec = caps.find(c => c.id === id);
     if(!rec) return;
     currentId = id;
+    undoStack = [];
+    redoStack = [];
+    updateUndoButtons();
     state = cloneState(rec.state);
-    if(!state.drag) state.drag = { x: 0, y: 0 };
-    if(!state.faceDrag) state.faceDrag = { x: 0, y: 0 };
+    ensureTransforms();
     bgImage = null;
     faceImg = null;
     if(state.bgImage) await loadBgImage(state.bgImage);
@@ -1226,6 +1454,7 @@
   // ---------- EVENTS ----------
   document.querySelectorAll('.fmt-btn:not(.export-btn)').forEach(btn => {
     btn.addEventListener('click', () => {
+      beginChange();
       state.format = btn.dataset.format;
       syncUI();
       render();
@@ -1241,12 +1470,14 @@
   });
 
   titleEl.addEventListener('input', () => {
+    beginChange();
     state.title = titleEl.value;
     render();
     scheduleSave();
   });
 
   emojiInput.addEventListener('input', () => {
+    beginChange();
     state.emoji = emojiInput.value;
     syncUI();
     render();
@@ -1254,6 +1485,7 @@
   });
 
   clearEmoji.addEventListener('click', () => {
+    beginChange();
     state.emoji = '';
     syncUI();
     render();
@@ -1261,6 +1493,7 @@
   });
 
   bgCustom.addEventListener('input', () => {
+    beginChange();
     state.bg = bgCustom.value;
     syncUI();
     render();
@@ -1268,6 +1501,7 @@
   });
 
   fgCustom.addEventListener('input', () => {
+    beginChange();
     state.fg = fgCustom.value;
     syncUI();
     render();
@@ -1283,8 +1517,10 @@
     reader.onload = () => {
       const img = new Image();
       img.onload = () => {
+        beginChange();
         bgImage = img;
         state.bgImage = reader.result;
+        state.bgTransform = { scale: 1, x: 0, y: 0 };
         syncUI();
         render();
         scheduleSave();
@@ -1296,8 +1532,29 @@
   });
 
   bgImageRemove.addEventListener('click', () => {
+    beginChange();
     bgImage = null;
     state.bgImage = null;
+    state.bgTransform = { scale: 1, x: 0, y: 0 };
+    syncUI();
+    render();
+    scheduleSave();
+  });
+
+  bgZoom.addEventListener('input', () => {
+    beginChange();
+    ensureTransforms();
+    state.bgTransform.scale = parseInt(bgZoom.value, 10) / 100;
+    syncUI();
+    render();
+    scheduleSave();
+  });
+
+  bgResetPos.addEventListener('click', () => {
+    beginChange();
+    ensureTransforms();
+    state.bgTransform.x = 0;
+    state.bgTransform.y = 0;
     syncUI();
     render();
     scheduleSave();
@@ -1308,16 +1565,19 @@
   const gradFrom = document.getElementById('grad-from');
   const gradTo = document.getElementById('grad-to');
   gradToggle.addEventListener('change', () => {
+    beginChange();
     state.gradient = gradToggle.checked;
     syncUI();
     render();
     scheduleSave();
   });
   gradFrom.addEventListener('input', () => {
+    beginChange();
     state.gradFrom = gradFrom.value;
     syncUI(); render(); scheduleSave();
   });
   gradTo.addEventListener('input', () => {
+    beginChange();
     state.gradTo = gradTo.value;
     syncUI(); render(); scheduleSave();
   });
@@ -1327,14 +1587,17 @@
   const textbgColor = document.getElementById('textbg-color');
   const textbgOpacity = document.getElementById('textbg-opacity');
   textbgToggle.addEventListener('change', () => {
+    beginChange();
     state.textBg = textbgToggle.checked;
     syncUI(); render(); scheduleSave();
   });
   textbgColor.addEventListener('input', () => {
+    beginChange();
     state.textBgColor = textbgColor.value;
     syncUI(); render(); scheduleSave();
   });
   textbgOpacity.addEventListener('input', () => {
+    beginChange();
     state.textBgOpacity = parseInt(textbgOpacity.value, 10);
     syncUI(); render(); scheduleSave();
   });
@@ -1344,20 +1607,24 @@
   const outlineColor = document.getElementById('outline-color');
   const outlineWidth = document.getElementById('outline-width');
   outlineToggle.addEventListener('change', () => {
+    beginChange();
     state.outline = outlineToggle.checked;
     syncUI(); render(); scheduleSave();
   });
   outlineColor.addEventListener('input', () => {
+    beginChange();
     state.outlineColor = outlineColor.value;
     syncUI(); render(); scheduleSave();
   });
   outlineWidth.addEventListener('input', () => {
+    beginChange();
     state.outlineWidth = parseInt(outlineWidth.value, 10);
     syncUI(); render(); scheduleSave();
   });
 
   const safeToggle = document.getElementById('safe-toggle');
   safeToggle.addEventListener('change', () => {
+    beginChange();
     state.safeZone = safeToggle.checked;
     syncUI(); render(); scheduleSave();
   });
@@ -1375,6 +1642,7 @@
     reader.onload = () => {
       const img = new Image();
       img.onload = () => {
+        beginChange();
         faceImg = img;
         state.face = { src: reader.result, pos: state.facePos || 'tr', size: state.faceSize || 26 };
         syncUI(); render(); scheduleSave();
@@ -1385,14 +1653,22 @@
     faceFile.value = '';
   });
   faceRemove.addEventListener('click', () => {
+    beginChange();
     faceImg = null;
     state.face = null;
     syncUI(); render(); scheduleSave();
   });
   faceSize.addEventListener('input', () => {
+    beginChange();
     const v = parseInt(faceSize.value, 10);
     state.faceSize = v;
     if(state.face) state.face.size = v;
+    syncUI(); render(); scheduleSave();
+  });
+
+  textSize.addEventListener('input', () => {
+    beginChange();
+    state.textScale = parseInt(textSize.value, 10);
     syncUI(); render(); scheduleSave();
   });
 
@@ -1408,6 +1684,7 @@
     try{
       const p = await OneTakeDB.get(PACK_STORE, PACK_ID);
       if(p && p.titulo){
+        beginChange();
         state.title = p.titulo;
         syncUI(); render(); scheduleSave();
         msg('ok', 'Título do Pack aplicado!');
@@ -1456,10 +1733,15 @@
       msg('err', 'Seu navegador não suporta copiar imagem. Use o botão Baixar.');
       return;
     }
+    if(window.TakeUmLimite && !(await window.TakeUmLimite.podeUsar('capa-gerar')).ok){
+      window.TakeUmLimite.mostrarUpsell('capa-gerar');
+      return;
+    }
     try{
       const blob = await new Promise(res => renderExport().toBlob(res, 'image/png'));
       await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
       msg('ok', 'Imagem copiada! Cole onde quiser (Canva, WhatsApp, editor).');
+      if(window.TakeUmLimite){ window.TakeUmLimite.usar('capa-gerar').catch(function(){}); }
     }catch(e){
       msg('err', 'Não consegui copiar a imagem.');
     }
@@ -1478,6 +1760,18 @@
   }
 
   function hitTest(cx, cy){
+    if(layout && layout.text && layout.text.handle){
+      const hd = layout.text.handle;
+      const dx = cx - hd.x, dy = cy - hd.y;
+      const r = hd.r * 1.7;
+      if(dx * dx + dy * dy <= r * r) return 'textResize';
+    }
+    if(layout && layout.face && layout.face.handle){
+      const hd = layout.face.handle;
+      const dx = cx - hd.x, dy = cy - hd.y;
+      const r = hd.r * 1.7;
+      if(dx * dx + dy * dy <= r * r) return 'faceResize';
+    }
     if(layout && layout.face){
       const dx = cx - layout.face.cx, dy = cy - layout.face.cy;
       const r = layout.face.r * 1.2;
@@ -1487,6 +1781,7 @@
       const b = layout.block;
       if(cx >= b.x0 && cx <= b.x1 && cy >= b.y0 && cy <= b.y1) return 'block';
     }
+    if(layout && layout.bgImage) return 'bgImage';
     return null;
   }
 
@@ -1508,11 +1803,53 @@
       ay = Math.max(0, Math.min(h, ay));
       return { x: (ax - b.baseX) / w, y: (ay - b.baseY) / h };
     }
+    if(type === 'bgImage' && layout && layout.bgImage){
+      const bi = layout.bgImage;
+      const ax = Math.max(-bi.maxOffX, Math.min(bi.maxOffX, offX * w));
+      const ay = Math.max(-bi.maxOffY, Math.min(bi.maxOffY, offY * h));
+      return { x: ax / w, y: ay / h };
+    }
     return { x: offX, y: offY };
   }
 
+  // Magnetic center guides: when the center of the dragged element (text
+  // block, face, bg image) gets close to the canvas center, snap it there
+  // and report which axes are aligned so paint() can draw the dotted line.
+  function snapOffsets(type, nx, ny){
+    const w = canvas.width, h = canvas.height;
+    const cx = w / 2, cy = h / 2;
+    const snap = Math.max(10, Math.round(w * 0.012));
+    const out = { x: nx, y: ny, v: false, h: false };
+    if(!layout) return out;
+    if(type === 'block' && layout.block){
+      const b = layout.block;
+      const maxW = b.x1 - b.x0;
+      const totalH = b.y1 - b.y0;
+      const bx0 = b.baseX + Math.round(w * nx) + (state.posX === 'right' ? -maxW : state.posX === 'center' ? -maxW / 2 : 0);
+      const by0 = b.baseY + Math.round(h * ny);
+      const bcx = bx0 + maxW / 2;
+      const bcy = by0 + totalH / 2;
+      if(Math.abs(bcx - cx) <= snap){ out.x = nx + (cx - bcx) / w; out.v = true; }
+      if(Math.abs(bcy - cy) <= snap){ out.y = ny + (cy - bcy) / h; out.h = true; }
+    } else if(type === 'face' && layout.face){
+      const f = layout.face;
+      const fcx = f.baseX + Math.round(w * nx) + f.d / 2;
+      const fcy = f.baseY + Math.round(h * ny) + f.d / 2;
+      if(Math.abs(fcx - cx) <= snap){ out.x = nx + (cx - fcx) / w; out.v = true; }
+      if(Math.abs(fcy - cy) <= snap){ out.y = ny + (cy - fcy) / h; out.h = true; }
+    } else if(type === 'bgImage' && layout.bgImage){
+      const bi = layout.bgImage;
+      if(bi.maxOffX >= snap && Math.abs(nx * w) <= snap){ out.x = 0; out.v = true; }
+      if(bi.maxOffY >= snap && Math.abs(ny * h) <= snap){ out.y = 0; out.h = true; }
+    }
+    return out;
+  }
+
   function updateCursor(cx, cy){
-    canvas.style.cursor = dragState.target ? 'grabbing' : (hitTest(cx, cy) ? 'grab' : 'default');
+    if(dragState.target === 'faceResize' || dragState.target === 'textResize'){ canvas.style.cursor = 'nwse-resize'; return; }
+    if(dragState.target){ canvas.style.cursor = 'grabbing'; return; }
+    const t = hitTest(cx, cy);
+    canvas.style.cursor = (t === 'faceResize' || t === 'textResize') ? 'nwse-resize' : (t ? 'grab' : 'default');
   }
 
   canvas.addEventListener('pointerdown', (e) => {
@@ -1524,23 +1861,91 @@
     dragState.target = t;
     dragState.startX = p.x;
     dragState.startY = p.y;
-    dragState.offX = t === 'face' ? ((state.faceDrag && state.faceDrag.x) || 0) : ((state.drag && state.drag.x) || 0);
-    dragState.offY = t === 'face' ? ((state.faceDrag && state.faceDrag.y) || 0) : ((state.drag && state.drag.y) || 0);
+    alignGuides = { v: false, h: false };
+    if(t === 'faceResize'){
+      const cx0 = layout.face.cx, cy0 = layout.face.cy;
+      const dx0 = p.x - cx0, dy0 = p.y - cy0;
+      dragState.centerX = cx0;
+      dragState.centerY = cy0;
+      dragState.startDist = Math.sqrt(dx0 * dx0 + dy0 * dy0) || 1;
+      dragState.startSize = (state.face && state.face.size) || state.faceSize || 26;
+      canvas.style.cursor = 'nwse-resize';
+      return;
+    }
+    if(t === 'textResize'){
+      const b = layout.block;
+      dragState.centerX = (b.x0 + b.x1) / 2;
+      dragState.centerY = (b.y0 + b.y1) / 2;
+      const dx0 = p.x - dragState.centerX, dy0 = p.y - dragState.centerY;
+      dragState.startDist = Math.sqrt(dx0 * dx0 + dy0 * dy0) || 1;
+      dragState.startSize = state.textScale || 100;
+      canvas.style.cursor = 'nwse-resize';
+      return;
+    }
+    if(t === 'face'){
+      dragState.offX = (state.faceDrag && state.faceDrag.x) || 0;
+      dragState.offY = (state.faceDrag && state.faceDrag.y) || 0;
+    } else if(t === 'bgImage'){
+      ensureTransforms();
+      dragState.offX = state.bgTransform.x || 0;
+      dragState.offY = state.bgTransform.y || 0;
+    } else {
+      dragState.offX = (state.drag && state.drag.x) || 0;
+      dragState.offY = (state.drag && state.drag.y) || 0;
+    }
     canvas.style.cursor = 'grabbing';
   });
 
   canvas.addEventListener('pointermove', (e) => {
     const p = canvasPoint(e);
+    if(dragState.target) beginChange();
+    if(dragState.target === 'faceResize'){
+      e.preventDefault();
+      const dx = p.x - dragState.centerX;
+      const dy = p.y - dragState.centerY;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      let newSize = dragState.startSize * (dist / dragState.startDist);
+      newSize = Math.max(14, Math.min(60, Math.round(newSize)));
+      if(state.face) state.face.size = newSize;
+      state.faceSize = newSize;
+      if(!dragRaf){
+        dragRaf = true;
+        requestAnimationFrame(() => { dragRaf = false; render(); });
+      }
+      return;
+    }
+    if(dragState.target === 'textResize'){
+      e.preventDefault();
+      const dx = p.x - dragState.centerX;
+      const dy = p.y - dragState.centerY;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      let newScale = dragState.startSize * (dist / dragState.startDist);
+      newScale = Math.max(40, Math.min(250, Math.round(newScale)));
+      state.textScale = newScale;
+      if(!dragRaf){
+        dragRaf = true;
+        requestAnimationFrame(() => { dragRaf = false; render(); });
+      }
+      return;
+    }
     if(dragState.target){
       e.preventDefault();
       const w = canvas.width, h = canvas.height;
       let nx = dragState.offX + (p.x - dragState.startX) / w;
       let ny = dragState.offY + (p.y - dragState.startY) / h;
+      const snapped = snapOffsets(dragState.target, nx, ny);
+      nx = snapped.x;
+      ny = snapped.y;
+      alignGuides = { v: snapped.v, h: snapped.h };
       const clamped = clampOff(dragState.target, nx, ny);
       nx = clamped.x;
       ny = clamped.y;
       if(dragState.target === 'face'){
         state.faceDrag = { x: nx, y: ny };
+      } else if(dragState.target === 'bgImage'){
+        ensureTransforms();
+        state.bgTransform.x = nx;
+        state.bgTransform.y = ny;
       } else {
         state.drag = { x: nx, y: ny };
       }
@@ -1555,14 +1960,35 @@
 
   function endDrag(e){
     if(!dragState.target) return;
+    const needsSync = dragState.target === 'bgImage' || dragState.target === 'faceResize' || dragState.target === 'textResize';
+    clearTimeout(gestureTimer);
+    inGesture = false;
     dragState.target = null;
+    alignGuides = null;
+    render();
     scheduleSave();
+    if(needsSync) syncUI();
     const p = canvasPoint(e);
     updateCursor(p.x, p.y);
   }
   canvas.addEventListener('pointerup', endDrag);
   canvas.addEventListener('pointercancel', endDrag);
   canvas.style.touchAction = 'none';
+
+  // Scroll / trackpad pinch to zoom the background image
+  canvas.addEventListener('wheel', (e) => {
+    if(!bgImage) return;
+    e.preventDefault();
+    beginChange();
+    ensureTransforms();
+    const delta = e.deltaY > 0 ? -0.06 : 0.06;
+    let s = (state.bgTransform.scale || 1) + delta;
+    s = Math.max(1, Math.min(3, Math.round(s * 100) / 100));
+    state.bgTransform.scale = s;
+    syncUI();
+    render();
+    scheduleSave();
+  }, { passive: false });
 
   // ---------- INIT ----------
   (async function init(){

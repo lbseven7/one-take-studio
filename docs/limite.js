@@ -122,7 +122,64 @@
     return { ok: true, msg: 'Take Um Pro ativado! Criação ilimitada liberada.' };
   }
 
+  // Cash-register "cha-ching" synthesized with the Web Audio API,
+  // no external audio file needed.
+  function somCash(){
+    try{
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if(!AC) return;
+      if(!window.__tuAudioCtx) window.__tuAudioCtx = new AC();
+      const ctx = window.__tuAudioCtx;
+      if(ctx.state === 'suspended') ctx.resume();
+      const t0 = ctx.currentTime;
+
+      const master = ctx.createGain();
+      master.gain.value = 0.4;
+      master.connect(ctx.destination);
+
+      function ding(freq, at, vol){
+        const tt = t0 + at;
+        const gain = ctx.createGain();
+        gain.gain.setValueAtTime(0, tt);
+        gain.gain.linearRampToValueAtTime(vol, tt + 0.005);
+        gain.gain.exponentialRampToValueAtTime(0.0001, tt + 1.1);
+        gain.connect(master);
+        const hp = ctx.createBiquadFilter();
+        hp.type = 'highpass';
+        hp.frequency.value = 1800;
+        hp.connect(gain);
+        [1, 2.76, 5.4, 8.2].forEach(m => {
+          const o = ctx.createOscillator();
+          o.type = 'triangle';
+          o.frequency.value = freq * m;
+          o.connect(hp);
+          o.start(tt);
+          o.stop(tt + 1.2);
+        });
+      }
+
+      ding(1174.66, 0, 0.55);
+      ding(1567.98, 0.14, 0.55);
+
+      const nb = ctx.createBuffer(1, Math.ceil(ctx.sampleRate * 0.04), ctx.sampleRate);
+      const nd = nb.getChannelData(0);
+      for(let i = 0; i < nd.length; i++) nd[i] = (Math.random() * 2 - 1) * (1 - i / nd.length);
+      const ns = ctx.createBufferSource();
+      ns.buffer = nb;
+      const bp = ctx.createBiquadFilter();
+      bp.type = 'bandpass';
+      bp.frequency.value = 4200;
+      bp.Q.value = 1.2;
+      const ng = ctx.createGain();
+      ng.gain.setValueAtTime(0.18, t0);
+      ng.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.05);
+      ns.connect(bp); bp.connect(ng); ng.connect(master);
+      ns.start(t0);
+    }catch(e){}
+  }
+
   function mostrarUpsell(acao){
+    somCash();
     const nome = ACOES[acao] || 'essa ação';
     const old = document.querySelector('.tu-upsell-overlay');
     if(old) old.remove();

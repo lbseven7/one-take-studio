@@ -865,9 +865,14 @@ Ex: Olá, seja bem-vindo ao vídeo de hoje. Vamos falar sobre..."></textarea>
     reviewOverlay.classList.add('show');
   }
 
-  recordBtn.addEventListener('click', () => {
+  recordBtn.addEventListener('click', async () => {
     if(!mediaStream){ cameraError.style.display = 'block'; return; }
-    if(isRecording){ stopRecording(); } else { startRecording(); setPlaying(true); }
+    if(isRecording){ stopRecording(); setPlaying(true); return; }
+    if(window.TakeUmLimite && !(await window.TakeUmLimite.podeUsar('teleprompter-baixar')).ok){
+      window.TakeUmLimite.mostrarUpsell('teleprompter-baixar');
+      return;
+    }
+    startRecording(); setPlaying(true);
   });
 
   downloadBtn.addEventListener('click', async () => {

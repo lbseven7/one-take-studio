@@ -37,7 +37,7 @@
     height: 100dvh;
     display: flex;
     flex-direction: column;
-    max-width: 980px;
+    max-width: 1040px;
     margin: 0 auto;
     width: 100%;
   }
@@ -60,7 +60,7 @@
     margin: 0;
     letter-spacing: -0.01em;
   }
-  header .actions{ display: flex; gap: 8px; }
+  header .actions{ display: flex; gap: 8px; align-items: center; }
   header button{
     background: none;
     border: 1px solid var(--panel-line);
@@ -97,7 +97,7 @@
 
   /* ---------- CONTROLS ---------- */
   #controls{
-    width: 320px;
+    width: 340px;
     flex-shrink: 0;
   }
 
@@ -144,6 +144,22 @@
     line-height: 1.4;
   }
   #field-title:focus{ border-color: var(--accent-amber); }
+
+  #pack-btn{
+    display: none;
+    margin-top: 8px;
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px dashed var(--accent-purple);
+    border-radius: 6px;
+    background: rgba(192, 132, 252, 0.06);
+    color: var(--accent-purple);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    cursor: pointer;
+    text-align: left;
+  }
+  #pack-btn:hover{ border-color: var(--accent-purple); color: var(--text-main); }
 
   .emoji-grid{
     display: grid;
@@ -233,7 +249,7 @@
     cursor: pointer;
   }
   .img-actions button:hover{ color: var(--text-main); border-color: var(--accent-amber); }
-  #bg-image-remove:hover{ color: var(--accent-red); border-color: var(--accent-red); }
+  #bg-image-remove:hover, #face-remove:hover{ color: var(--accent-red); border-color: var(--accent-red); }
 
   #bg-thumb-wrap{
     display: flex;
@@ -241,7 +257,6 @@
     gap: 10px;
     margin-top: 10px;
   }
-  #bg-thumb-wrap.hidden{ display: none; }
   #bg-thumb{
     width: 44px;
     height: 44px;
@@ -256,6 +271,116 @@
     color: var(--text-dim);
     line-height: 1.5;
   }
+
+  /* ---------- NOVOS CONTROLES ---------- */
+  #cap-select{
+    width: 100%;
+    background: var(--card);
+    border: 1px solid var(--panel-line);
+    border-radius: 6px;
+    color: var(--text-main);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    padding: 9px 10px;
+    outline: none;
+    margin-bottom: 8px;
+  }
+  #cap-select:focus{ border-color: var(--accent-amber); }
+  .cap-actions{ display: flex; gap: 6px; }
+  .cap-actions button{
+    flex: 1;
+    padding: 8px 6px;
+    border: 1px solid var(--panel-line);
+    border-radius: 6px;
+    background: var(--card);
+    color: var(--text-dim);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    cursor: pointer;
+  }
+  .cap-actions button:hover{ color: var(--text-main); border-color: var(--accent-amber); }
+  #cap-del:hover{ color: var(--accent-red); border-color: var(--accent-red); }
+
+  .tpl-grid{ display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .tpl-btn{
+    padding: 9px 8px;
+    border: 1px solid var(--panel-line);
+    border-radius: 6px;
+    background: var(--card);
+    color: var(--text-dim);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    cursor: pointer;
+    text-align: left;
+  }
+  .tpl-btn:hover{ color: var(--text-main); border-color: var(--accent-amber); }
+
+  .pos-row{ display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+  .pos-btn{
+    flex: 1;
+    min-width: 70px;
+    padding: 8px 6px;
+    border: 1px solid var(--panel-line);
+    border-radius: 6px;
+    background: var(--card);
+    color: var(--text-dim);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    cursor: pointer;
+  }
+  .pos-btn.active{
+    color: var(--accent-amber);
+    border-color: var(--accent-amber);
+    background: rgba(255, 176, 32, 0.08);
+  }
+
+  .toggle-row{ margin-bottom: 6px; }
+  .switch{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    color: var(--text-main);
+  }
+  .switch input{ accent-color: var(--accent-amber); width: 16px; height: 16px; cursor: pointer; }
+
+  .color-row{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
+  }
+  .color-row label{
+    font-size: 11px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+  }
+  .color-row input[type=color]{
+    width: 36px;
+    height: 28px;
+    padding: 0;
+    border: 1px solid var(--panel-line);
+    border-radius: 6px;
+    background: var(--card);
+    cursor: pointer;
+  }
+  .color-row input[type=range]{ flex: 1; accent-color: var(--accent-amber); }
+
+  .slider-row{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+  .slider-row input[type=range]{ flex: 1; accent-color: var(--accent-amber); }
+  .slider-row .val{ font-family: var(--font-mono); min-width: 30px; text-align: right; color: var(--text-main); }
+
+  .hidden{ display: none !important; }
 
   /* ---------- PREVIEW ---------- */
   #preview-col{
@@ -325,6 +450,23 @@
     <div id="layout">
 
       <div id="controls">
+
+        <div class="group">
+          <label>Minhas capas</label>
+          <select id="cap-select"></select>
+          <div class="cap-actions">
+            <button id="cap-new" title="Criar capa nova">+ Nova</button>
+            <button id="cap-dup" title="Duplicar a capa atual">⧉ Duplicar</button>
+            <button id="cap-ren" title="Renomear">✎</button>
+            <button id="cap-del" title="Excluir">✕</button>
+          </div>
+        </div>
+
+        <div class="group">
+          <label>Modelos</label>
+          <div class="tpl-grid" id="tpl-grid"></div>
+        </div>
+
         <div class="group">
           <label>Formato</label>
           <div class="fmt-row">
@@ -337,6 +479,13 @@
         <div class="group">
           <label>Texto da capa</label>
           <textarea id="field-title" placeholder="Ex: 5 ERROS QUE TODO INICIANTE COMETE"></textarea>
+          <button id="pack-btn">⚡ Usar título gerado no Pack de Publicação</button>
+        </div>
+
+        <div class="group">
+          <label>Posição do texto</label>
+          <div class="pos-row" id="pos-x"></div>
+          <div class="pos-row" id="pos-y"></div>
         </div>
 
         <div class="group">
@@ -347,42 +496,98 @@
         </div>
 
         <div class="group">
-          <label>Cor de fundo</label>
+          <label>Fundo</label>
           <div class="swatches" id="bg-swatches"></div>
           <div class="custom-color">
-            <label>Outra cor</label>
+            <label>Cor</label>
             <input type="color" id="bg-custom">
           </div>
-        </div>
-
-        <div class="group">
-          <label>Imagem de fundo (opcional)</label>
-          <div class="img-actions">
-            <button id="bg-image-btn">📷 Escolher imagem</button>
+          <div class="toggle-row">
+            <label class="switch"><input type="checkbox" id="grad-toggle"><span>Gradiente</span></label>
+          </div>
+          <div class="color-row hidden" id="grad-row">
+            <label>De</label><input type="color" id="grad-from">
+            <label>Para</label><input type="color" id="grad-to">
+          </div>
+          <div class="img-actions" style="margin-top:10px">
+            <button id="bg-image-btn">📷 Imagem de fundo</button>
             <button id="bg-image-remove" style="display:none">✕ Remover</button>
           </div>
           <div id="bg-thumb-wrap" class="hidden">
             <div id="bg-thumb"></div>
-            <span>A imagem preenche a capa inteira. A cor de fundo vira reserva quando não há imagem.</span>
+            <span>A imagem preenche a capa inteira. A cor (ou gradiente) vira reserva quando não há imagem.</span>
           </div>
           <input type="file" id="bg-image-file" accept="image/*" hidden>
         </div>
 
         <div class="group">
-          <label>Cor do texto</label>
+          <label>Texto</label>
+          <div class="toggle-row">
+            <label class="switch"><input type="checkbox" id="textbg-toggle"><span>Caixa atrás do texto</span></label>
+          </div>
+          <div class="hidden" id="textbg-row">
+            <div class="color-row">
+              <label>Cor</label><input type="color" id="textbg-color">
+              <label>Opac.</label><input type="range" id="textbg-opacity" min="10" max="95" value="75">
+            </div>
+          </div>
+          <div class="toggle-row">
+            <label class="switch"><input type="checkbox" id="outline-toggle"><span>Contorno no texto</span></label>
+          </div>
+          <div class="hidden" id="outline-row">
+            <div class="color-row">
+              <label>Cor</label><input type="color" id="outline-color">
+              <label>Gross.</label><input type="range" id="outline-width" min="1" max="12" value="4">
+            </div>
+          </div>
           <div class="swatches" id="fg-swatches"></div>
           <div class="custom-color">
-            <label>Outra cor</label>
+            <label>Cor do texto</label>
             <input type="color" id="fg-custom">
           </div>
         </div>
+
+        <div class="group">
+          <label>Foto do rosto</label>
+          <div class="img-actions">
+            <button id="face-btn">🖼 Escolher foto</button>
+            <button id="face-remove" style="display:none">✕ Remover</button>
+          </div>
+          <div class="pos-row" id="face-pos"></div>
+          <div class="slider-row">
+            <span>Tamanho</span>
+            <input type="range" id="face-size" min="14" max="45" value="26">
+            <span class="val" id="face-size-val">26%</span>
+          </div>
+          <input type="file" id="face-file" accept="image/*" hidden>
+        </div>
+
+        <div class="group">
+          <label>Exportar</label>
+          <div class="fmt-row">
+            <button class="fmt-btn export-btn active" data-ext="png">PNG</button>
+            <button class="fmt-btn export-btn" data-ext="jpg">JPG</button>
+            <button class="fmt-btn export-btn" data-ext="webp">WebP</button>
+          </div>
+          <div class="img-actions" style="margin-top:8px">
+            <button id="copy-btn">📋 Copiar imagem</button>
+          </div>
+        </div>
+
+        <div class="group">
+          <label>Ajustes</label>
+          <div class="toggle-row">
+            <label class="switch"><input type="checkbox" id="safe-toggle"><span>Mostrar safe-zone (só no preview)</span></label>
+          </div>
+        </div>
+
       </div>
 
       <div id="preview-col">
         <div id="preview-wrap">
           <canvas id="preview"></canvas>
         </div>
-        <div id="format-hint">Dica: no YouTube, o texto precisa dar para ler até em telas pequenas. Mantenha o texto curto e de alto contraste.</div>
+        <div id="format-hint">Dica: no YouTube o texto precisa dar para ler até em telas pequenas — mantenha o texto curto e de alto contraste. Ative a safe-zone para ver a área de título segura. Tudo fica salvo automaticamente em "Minhas capas".</div>
         <div id="msg"></div>
       </div>
 
@@ -395,26 +600,68 @@
 <script src="../limite.js"></script>
 <script>
 (function(){
-  const STATE_ID = 'state';
+  const STORE = 'capa_state';
+  const META_ID = 'meta';
+  const LEGACY_ID = 'state';
+  const PREFIX = 'cap_';
+  const PACK_STORE = 'pack_state';
+  const PACK_ID = 'state';
+
   const EMOJIS = ['🚀','🔥','💡','🎯','✅','💰','🏆','📱','💪','🧠','⚡','❤️','😱','🤯','✨','🌱','💼','🎮','📈','👀','🎬','🎤','📝','🌟'];
   const BG_COLORS = ['#ffb020','#ff3b30','#39ff88','#5aa9ff','#c084fc','#ff6b6b','#ff8c42','#ffd166','#2dd4bf','#f43f5e','#3b82f6','#22c55e','#0ea5e9','#a855f7','#f97316','#0a0a0c'];
   const FG_COLORS = ['#ffffff','#1a1200','#ffb020','#39ff88','#ff3b30','#5aa9ff'];
   const FORMATS = {
-    yt: { w: 1280, h: 720,  label: '1280×720' },
-    sq: { w: 1080, h: 1080, label: '1080×1080' },
-    vt: { w: 1080, h: 1920, label: '1080×1920' }
+    yt: { w: 1280, h: 720,  label: '1280x720' },
+    sq: { w: 1080, h: 1080, label: '1080x1080' },
+    vt: { w: 1080, h: 1920, label: '1080x1920' }
   };
+  const POSX = [{ v:'left', l:'Esquerda' },{ v:'center', l:'Centro' },{ v:'right', l:'Direita' }];
+  const POSY = [{ v:'top', l:'Topo' },{ v:'middle', l:'Meio' },{ v:'bottom', l:'Base' }];
+  const FACEPOS = [{ v:'tl', l:'⤡ Sup. esq.' },{ v:'tr', l:'⤢ Sup. dir.' },{ v:'bl', l:'⤣ Inf. esq.' },{ v:'br', l:'⤤ Inf. dir.' }];
+  const TEMPLATES = [
+    { id:'classica', label:'Clássica', state:{ posX:'center', posY:'middle', textBg:false, outline:false, gradient:false } },
+    { id:'banda', label:'Com caixa', state:{ posX:'center', posY:'middle', textBg:true, textBgColor:'#0a0a0c', textBgOpacity:70, outline:false } },
+    { id:'esquerda', label:'Texto à esquerda', state:{ posX:'left', posY:'middle', textBg:false, outline:true, outlineColor:'#0a0a0c', gradient:false } },
+    { id:'canto', label:'Canto inferior', state:{ posX:'left', posY:'bottom', textBg:true, textBgColor:'#0a0a0c', textBgOpacity:65, outline:false } },
+    { id:'gradiente', label:'Gradiente', state:{ gradient:true, gradFrom:'#ff8c42', gradTo:'#ff3b30', posX:'center', posY:'middle', textBg:false, outline:false } },
+    { id:'destaque', label:'Destaque', state:{ gradient:true, gradFrom:'#0a0a0c', gradTo:'#ff3b30', posX:'center', posY:'bottom', textBg:true, textBgOpacity:50, outline:false } }
+  ];
 
-  let state = {
-    format: 'yt',
-    title: 'MEU PRIMEIRO VÍDEO',
-    emoji: '🚀',
-    bg: '#ffb020',
-    fg: '#1a1200',
-    bgImage: null
-  };
+  function defaultState(){
+    return {
+      format: 'yt',
+      title: 'MEU PRIMEIRO VÍDEO',
+      emoji: '🚀',
+      bg: '#ffb020',
+      fg: '#1a1200',
+      gradient: false,
+      gradFrom: '#ff8c42',
+      gradTo: '#ff3b30',
+      bgImage: null,
+      posX: 'center',
+      posY: 'middle',
+      textBg: false,
+      textBgColor: '#0a0a0c',
+      textBgOpacity: 75,
+      outline: false,
+      outlineColor: '#0a0a0c',
+      outlineWidth: 4,
+      safeZone: false,
+      face: null,
+      facePos: 'tr',
+      faceSize: 26
+    };
+  }
 
+  let state = defaultState();
   let bgImage = null;
+  let faceImg = null;
+  let exportExt = 'png';
+
+  let caps = [];
+  let meta = null;
+  let currentId = null;
+  let saveTimer = null;
 
   const canvas = document.getElementById('preview');
   const ctx = canvas.getContext('2d');
@@ -432,10 +679,17 @@
   const bgThumbWrap = document.getElementById('bg-thumb-wrap');
   const bgThumb = document.getElementById('bg-thumb');
 
-  let saveTimer = null;
+  function msg(cls, text){
+    msgEl.className = cls || '';
+    msgEl.textContent = text || '';
+  }
 
-  // ---------- BUILD SWATCHES ----------
-  function buildSwatches(container, colors, getKey, setKey){
+  function cloneState(s){
+    return JSON.parse(JSON.stringify(s));
+  }
+
+  // ---------- BUILD STATIC CONTROLS ----------
+  function buildSwatches(container, colors, key){
     container.innerHTML = '';
     colors.forEach(color => {
       const b = document.createElement('button');
@@ -443,7 +697,7 @@
       b.style.background = color;
       b.dataset.color = color;
       b.addEventListener('click', () => {
-        state[getKey] = color;
+        state[key] = color;
         syncUI();
         render();
         scheduleSave();
@@ -451,10 +705,9 @@
       container.appendChild(b);
     });
   }
-  buildSwatches(document.getElementById('bg-swatches'), BG_COLORS, 'bg', 'bg');
-  buildSwatches(document.getElementById('fg-swatches'), FG_COLORS, 'fg', 'fg');
+  buildSwatches(document.getElementById('bg-swatches'), BG_COLORS, 'bg');
+  buildSwatches(document.getElementById('fg-swatches'), FG_COLORS, 'fg');
 
-  // ---------- BUILD EMOJI GRID ----------
   EMOJIS.forEach(emoji => {
     const b = document.createElement('button');
     b.className = 'emoji-btn';
@@ -469,6 +722,44 @@
     emojiGrid.appendChild(b);
   });
 
+  const tplGrid = document.getElementById('tpl-grid');
+  TEMPLATES.forEach(tpl => {
+    const b = document.createElement('button');
+    b.className = 'tpl-btn';
+    b.textContent = tpl.label;
+    b.addEventListener('click', () => {
+      state = Object.assign(state, cloneState(tpl.state));
+      syncUI();
+      render();
+      scheduleSave();
+    });
+    tplGrid.appendChild(b);
+  });
+
+  function buildPosRow(el, items, onPick){
+    items.forEach(it => {
+      const b = document.createElement('button');
+      b.className = 'pos-btn';
+      b.textContent = it.l;
+      b.dataset.val = it.v;
+      b.addEventListener('click', () => onPick(it.v));
+      el.appendChild(b);
+    });
+  }
+  buildPosRow(document.getElementById('pos-x'), POSX, v => {
+    state.posX = v;
+    syncUI(); render(); scheduleSave();
+  });
+  buildPosRow(document.getElementById('pos-y'), POSY, v => {
+    state.posY = v;
+    syncUI(); render(); scheduleSave();
+  });
+  buildPosRow(document.getElementById('face-pos'), FACEPOS, v => {
+    if(!state.face) return;
+    state.face.pos = v;
+    syncUI(); render(); scheduleSave();
+  });
+
   // ---------- SYNC UI ----------
   function syncUI(){
     titleEl.value = state.title;
@@ -476,8 +767,11 @@
     bgCustom.value = state.bg;
     fgCustom.value = state.fg;
 
-    document.querySelectorAll('.fmt-btn').forEach(btn => {
+    document.querySelectorAll('.fmt-btn:not(.export-btn)').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.format === state.format);
+    });
+    document.querySelectorAll('.export-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.ext === exportExt);
     });
     document.querySelectorAll('.swatch').forEach(s => {
       s.classList.toggle('active', s.dataset.color === state.bg || s.dataset.color === state.fg);
@@ -485,15 +779,49 @@
     document.querySelectorAll('.emoji-btn').forEach(b => {
       b.classList.toggle('active', b.dataset.emoji === state.emoji);
     });
+    document.querySelectorAll('#pos-x .pos-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.val === state.posX);
+    });
+    document.querySelectorAll('#pos-y .pos-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.val === state.posY);
+    });
+    const fp = (state.face && state.face.pos) || state.facePos;
+    document.querySelectorAll('#face-pos .pos-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.val === fp);
+    });
+
+    gradToggle.checked = !!state.gradient;
+    gradRow.classList.toggle('hidden', !state.gradient);
+    gradFrom.value = state.gradFrom;
+    gradTo.value = state.gradTo;
+
+    textbgToggle.checked = !!state.textBg;
+    textbgRow.classList.toggle('hidden', !state.textBg);
+    textbgColor.value = state.textBgColor;
+    textbgOpacity.value = state.textBgOpacity;
+
+    outlineToggle.checked = !!state.outline;
+    outlineRow.classList.toggle('hidden', !state.outline);
+    outlineColor.value = state.outlineColor;
+    outlineWidth.value = state.outlineWidth;
+
+    safeToggle.checked = !!state.safeZone;
 
     const hasImg = !!state.bgImage;
     bgImageRemove.style.display = hasImg ? 'inline-block' : 'none';
     bgThumbWrap.classList.toggle('hidden', !hasImg);
     if(hasImg) bgThumb.style.backgroundImage = 'url("' + state.bgImage + '")';
+
+    const hasFace = !!state.face;
+    faceRemove.style.display = hasFace ? 'inline-block' : 'none';
+    faceSize.value = state.face ? state.face.size : state.faceSize;
+    faceSizeVal.textContent = (state.face ? state.face.size : state.faceSize) + '%';
+
+    downloadBtn.textContent = '⬇ Baixar ' + exportExt.toUpperCase();
   }
 
   // ---------- DRAWING ----------
-  function wrap(text, maxWidth){
+  function wrap(text, maxWidth, g){
     const lines = [];
     for(const para of text.split('\n')){
       if(para === ''){ lines.push(''); continue; }
@@ -501,7 +829,7 @@
       let line = '';
       for(const word of words){
         const test = line ? line + ' ' + word : word;
-        if(line && ctx.measureText(test).width > maxWidth){
+        if(line && g.measureText(test).width > maxWidth){
           lines.push(line);
           line = word;
         } else {
@@ -513,77 +841,169 @@
     return lines;
   }
 
-  function drawCover(img, w, h){
+  function drawCover(g, img, w, h){
     const ir = img.width / img.height;
     const cr = w / h;
     let dw, dh;
     if(ir > cr){ dh = h; dw = h * ir; }
     else { dw = w; dh = w / ir; }
-    ctx.drawImage(img, (w - dw) / 2, (h - dh) / 2, dw, dh);
+    g.drawImage(img, (w - dw) / 2, (h - dh) / 2, dw, dh);
   }
 
-  function draw(){
-    const fmt = FORMATS[state.format];
-    const w = fmt.w, h = fmt.h;
+  function rr(g, x, y, w, h, r){
+    r = Math.min(r, w / 2, h / 2);
+    g.beginPath();
+    g.moveTo(x + r, y);
+    g.arcTo(x + w, y, x + w, y + h, r);
+    g.arcTo(x + w, y + h, x, y + h, r);
+    g.arcTo(x, y + h, x, y, r);
+    g.arcTo(x, y, x + w, y, r);
+    g.closePath();
+  }
+
+  function hexToRgba(hex, alpha){
+    let h = (hex || '#000000').replace('#','');
+    if(h.length === 3) h = h.split('').map(c => c + c).join('');
+    const n = parseInt(h, 16);
+    return 'rgba(' + ((n >> 16) & 255) + ',' + ((n >> 8) & 255) + ',' + (n & 255) + ',' + alpha + ')';
+  }
+
+  function paint(g, w, h, guides){
     const title = state.title.trim();
     const emoji = state.emoji.trim();
+    const padX = Math.round(w * 0.07);
+    const maxWidth = w - padX * 2;
 
     if(bgImage){
-      drawCover(bgImage, w, h);
+      drawCover(g, bgImage, w, h);
+    } else if(state.gradient){
+      const grd = g.createLinearGradient(0, 0, 0, h);
+      grd.addColorStop(0, state.gradFrom);
+      grd.addColorStop(1, state.gradTo);
+      g.fillStyle = grd;
+      g.fillRect(0, 0, w, h);
     } else {
-      ctx.fillStyle = state.bg;
-      ctx.fillRect(0, 0, w, h);
+      g.fillStyle = state.bg;
+      g.fillRect(0, 0, w, h);
     }
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'top';
 
-    const emojiSize = Math.round(w * 0.24);
-    if(emoji){
-      ctx.font = emojiSize + 'px sans-serif';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(emoji, w / 2, Math.round(h * 0.20));
-      ctx.textBaseline = 'top';
-    }
+    const posX = state.posX;
+    g.textAlign = posX === 'left' ? 'left' : posX === 'right' ? 'right' : 'center';
+    const x = posX === 'left' ? padX : posX === 'right' ? w - padX : w / 2;
+
+    const region = {
+      top:    { t: 0.10, b: 0.52 },
+      middle: { t: 0.16, b: 0.78 },
+      bottom: { t: 0.42, b: 0.88 }
+    }[state.posY] || { t: 0.16, b: 0.78 };
+    const blockTop = Math.round(h * region.t);
+    const blockBottom = Math.round(h * region.b);
+
+    const emojiSize = Math.round(w * 0.20);
+
+    let size = Math.round(w * 0.105);
+    let lines = [];
+    let lineH = 0;
+    let bandPadTB = 0;
+    let bandPadLR = 0;
 
     if(title){
-      const padX = Math.round(w * 0.07);
-      const maxWidth = w - padX * 2;
-      const titleTop = emoji ? h * 0.42 : h * 0.22;
-      const titleBottom = h * 0.90;
-
-      let size = Math.round(w * 0.105);
-      let lines = [];
-      let lineH = 0;
-      let maxLine = 0;
-
-      while(size > Math.round(w * 0.028)){
-        ctx.font = '900 ' + size + 'px Archivo, sans-serif';
-        lines = wrap(title, maxWidth);
-        maxLine = 0;
-        for(const ln of lines){
-          const tw = ctx.measureText(ln).width;
-          if(tw > maxLine) maxLine = tw;
-        }
-        lineH = Math.round(size * 1.15);
-        if(maxLine <= maxWidth && lineH * lines.length <= (titleBottom - titleTop)) break;
-        size = Math.round(size - w * 0.004);
+      const avail = blockBottom - blockTop;
+      const minSize = Math.round(w * 0.028);
+      while(size >= minSize){
+        g.font = '900 ' + size + 'px Archivo, sans-serif';
+        lines = wrap(title, maxWidth, g);
+        lineH = Math.round(size * 1.18);
+        bandPadTB = state.textBg ? Math.round(size * 0.55) : 0;
+        bandPadLR = state.textBg ? Math.round(w * 0.018) : 0;
+        const textH = lineH * lines.length + bandPadTB * 2;
+        const totalH = (emoji ? emojiSize + Math.round(w * 0.02) : 0) + textH;
+        if(lines.length && totalH <= avail) break;
+        size = Math.round(size - Math.max(1, Math.round(w * 0.003)));
       }
-
-      ctx.font = '900 ' + size + 'px Archivo, sans-serif';
-      const totalH = lineH * lines.length;
-      let y = titleTop + Math.round((titleBottom - titleTop - totalH) / 2);
-
-      ctx.shadowColor = 'rgba(0,0,0,0.5)';
-      ctx.shadowBlur = Math.round(size * 0.12);
-      ctx.shadowOffsetY = Math.round(size * 0.06);
-      ctx.fillStyle = state.fg;
-      for(const ln of lines){
-        ctx.fillText(ln, w / 2, y);
-        y += lineH;
-      }
-      ctx.shadowBlur = 0;
-      ctx.shadowOffsetY = 0;
     }
+
+    const textH = lineH * lines.length + bandPadTB * 2;
+    const gapEmoji = emoji ? emojiSize + Math.round(w * 0.02) : 0;
+    const totalH = gapEmoji + textH;
+    let startY = blockTop;
+    if(totalH < (blockBottom - blockTop)){
+      startY = blockTop + Math.round(((blockBottom - blockTop) - totalH) / 2);
+    }
+
+    if(emoji){
+      g.font = emojiSize + 'px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
+      g.textBaseline = 'middle';
+      g.fillText(emoji, x, Math.round(startY + emojiSize / 2));
+      g.textBaseline = 'top';
+    }
+
+    g.font = '900 ' + size + 'px Archivo, sans-serif';
+    let y = startY + gapEmoji + bandPadTB;
+    for(const ln of lines){
+      if(state.textBg){
+        const lw = g.measureText(ln).width;
+        const rw = lw + bandPadLR * 2;
+        const rx = posX === 'center' ? x - rw / 2 : posX === 'right' ? x - rw : x;
+        rr(g, rx, y - bandPadTB, rw, lineH + bandPadTB * 2, Math.round(size * 0.2));
+        g.fillStyle = hexToRgba(state.textBgColor, state.textBgOpacity / 100);
+        g.fill();
+      }
+      if(state.outline){
+        g.strokeStyle = state.outlineColor;
+        g.lineWidth = Math.max(1, Math.round(size * 0.08));
+        g.lineJoin = 'round';
+        g.strokeText(ln, x, y);
+      }
+      if(!state.textBg){
+        g.shadowColor = 'rgba(0,0,0,0.45)';
+        g.shadowBlur = Math.round(size * 0.10);
+        g.shadowOffsetY = Math.round(size * 0.05);
+      }
+      g.fillStyle = state.fg;
+      g.fillText(ln, x, y);
+      g.shadowBlur = 0;
+      g.shadowOffsetY = 0;
+      y += lineH;
+    }
+
+    drawFace(g, w, h);
+
+    if(guides){
+      g.save();
+      g.setLineDash([10, 8]);
+      g.strokeStyle = 'rgba(255,255,255,0.4)';
+      g.lineWidth = 3;
+      const ix = Math.round(w * 0.05);
+      const iy = Math.round(h * 0.05);
+      g.strokeRect(ix, iy, w - 2 * ix, h - 2 * iy);
+      g.setLineDash([]);
+      g.fillStyle = 'rgba(0,0,0,0.5)';
+      rr(g, Math.round(w * 0.805), Math.round(h * 0.895), Math.round(w * 0.145), Math.round(h * 0.04), 4);
+      g.fill();
+      g.restore();
+    }
+  }
+
+  function drawFace(g, w, h){
+    if(!faceImg) return;
+    const sizePct = (state.face && state.face.size) || state.faceSize || 26;
+    const d = Math.round(w * sizePct / 100);
+    const pad = Math.round(w * 0.04);
+    const p = (state.face && state.face.pos) || state.facePos || 'tr';
+    let fx = pad, fy = pad;
+    if(p === 'tr'){ fx = w - pad - d; }
+    else if(p === 'bl'){ fy = h - pad - d; }
+    else if(p === 'br'){ fx = w - pad - d; fy = h - pad - d; }
+    g.save();
+    g.beginPath();
+    g.arc(fx + d / 2, fy + d / 2, d / 2, 0, Math.PI * 2);
+    g.strokeStyle = 'rgba(255,255,255,0.95)';
+    g.lineWidth = Math.max(2, Math.round(d * 0.05));
+    g.stroke();
+    g.clip();
+    drawCover(g, faceImg, d, d);
+    g.restore();
   }
 
   async function render(){
@@ -591,26 +1011,185 @@
     canvas.width = fmt.w;
     canvas.height = fmt.h;
     try{ await document.fonts.ready; }catch(e){}
-    draw();
+    paint(ctx, fmt.w, fmt.h, !!state.safeZone);
   }
 
-  // ---------- SAVE / LOAD ----------
+  function renderExport(){
+    const fmt = FORMATS[state.format];
+    const c = document.createElement('canvas');
+    c.width = fmt.w;
+    c.height = fmt.h;
+    const g = c.getContext('2d');
+    paint(g, fmt.w, fmt.h, false);
+    return c;
+  }
+
+  // ---------- GALLERY ----------
+  async function galleryLoad(){
+    let all = [];
+    try{ all = await OneTakeDB.getAll(STORE); }catch(e){}
+    meta = all.find(r => r.id === META_ID) || { id: META_ID, activeId: null };
+    caps = all.filter(r => r.id !== META_ID);
+
+    const legacy = all.find(r => r.id === LEGACY_ID);
+    if(legacy && caps.length === 0){
+      await OneTakeDB.put(STORE, {
+        id: PREFIX + '1',
+        name: 'Capa 1',
+        state: Object.assign({}, defaultState(), {
+          format: legacy.format, title: legacy.title, emoji: legacy.emoji,
+          bg: legacy.bg, fg: legacy.fg, bgImage: legacy.bgImage
+        }),
+        updatedAt: Date.now()
+      });
+      try{ await OneTakeDB.del(STORE, LEGACY_ID); }catch(e){}
+      all = await OneTakeDB.getAll(STORE);
+      caps = all.filter(r => r.id !== META_ID);
+    }
+
+    if(caps.length === 0){
+      const rec = { id: PREFIX + Date.now(), name: 'Capa 1', state: defaultState(), updatedAt: Date.now() };
+      await OneTakeDB.put(STORE, rec);
+      caps = [rec];
+    }
+
+    caps.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+    const target = meta.activeId && caps.find(c => c.id === meta.activeId) ? meta.activeId : caps[0].id;
+    await gallerySelect(target, false);
+  }
+
+  async function gallerySelect(id, saveBefore){
+    if(saveBefore) await gallerySaveCurrent();
+    const rec = caps.find(c => c.id === id);
+    if(!rec) return;
+    currentId = id;
+    state = cloneState(rec.state);
+    bgImage = null;
+    faceImg = null;
+    if(state.bgImage) await loadBgImage(state.bgImage);
+    if(state.face && state.face.src) await loadFaceImage(state.face.src);
+    renderGallery();
+    syncUI();
+    render();
+  }
+
+  async function gallerySaveCurrent(){
+    if(!currentId) return;
+    const rec = caps.find(c => c.id === currentId);
+    await OneTakeDB.put(STORE, {
+      id: currentId,
+      name: rec ? rec.name : 'Capa',
+      state: cloneState(state),
+      updatedAt: Date.now()
+    });
+    if(rec){ rec.state = cloneState(state); rec.updatedAt = Date.now(); }
+    meta.activeId = currentId;
+    await OneTakeDB.put(STORE, meta);
+  }
+
+  function renderGallery(){
+    const sel = document.getElementById('cap-select');
+    sel.innerHTML = '';
+    caps.forEach(c => {
+      const o = document.createElement('option');
+      o.value = c.id;
+      o.textContent = c.name;
+      sel.appendChild(o);
+    });
+    if(currentId) sel.value = currentId;
+  }
+
+  async function galleryNew(){
+    await gallerySaveCurrent();
+    const rec = {
+      id: PREFIX + Date.now(),
+      name: 'Capa ' + (caps.length + 1),
+      state: cloneState(state),
+      updatedAt: Date.now()
+    };
+    await OneTakeDB.put(STORE, rec);
+    caps.push(rec);
+    await gallerySelect(rec.id, false);
+  }
+
+  async function galleryDuplicate(){
+    await gallerySaveCurrent();
+    const rec = {
+      id: PREFIX + Date.now(),
+      name: (caps.find(c => c.id === currentId) || {}).name + ' (cópia)',
+      state: cloneState(state),
+      updatedAt: Date.now()
+    };
+    await OneTakeDB.put(STORE, rec);
+    caps.push(rec);
+    await gallerySelect(rec.id, false);
+  }
+
+  async function galleryRename(){
+    const rec = caps.find(c => c.id === currentId);
+    if(!rec) return;
+    const name = prompt('Nome da capa:', rec.name);
+    if(name === null || !name.trim()) return;
+    rec.name = name.trim();
+    rec.updatedAt = Date.now();
+    await OneTakeDB.put(STORE, rec);
+    renderGallery();
+  }
+
+  async function galleryDelete(){
+    if(caps.length <= 1){ msg('err', 'Mantenha pelo menos uma capa.'); return; }
+    const rec = caps.find(c => c.id === currentId) || {};
+    if(!confirm('Excluir "' + rec.name + '"?')) return;
+    await OneTakeDB.del(STORE, currentId);
+    caps = caps.filter(c => c.id !== currentId);
+    await gallerySelect(caps[0].id, false);
+  }
+
+  // ---------- SAVE ----------
   function scheduleSave(){
     clearTimeout(saveTimer);
     saveTimer = setTimeout(async () => {
-      try{
-        await OneTakeDB.put('capa_state', { id: STATE_ID, ...state });
-      }catch(e){}
+      if(currentId){
+        await gallerySaveCurrent();
+      } else {
+        try{ await OneTakeDB.put(STORE, { id: LEGACY_ID, ...state }); }catch(e){}
+      }
     }, 400);
   }
 
+  // ---------- IMAGE LOADERS ----------
+  function loadBgImage(src){
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => { bgImage = img; resolve(); };
+      img.onerror = () => { bgImage = null; state.bgImage = null; resolve(); };
+      img.src = src;
+    });
+  }
+
+  function loadFaceImage(src){
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => { faceImg = img; resolve(); };
+      img.onerror = () => { faceImg = null; resolve(); };
+      img.src = src;
+    });
+  }
+
   // ---------- EVENTS ----------
-  document.querySelectorAll('.fmt-btn').forEach(btn => {
+  document.querySelectorAll('.fmt-btn:not(.export-btn)').forEach(btn => {
     btn.addEventListener('click', () => {
       state.format = btn.dataset.format;
       syncUI();
       render();
       scheduleSave();
+    });
+  });
+
+  document.querySelectorAll('.export-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      exportExt = btn.dataset.ext;
+      syncUI();
     });
   });
 
@@ -677,16 +1256,130 @@
     scheduleSave();
   });
 
-  function loadBgImage(src){
-    return new Promise((resolve) => {
+  const gradToggle = document.getElementById('grad-toggle');
+  const gradRow = document.getElementById('grad-row');
+  const gradFrom = document.getElementById('grad-from');
+  const gradTo = document.getElementById('grad-to');
+  gradToggle.addEventListener('change', () => {
+    state.gradient = gradToggle.checked;
+    syncUI();
+    render();
+    scheduleSave();
+  });
+  gradFrom.addEventListener('input', () => {
+    state.gradFrom = gradFrom.value;
+    syncUI(); render(); scheduleSave();
+  });
+  gradTo.addEventListener('input', () => {
+    state.gradTo = gradTo.value;
+    syncUI(); render(); scheduleSave();
+  });
+
+  const textbgToggle = document.getElementById('textbg-toggle');
+  const textbgRow = document.getElementById('textbg-row');
+  const textbgColor = document.getElementById('textbg-color');
+  const textbgOpacity = document.getElementById('textbg-opacity');
+  textbgToggle.addEventListener('change', () => {
+    state.textBg = textbgToggle.checked;
+    syncUI(); render(); scheduleSave();
+  });
+  textbgColor.addEventListener('input', () => {
+    state.textBgColor = textbgColor.value;
+    syncUI(); render(); scheduleSave();
+  });
+  textbgOpacity.addEventListener('input', () => {
+    state.textBgOpacity = parseInt(textbgOpacity.value, 10);
+    syncUI(); render(); scheduleSave();
+  });
+
+  const outlineToggle = document.getElementById('outline-toggle');
+  const outlineRow = document.getElementById('outline-row');
+  const outlineColor = document.getElementById('outline-color');
+  const outlineWidth = document.getElementById('outline-width');
+  outlineToggle.addEventListener('change', () => {
+    state.outline = outlineToggle.checked;
+    syncUI(); render(); scheduleSave();
+  });
+  outlineColor.addEventListener('input', () => {
+    state.outlineColor = outlineColor.value;
+    syncUI(); render(); scheduleSave();
+  });
+  outlineWidth.addEventListener('input', () => {
+    state.outlineWidth = parseInt(outlineWidth.value, 10);
+    syncUI(); render(); scheduleSave();
+  });
+
+  const safeToggle = document.getElementById('safe-toggle');
+  safeToggle.addEventListener('change', () => {
+    state.safeZone = safeToggle.checked;
+    syncUI(); render(); scheduleSave();
+  });
+
+  const faceBtn = document.getElementById('face-btn');
+  const faceRemove = document.getElementById('face-remove');
+  const faceFile = document.getElementById('face-file');
+  const faceSize = document.getElementById('face-size');
+  const faceSizeVal = document.getElementById('face-size-val');
+  faceBtn.addEventListener('click', () => faceFile.click());
+  faceFile.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
       const img = new Image();
-      img.onload = () => { bgImage = img; resolve(); };
-      img.onerror = () => { bgImage = null; state.bgImage = null; resolve(); };
-      img.src = src;
-    });
+      img.onload = () => {
+        faceImg = img;
+        state.face = { src: reader.result, pos: state.facePos || 'tr', size: state.faceSize || 26 };
+        syncUI(); render(); scheduleSave();
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+    faceFile.value = '';
+  });
+  faceRemove.addEventListener('click', () => {
+    faceImg = null;
+    state.face = null;
+    syncUI(); render(); scheduleSave();
+  });
+  faceSize.addEventListener('input', () => {
+    const v = parseInt(faceSize.value, 10);
+    state.faceSize = v;
+    if(state.face) state.face.size = v;
+    syncUI(); render(); scheduleSave();
+  });
+
+  const capSelect = document.getElementById('cap-select');
+  capSelect.addEventListener('change', () => gallerySelect(capSelect.value, true));
+  document.getElementById('cap-new').addEventListener('click', galleryNew);
+  document.getElementById('cap-dup').addEventListener('click', galleryDuplicate);
+  document.getElementById('cap-ren').addEventListener('click', galleryRename);
+  document.getElementById('cap-del').addEventListener('click', galleryDelete);
+
+  const packBtn = document.getElementById('pack-btn');
+  packBtn.addEventListener('click', async () => {
+    try{
+      const p = await OneTakeDB.get(PACK_STORE, PACK_ID);
+      if(p && p.titulo){
+        state.title = p.titulo;
+        syncUI(); render(); scheduleSave();
+        msg('ok', 'Título do Pack aplicado!');
+      } else {
+        msg('', 'Nenhum título salvo no Pack ainda.');
+      }
+    }catch(e){
+      msg('err', 'Não consegui ler o Pack de Publicação.');
+    }
+  });
+
+  async function checkPack(){
+    try{
+      const p = await OneTakeDB.get(PACK_STORE, PACK_ID);
+      packBtn.style.display = (p && p.titulo) ? 'inline-block' : 'none';
+    }catch(e){}
   }
 
-  // ---------- DOWNLOAD ----------
+  // ---------- DOWNLOAD / COPY ----------
   downloadBtn.addEventListener('click', async () => {
     if(window.TakeUmLimite && !(await window.TakeUmLimite.podeUsar('capa-gerar')).ok){
       window.TakeUmLimite.mostrarUpsell('capa-gerar');
@@ -697,28 +1390,39 @@
       .replace(/[^a-z0-9áéíóúãõâêç]+/gi, '-')
       .replace(/^-+|-+$/g, '')
       .slice(0, 40) || 'capa';
-    canvas.toBlob(blob => {
+    const mime = { png: 'image/png', jpg: 'image/jpeg', webp: 'image/webp' }[exportExt];
+    renderExport().toBlob(blob => {
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = 'capa-' + slug + '-' + fmt.label + '.png';
+      a.download = 'capa-' + slug + '-' + fmt.label + '.' + exportExt;
       document.body.appendChild(a);
       a.click();
       a.remove();
       URL.revokeObjectURL(a.href);
-      msgEl.className = 'ok';
-      msgEl.textContent = 'Imagem baixada! Agora é só fazer o upload na plataforma.';
+      msg('ok', 'Imagem baixada! Agora é só fazer o upload na plataforma.');
       if(window.TakeUmLimite){ window.TakeUmLimite.usar('capa-gerar').catch(function(){}); }
-    }, 'image/png');
+    }, mime, 0.92);
+  });
+
+  document.getElementById('copy-btn').addEventListener('click', async () => {
+    if(!navigator.clipboard || !window.ClipboardItem){
+      msg('err', 'Seu navegador não suporta copiar imagem. Use o botão Baixar.');
+      return;
+    }
+    try{
+      const blob = await new Promise(res => renderExport().toBlob(res, 'image/png'));
+      await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+      msg('ok', 'Imagem copiada! Cole onde quiser (Canva, WhatsApp, editor).');
+    }catch(e){
+      msg('err', 'Não consegui copiar a imagem.');
+    }
   });
 
   // ---------- INIT ----------
   (async function init(){
-    try{
-      const s = await OneTakeDB.get('capa_state', STATE_ID);
-      if(s) state = { ...state, ...s };
-    }catch(e){}
     try{ await OneTakeMigrate(); }catch(e){}
-    if(state.bgImage) await loadBgImage(state.bgImage);
+    await galleryLoad();
+    await checkPack();
     syncUI();
     render();
   })();

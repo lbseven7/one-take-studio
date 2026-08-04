@@ -1054,7 +1054,19 @@
     }
 
     caps.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
-    const target = meta.activeId && caps.find(c => c.id === meta.activeId) ? meta.activeId : caps[0].id;
+    const wantVt = new URLSearchParams(location.search).get('vt') === '1';
+    let target = meta.activeId && caps.find(c => c.id === meta.activeId) ? meta.activeId : caps[0].id;
+    if(wantVt){
+      const vt = caps.find(c => c.state && c.state.format === 'vt');
+      if(vt){
+        target = vt.id;
+      } else {
+        const rec = { id: PREFIX + Date.now(), name: 'Capa Vertical', state: Object.assign({}, defaultState(), { format: 'vt' }), updatedAt: Date.now() };
+        await OneTakeDB.put(STORE, rec);
+        caps.push(rec);
+        target = rec.id;
+      }
+    }
     await gallerySelect(target, false);
   }
 

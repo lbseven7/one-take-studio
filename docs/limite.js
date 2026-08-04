@@ -10,7 +10,6 @@
     'roteirizador-gerar': 'Reescrever roteiro com IA',
     'roteirizador-desc': 'Gerar descrição com IA',
     'capa-gerar': 'Baixar capa 16:9',
-    'capa-vertical-gerar': 'Baixar capa 9:16',
     'pack-gerar': 'Gerar pack de publicação',
     'teleprompter-baixar': 'Baixar gravação do teleprompter',
     'banco-ideias-roteirizar': 'Roteirizar ideia com IA',

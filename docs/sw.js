@@ -39,7 +39,6 @@ const ASSETS = [
   './ferramentas/jornada.html',
   './ferramentas/teleprompter.html',
   './ferramentas/capa.html',
-  './ferramentas/capa-vertical.html',
   './ferramentas/painel-pauta.html',
   './ferramentas/calendario.html',
   './ferramentas/claquete-digital.html',

@@ -8,8 +8,8 @@
 //  3. Cole abaixo. A anon key é pública por design (RLS protege a leitura).
 //  4. Crie seu usuário admin em Authentication → Users → Add user.
 (function(){
-  const SUPA_URL = 'https://SEU-PROJETO.supabase.co';
-  const SUPA_ANON_KEY = 'sua-anon-key-aqui';
+  const SUPA_URL = 'https://hnhzdfrysbtmyrzfeiep.supabase.co';
+  const SUPA_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhuaHpkZnJ5c2J0bXlyemZlaWVwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU4NzgxNjUsImV4cCI6MjEwMTQ1NDE2NX0.m-1k8QVaUWWYV4QeoOCLrF5YAB78aDiT0MNN2yJtot4';
   const LEADS_TABLE = 'leads';
   const SESSION_KEY = 'tu-supa-session';
 

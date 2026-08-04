@@ -178,6 +178,22 @@
     }catch(e){}
   }
 
+  // Saves a captured lead email locally (deduped) so it lives in the
+  // app's data store even if the remote FormSubmit call fails.
+  async function salvarLead(email, acao){
+    try{
+      const rec = (await OneTakeDB.get(STORE, 'leads')) || { id: 'leads', lista: [] };
+      if(!rec.lista || !Array.isArray(rec.lista)) rec.lista = [];
+      if(rec.lista.some(l => l.email === email)) return;
+      rec.lista.push({ email: email, acao: acao, capturadoEm: new Date().toISOString() });
+      await OneTakeDB.put(STORE, rec);
+    }catch(e){}
+  }
+
+  function listarLeads(){
+    return OneTakeDB.get(STORE, 'leads').then(r => (r && r.lista) || []);
+  }
+
   function mostrarUpsell(acao){
     somCash();
     const nome = ACOES[acao] || 'essa ação';
@@ -270,6 +286,7 @@
       sendBtn.disabled = true;
       msgEl.textContent = 'Enviando...';
       msgEl.className = 'tu-emailmsg';
+      await salvarLead(email, acao);
       try{
         const body = new URLSearchParams();
         body.set('email', email);
@@ -323,5 +340,9 @@
     resgatar: resgatar,
     mostrarUpsell: mostrarUpsell,
     pintarContadores: pintarContadores
+  };
+
+  window.TakeUmLeads = {
+    listar: listarLeads
   };
 })();

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1080" viewBox="0 0 1080 1080">
+  <rect width="100%" height="100%" fill="#0f1720"/>
+  <circle cx="540" cy="380" r="180" fill="#ffb020" opacity="0.12"/>
+  <text x="50%" y="58%" font-family="Arial, Helvetica, sans-serif" font-size="42" fill="#f5f4ef" text-anchor="middle">Take Um Studio</text>
+  <text x="50%" y="68%" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#cfc9bf" text-anchor="middle">Ganhe 40% por venda</text>
+</svg>

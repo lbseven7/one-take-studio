@@ -197,14 +197,16 @@
     try{
       const rec = (await OneTakeDB.get(STORE, 'leads')) || { id: 'leads', lista: [] };
       if(!rec.lista || !Array.isArray(rec.lista)) rec.lista = [];
-      if(!rec.lista.some(l => l.email === email)){
-        rec.lista.push({ email: email, acao: acao, capturadoEm: new Date().toISOString() });
+      const emailNorm = String(email || '').trim().toLowerCase();
+      if(!emailNorm) return;
+      if(!rec.lista.some(l => String(l.email || '').trim().toLowerCase() === emailNorm)){
+        rec.lista.push({ email: emailNorm, acao: acao, capturadoEm: new Date().toISOString() });
         await OneTakeDB.put(STORE, rec);
       }
     }catch(e){}
     try{
       if(window.SupabaseLeads && SupabaseLeads.configured()){
-        await SupabaseLeads.capture(email, acao);
+        await SupabaseLeads.capture(emailNorm, acao);
       }
     }catch(e){}
   }

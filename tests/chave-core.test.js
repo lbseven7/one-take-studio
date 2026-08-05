@@ -71,3 +71,52 @@ test('validar: aceita sem hífens e em caixa baixa', () => {
   assert.equal(chave.validar('TAKEUML68W4NYELN3KBB3KBB3KJY45B'), true);
   assert.equal(chave.validar('takeum-l68w4-nyeln-3kbb3-kbb3k-jy45b'), true);
 });
+
+test('validar: rejeita caracteres fora do ALPHABET (I, O, 0, 1)', () => {
+  // Chave legítima trocando B->I, K->O, 6->0, 4->1 em posições do payload.
+  const invalid = [
+    'TAKEUM-LI8W4-NYELN-3KBB3-KBB3K-JY45B', // I no lugar de B
+    'TAKEUM-L68W4-NYEO3-3KBB3-KBB3K-JY45B', // O no lugar de B
+    'TAKEUM-L08W4-NYELN-3KBB3-KBB3K-JY45B', // 0 no lugar de 6
+    'TAKEUM-L68W4-NYEL1-3KBB3-KBB3K-JY45B'  // 1 no lugar de N
+  ];
+  invalid.forEach(k => assert.equal(chave.validar(k), false, 'deveria rejeitar: ' + k));
+});
+
+test('validar: rejeita caracteres acentuados e símbolos', () => {
+  assert.equal(chave.validar('TAKEUM-Á68W4-NYELN-3KBB3-KBB3K-JY45B'), false);
+  assert.equal(chave.validar('TAKEUM!6!W4-NYELN-3KBB3-KBB3K-JY45B'), false);
+});
+
+test('validar: símbolo extra entre grupos não invalida (leniência por design)', () => {
+  assert.equal(chave.validar('TAKEUM-L68W4-NYELN-3KBB3-KBB3K-JY45B!'), true);
+  assert.equal(chave.validar('TAKEUM-L68W4-NYELN-3KBB3-KBB3K-JY45B-'), true);
+});
+
+test('validar: rejeita vazio e null', () => {
+  assert.equal(chave.validar(''), false);
+  assert.equal(chave.validar(null), false);
+  assert.equal(chave.validar(undefined), false);
+});
+
+test('gerarDeCodigo: nunca produz caracteres fora do ALPHABET', () => {
+  for (let i = 0; i < 50; i++) {
+    const k = chave.gerarDeCodigo('COD-' + i + '-TESTE');
+    const rest = chave.normalize(k).slice(6);
+    assert.match(rest, /^[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{25}$/, 'chars proibidos em: ' + k);
+  }
+});
+
+test('gerar: nunca produz caracteres fora do ALPHABET', () => {
+  for (let i = 0; i < 50; i++) {
+    const k = chave.gerar();
+    const rest = chave.normalize(k).slice(6);
+    assert.match(rest, /^[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{25}$/, 'chars proibidos em: ' + k);
+  }
+});
+
+test('gerarDeCodigo: caracteres I/O/0/1 no código não alteram determinismo', () => {
+  const a = chave.gerarDeCodigo('CODIGO-COM-I0O1');
+  const b = chave.gerarDeCodigo('codigo-com-i0o1');
+  assert.equal(a, b);
+});

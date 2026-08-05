@@ -502,6 +502,7 @@
   let takes = [];
   let recStart = 0;
   let recInterval = null;
+  let countdownTimer = null;
   let audioCtx = null;
 
   // ---------- PERSIST STATE (IndexedDB) ----------
@@ -653,6 +654,7 @@
 
   // ---------- FLOW ----------
   clapBtn.addEventListener('click', () => {
+    if(countdownTimer) return;
     getAudioCtx(); // unlock audio on user gesture
     startCountdown();
   });
@@ -661,10 +663,11 @@
     showView('countdown');
     let n = countdownSeconds;
     countdownNum.textContent = n;
-    const timer = setInterval(() => {
+    countdownTimer = setInterval(() => {
       n--;
       if(n <= 0){
-        clearInterval(timer);
+        clearInterval(countdownTimer);
+        countdownTimer = null;
         doClap();
         return;
       }
@@ -701,7 +704,7 @@
     recTakeN.textContent = fieldTake.value || '1';
     recSceneN.textContent = fieldScene.value.trim() || 'sem cena';
     recStart = Date.now();
-    updateClock();
+    clearInterval(recInterval);
     recInterval = setInterval(updateClock, 250);
     showView('recording');
   }
@@ -715,6 +718,7 @@
 
   stopBtn.addEventListener('click', async () => {
     clearInterval(recInterval);
+    recInterval = null;
     const duration = Math.floor((Date.now() - recStart) / 1000);
 
     const take = {
@@ -726,7 +730,7 @@
       timestamp: Date.now()
     };
     takes.push(take);
-    await OneTakeDB.put('claquete_takes', take);
+    try{ await OneTakeDB.put('claquete_takes', take); }catch(e){}
     renderHistory();
 
     fieldTake.value = (parseInt(fieldTake.value)||1) + 1;

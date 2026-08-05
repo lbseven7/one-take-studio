@@ -4,7 +4,9 @@
   // ============================================================
   // COLE AQUI o seu Measurement ID do GA4:
   //   GA4 -> Administrador -> Fluxos de dados -> Web -> ID de medida
-  var GA_ID = 'G-XXXXXXXXXX';
+  var GA_ID = '';
+  // (deixado vazio de propósito até você criar a medição no GA4.
+  //  Enquanto vazio, nada é carregado nem enviado.)
   // ============================================================
 
   var gtag = function(){ (window.dataLayer = window.dataLayer || []).push(arguments); };

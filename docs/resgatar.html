@@ -230,6 +230,7 @@
     <div class="card">
       <h2><span class="star">🔑</span> Recuperar minha chave Pro</h2>
       <p class="sub">Digite o <strong>número da transação</strong> (o "código do pedido") da sua compra. Ele está no recibo que você recebeu da Hotmart e também em <em>Minhas compras</em> no painel da Hotmart. Sua chave é gerada aqui, na hora.</p>
+      <p class="sub" style="font-size:12px;opacity:.8;">A validação do código é feita online — mantenha o aparelho com internet.</p>
 
       <div class="field">
         <label>Número da transação (código do pedido)</label>
@@ -267,6 +268,7 @@
 </div>
 
 <script src="chave-core.js"></script>
+<script src="supabase.js"></script>
 <script>
 (function(){
   const input = document.getElementById('codigo-input');
@@ -281,15 +283,30 @@
     msg.className = type || '';
   }
 
-  function recover(){
+  async function recover(){
     const codigo = input.value.trim();
     if(!codigo){ setMsg('Digite o número da transação do seu recibo.', 'err'); return; }
     if(codigo.length < 4){ setMsg('Esse código parece curto demais. Confira o código no recibo da Hotmart.', 'err'); return; }
+    btn.disabled = true;
+    setMsg('Validando seu código...', 'loading');
+    let ok = false;
+    try{
+      ok = await window.SupabaseChaves.validarCodigo(codigo);
+    }catch(e){
+      setMsg('Sem conexão para validar o código. Conecte-se à internet e tente de novo.', 'err');
+      btn.disabled = false;
+      return;
+    }
+    if(!ok){
+      setMsg('Código de transação não encontrado. Confira o número no recibo da Hotmart e tente de novo.', 'err');
+      btn.disabled = false;
+      return;
+    }
     const chave = window.TakeUmChave.gerarDeCodigo(codigo);
-    if(!chave){ setMsg('Não consegui gerar a chave com esse código. Confira e tente de novo.', 'err'); return; }
     keyBox.textContent = chave;
     result.classList.add('show');
     setMsg('Chave gerada! Copie e ative na página Plano Pro.', 'ok');
+    btn.disabled = false;
     if(window.tuTrack){ window.tuTrack('key_recovered'); }
   }
 

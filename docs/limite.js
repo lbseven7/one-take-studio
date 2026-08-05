@@ -113,6 +113,18 @@
     if(!window.TakeUmChave || !window.TakeUmChave.validar(chave)){
       return { ok: false, msg: 'Chave inválida. Confira o formato TAKEUM-XXXXX-XXXXX-XXXXX-XXXXX-XXXXX.' };
     }
+    if(!window.SupabaseChaves){
+      return { ok: false, msg: 'Validação online indisponível. Recarregue a página e tente de novo.' };
+    }
+    let ok = false;
+    try{
+      ok = await window.SupabaseChaves.validarChave(window.TakeUmChave.normalize(chave));
+    }catch(e){
+      return { ok: false, msg: 'Sem conexão para validar a chave. Conecte-se à internet e tente de novo.' };
+    }
+    if(!ok){
+      return { ok: false, msg: 'Chave não encontrada na base de compras. Confira a chave no seu recibo ou entre em contato.' };
+    }
     await OneTakeDB.put(STORE, {
       id: 'pro',
       ativo: true,
@@ -331,7 +343,11 @@
       const r = await resgatar(chave);
       msgEl.textContent = r.msg;
       msgEl.className = 'tu-keymsg ' + (r.ok ? 'ok' : 'err');
-      if(r.ok){ setTimeout(() => overlay.remove(), 1800); }
+      if(r.ok){
+        pintarContadores();
+        if(window.tuTrack){ window.tuTrack('pro_activated'); }
+        setTimeout(() => overlay.remove(), 1800);
+      }
     });
   }
 

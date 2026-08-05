@@ -528,10 +528,11 @@
     let html = '';
     WEEKDAYS.forEach(w => { html += '<div class="wday">' + w + '</div>'; });
 
+    const prevMonth = new Date(viewYear, viewMonth - 1, 1);
     const prevDaysInMonth = new Date(viewYear, viewMonth, 0).getDate();
     for(let i = firstDow - 1; i >= 0; i--){
       const d = prevDaysInMonth - i;
-      html += '<div class="day other d-empty" data-date="' + dateStr(viewYear, viewMonth - 1, d) + '"></div>';
+      html += '<div class="day other d-empty" data-date="' + dateStr(prevMonth.getFullYear(), prevMonth.getMonth(), d) + '"></div>';
     }
 
     for(let d = 1; d <= daysInMonth; d++){
@@ -553,8 +554,9 @@
     }
 
     const endDow = (new Date(viewYear, viewMonth + 1, 0).getDay() + 6) % 7;
+    const nextMonth = new Date(viewYear, viewMonth + 1, 1);
     for(let i = 1; i <= 6 - endDow; i++){
-      html += '<div class="day other d-empty" data-date="' + dateStr(viewYear, viewMonth + 1, i) + '"></div>';
+      html += '<div class="day other d-empty" data-date="' + dateStr(nextMonth.getFullYear(), nextMonth.getMonth(), i) + '"></div>';
     }
 
     calendarGrid.innerHTML = html;

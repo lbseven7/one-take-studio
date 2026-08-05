@@ -253,7 +253,7 @@
 
   <div id="footer-actions">
     <button id="reset-btn">Desmarcar todos</button>
-    <button id="clear-btn">Limpar todos</button>
+    <button id="clear-btn">Restaurar padrão</button>
   </div>
 </div>
 
@@ -289,7 +289,7 @@
   async function loadItems(){
     try{
       const stored = await OneTakeDB.get('checklist_state', 'items');
-      if(stored && stored.list && stored.list.length > 0){
+      if(stored && Array.isArray(stored.list)){
         items = stored.list;
         return;
       }
@@ -299,7 +299,7 @@
   }
 
   async function saveItems(){
-    await OneTakeDB.put('checklist_state', { id: 'items', list: items });
+    try{ await OneTakeDB.put('checklist_state', { id: 'items', list: items }); }catch(e){}
   }
 
   function render(){

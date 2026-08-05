@@ -230,31 +230,130 @@
     const overlay = document.createElement('div');
     overlay.className = 'tu-upsell-overlay';
     overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.72);display:flex;align-items:center;justify-content:center;padding:20px;';
-    overlay.innerHTML =
-      '<div class="tu-upsell">' +
-        '<div class="tu-star">★</div>' +
-        '<h3>Limite gratuito atingido</h3>' +
-        '<p class="tu-sub">Você usou as <strong>' + LIMIT + ' criações gratuitas</strong> de <em>' + esc(nome) + '</em>. Com o <strong>Take Um Pro</strong>, crie sem limites.</p>' +
-        '<div class="tu-price">' + esc(PRECO) + '<span>pagamento único</span></div>' +
-        '<a class="tu-buy" href="' + esc(CHECKOUT_URL) + '" target="_blank" rel="noopener">Desbloquear ilimitado</a>' +
-        '<form class="tu-emailbox" novalidate>' +
-          '<p class="tu-email-title">Não quer comprar agora?</p>' +
-          '<p class="tu-email-sub">Deixa seu e-mail: você não perde seu progresso e recebe dicas para gravar melhor.</p>' +
-          '<div class="tu-email-row">' +
-            '<input type="email" class="tu-email-input" placeholder="Seu melhor e-mail" autocomplete="email" spellcheck="false" required>' +
-            '<button type="submit" class="tu-email-send">Salvar</button>' +
-          '</div>' +
-          '<input type="text" class="tu-honey" tabindex="-1" autocomplete="off" aria-hidden="true">' +
-          '<div class="tu-emailmsg"></div>' +
-        '</form>' +
-        '<button type="button" class="tu-key-btn">Já tenho uma chave Pro</button>' +
-        '<div class="tu-keybox" hidden>' +
-          '<input type="text" class="tu-key-input" placeholder="TAKEUM-XXXXX-XXXXX-XXXXX-XXXXX-XXXXX" autocomplete="off" spellcheck="false">' +
-          '<button type="button" class="tu-activate">Ativar chave</button>' +
-          '<div class="tu-keymsg"></div>' +
-        '</div>' +
-        '<button type="button" class="tu-close">Continuar no plano grátis</button>' +
-      '</div>';
+    // Build upsell DOM using safe APIs to avoid XSS (no innerHTML with user data)
+    const upsell = document.createElement('div');
+    upsell.className = 'tu-upsell';
+
+    const star = document.createElement('div');
+    star.className = 'tu-star';
+    star.textContent = '★';
+    upsell.appendChild(star);
+
+    const title = document.createElement('h3');
+    title.textContent = 'Limite gratuito atingido';
+    upsell.appendChild(title);
+
+    const sub = document.createElement('p');
+    sub.className = 'tu-sub';
+    sub.appendChild(document.createTextNode('Você usou as '));
+    const strong = document.createElement('strong');
+    strong.textContent = LIMIT + ' criações gratuitas';
+    sub.appendChild(strong);
+    sub.appendChild(document.createTextNode(' de '));
+    const em = document.createElement('em');
+    em.textContent = nome;
+    sub.appendChild(em);
+    sub.appendChild(document.createTextNode('. Com o '));
+    const strong2 = document.createElement('strong');
+    strong2.textContent = 'Take Um Pro';
+    sub.appendChild(strong2);
+    sub.appendChild(document.createTextNode(', crie sem limites.'));
+    upsell.appendChild(sub);
+
+    const price = document.createElement('div');
+    price.className = 'tu-price';
+    price.textContent = PRECO;
+    const priceSpan = document.createElement('span');
+    priceSpan.textContent = 'pagamento único';
+    price.appendChild(priceSpan);
+    upsell.appendChild(price);
+
+    const buy = document.createElement('a');
+    buy.className = 'tu-buy';
+    buy.setAttribute('href', CHECKOUT_URL);
+    buy.setAttribute('target', '_blank');
+    buy.setAttribute('rel', 'noopener');
+    buy.textContent = 'Desbloquear ilimitado';
+    upsell.appendChild(buy);
+
+    const form = document.createElement('form');
+    form.className = 'tu-emailbox';
+    form.setAttribute('novalidate', '');
+
+    const emailTitle = document.createElement('p');
+    emailTitle.className = 'tu-email-title';
+    emailTitle.textContent = 'Não quer comprar agora?';
+    form.appendChild(emailTitle);
+
+    const emailSub = document.createElement('p');
+    emailSub.className = 'tu-email-sub';
+    emailSub.textContent = 'Deixa seu e-mail: você não perde seu progresso e recebe dicas para gravar melhor.';
+    form.appendChild(emailSub);
+
+    const row = document.createElement('div');
+    row.className = 'tu-email-row';
+    const input = document.createElement('input');
+    input.type = 'email';
+    input.className = 'tu-email-input';
+    input.setAttribute('placeholder', 'Seu melhor e-mail');
+    input.setAttribute('autocomplete', 'email');
+    input.setAttribute('spellcheck', 'false');
+    input.required = true;
+    const sendBtn = document.createElement('button');
+    sendBtn.type = 'submit';
+    sendBtn.className = 'tu-email-send';
+    sendBtn.textContent = 'Salvar';
+    row.appendChild(input);
+    row.appendChild(sendBtn);
+    form.appendChild(row);
+
+    const honey = document.createElement('input');
+    honey.type = 'text';
+    honey.className = 'tu-honey';
+    honey.setAttribute('tabindex', '-1');
+    honey.setAttribute('autocomplete', 'off');
+    honey.setAttribute('aria-hidden', 'true');
+    form.appendChild(honey);
+
+    const emailMsg = document.createElement('div');
+    emailMsg.className = 'tu-emailmsg';
+    form.appendChild(emailMsg);
+
+    upsell.appendChild(form);
+
+    const keyBtn = document.createElement('button');
+    keyBtn.type = 'button';
+    keyBtn.className = 'tu-key-btn';
+    keyBtn.textContent = 'Já tenho uma chave Pro';
+    upsell.appendChild(keyBtn);
+
+    const keyBox = document.createElement('div');
+    keyBox.className = 'tu-keybox';
+    keyBox.hidden = true;
+    const keyInput = document.createElement('input');
+    keyInput.type = 'text';
+    keyInput.className = 'tu-key-input';
+    keyInput.setAttribute('placeholder', 'TAKEUM-XXXXX-XXXXX-XXXXX-XXXXX-XXXXX');
+    keyInput.setAttribute('autocomplete', 'off');
+    keyInput.setAttribute('spellcheck', 'false');
+    const activate = document.createElement('button');
+    activate.type = 'button';
+    activate.className = 'tu-activate';
+    activate.textContent = 'Ativar chave';
+    const keyMsg = document.createElement('div');
+    keyMsg.className = 'tu-keymsg';
+    keyBox.appendChild(keyInput);
+    keyBox.appendChild(activate);
+    keyBox.appendChild(keyMsg);
+    upsell.appendChild(keyBox);
+
+    const closeBtn = document.createElement('button');
+    closeBtn.type = 'button';
+    closeBtn.className = 'tu-close';
+    closeBtn.textContent = 'Continuar no plano grátis';
+    upsell.appendChild(closeBtn);
+
+    overlay.appendChild(upsell);
 
     const style = document.createElement('style');
     style.textContent =

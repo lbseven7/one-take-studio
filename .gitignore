@@ -7,3 +7,4 @@ Thumbs.db
 venda-hotmart/chaves*.csv
 venda-hotmart/*.zip
 venda-hotmart/Make-scenario.md
+.env

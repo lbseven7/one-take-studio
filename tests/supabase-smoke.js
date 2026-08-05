@@ -7,15 +7,27 @@
 const fs = require('node:fs');
 const path = require('node:path');
 
-const src = fs.readFileSync(path.join(__dirname, '..', 'one-take-studio', 'supabase.js'), 'utf8');
-const urlMatch = src.match(/SUPA_URL = '([^']+)'/);
-const keyMatch = src.match(/SUPA_ANON_KEY = '([^']+)'/);
-if (!urlMatch || !keyMatch) {
-  console.error('Config não encontrada em one-take-studio/supabase.js');
-  process.exit(1);
+let SUPA_URL = null;
+let SUPA_ANON_KEY = null;
+const envPath = path.join(__dirname, '..', '.env');
+if (fs.existsSync(envPath)) {
+  const env = fs.readFileSync(envPath, 'utf8');
+  const urlEnv = env.match(/^\s*SUPA_URL\s*=\s*['"]?([^'"\r\n]+)['"]?/m);
+  const keyEnv = env.match(/^\s*SUPA_ANON_KEY\s*=\s*['"]?([^'"\r\n]+)['"]?/m);
+  if (urlEnv) SUPA_URL = urlEnv[1];
+  if (keyEnv) SUPA_ANON_KEY = keyEnv[1];
 }
-const SUPA_URL = urlMatch[1];
-const SUPA_ANON_KEY = keyMatch[1];
+if (!SUPA_URL || !SUPA_ANON_KEY) {
+  const src = fs.readFileSync(path.join(__dirname, '..', 'one-take-studio', 'supabase.js'), 'utf8');
+  const urlMatch = src.match(/SUPA_URL\s*=\s*'([^']+)'/);
+  const keyMatch = src.match(/SUPA_ANON_KEY\s*=\s*'([^']+)'/);
+  if (!urlMatch || !keyMatch) {
+    console.error('Config não encontrada em .env nem em one-take-studio/supabase.js');
+    process.exit(1);
+  }
+  if (!SUPA_URL) SUPA_URL = urlMatch[1];
+  if (!SUPA_ANON_KEY) SUPA_ANON_KEY = keyMatch[1];
+}
 
 // Valor sentinela que nunca será cadastrado: só testa se o endpoint existe e responde.
 const SENTINEL = 'ZZZZZZZZZZZZZZZZZZZZZZZZ';

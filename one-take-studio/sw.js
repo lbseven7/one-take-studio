@@ -1,4 +1,4 @@
-const CACHE = 'takeum-v46';
+const CACHE = 'takeum-v47';
 
 const ASSETS = [
   './',
@@ -35,6 +35,7 @@ const ASSETS = [
   './blog/teleprompter-gratis-online.html',
   './blog/gerador-de-capa-para-youtube-gratis.html',
   './blog/roteirizador-de-video-com-ia.html',
+  './blog/dados-criadores-de-conteudo-2026.html',
   './guias/guia-primeiro-video.html',
   './guias/guia-microfone.html',
   './guias/guia-iluminacao.html',

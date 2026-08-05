@@ -1,0 +1,9 @@
+{
+  "name": "take-um-studio",
+  "private": true,
+  "description": "Take Um Studio — testes",
+  "scripts": {
+    "test": "node --test",
+    "test:supabase": "node tests/supabase-smoke.js"
+  }
+}

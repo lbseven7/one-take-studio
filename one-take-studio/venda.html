@@ -253,6 +253,56 @@
     margin: 8px 0 0 0;
   }
 
+  .bonus{
+    border: 1px solid rgba(57,255,136,0.35);
+    background: linear-gradient(180deg, #07170e 0%, var(--panel) 60%);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 24px;
+  }
+  .bonus .tag{
+    display: inline-block;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #062a14;
+    background: var(--accent-green);
+    border-radius: 20px;
+    padding: 4px 10px;
+    margin-bottom: 12px;
+    font-weight: 700;
+  }
+  .bonus h2{
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 17px;
+    margin: 0 0 4px;
+  }
+  .bonus .bonus-sub{
+    color: var(--text-dim);
+    font-size: 12px;
+    line-height: 1.6;
+    margin: 0 0 14px;
+  }
+  .bonus .bonus-list{ list-style: none; margin: 0 0 14px; padding: 0; font-size: 12px; color: var(--text-dim); }
+  .bonus .bonus-list li{ padding: 3px 0; }
+  .bonus .bonus-list b{ color: var(--text-main); }
+  .bonus-btn{
+    display: block;
+    border: 1px solid var(--accent-green);
+    color: var(--accent-green);
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    text-align: center;
+    text-decoration: none;
+    padding: 13px;
+    border-radius: 6px;
+  }
+  .bonus-btn:hover{ background: rgba(57,255,136,0.08); }
+
   .bottom-cta{
     text-align: center;
     background: var(--panel);
@@ -324,6 +374,19 @@
           lang="pt_BR"
         ></wpp-button>
       </div>
+    </div>
+
+    <div class="bonus">
+      <span class="tag">Bônus incluso</span>
+      <h2>Guia de Planejamento de 90 dias</h2>
+      <p class="bonus-sub">O plano completo para sair do improviso: posicionamento, pilares de conteúdo, rotina semanal, calendário do mês e checklists. Em PDF para imprimir ou usar no celular — <b style="color:var(--text-main);">incluso de graça na sua compra.</b></p>
+      <ul class="bonus-list">
+        <li>✓ Calendário mensal pronto para preencher</li>
+        <li>✓ Checklists de gravação e publicação</li>
+        <li>✓ Fórmulas de posicionamento e pilares de conteúdo</li>
+        <li>✓ Sem custo extra e sem assinatura</li>
+      </ul>
+      <a class="bonus-btn" href="./guias/guia-planejamento.html" target="_blank" rel="noopener">Ver o que está incluso</a>
     </div>
 
     <section class="section">

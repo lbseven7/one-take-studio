@@ -61,7 +61,11 @@ language sql
 security definer
 set search_path = public
 as $$
-  select exists(select 1 from public.chaves_pro where codigo = p_codigo);
+  select exists(
+    select 1 from public.chaves_pro
+    where upper(regexp_replace(codigo, '[^A-Za-z0-9]', '', 'g'))
+        = upper(regexp_replace(p_codigo, '[^A-Za-z0-9]', '', 'g'))
+  );
 $$;
 grant execute on function public.validar_pro_codigo(text) to anon, authenticated;
 
@@ -72,6 +76,10 @@ language sql
 security definer
 set search_path = public
 as $$
-  select exists(select 1 from public.chaves_pro where chave = p_chave);
+  select exists(
+    select 1 from public.chaves_pro
+    where upper(regexp_replace(chave, '[^A-Za-z0-9]', '', 'g'))
+        = upper(regexp_replace(p_chave, '[^A-Za-z0-9]', '', 'g'))
+  );
 $$;
 grant execute on function public.validar_pro_chave(text) to anon, authenticated;

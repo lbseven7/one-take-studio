@@ -168,6 +168,15 @@
     user-select: all;
   }
   .result .actions{ display: flex; gap: 10px; flex-wrap: wrap; }
+  .key-warn{
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--panel-line);
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--text-dim);
+  }
+  .key-warn strong{ color: var(--accent-amber); }
   .result .actions a, .result .actions button{
     flex: 1;
     font-family: var(--font-mono);
@@ -249,6 +258,7 @@
           <button id="copy-btn">Copiar chave</button>
           <a id="activate-link" href="./pro.html">Ir ao Plano Pro e ativar</a>
         </div>
+        <p class="key-warn"><strong>⚠️ Não compartilhe a sua chave de ativação.</strong> Ela é pessoal e intransferível. Se ela vazar, você pode ficar sem conseguir ativar em outro aparelho e perder o controle do acesso. A recuperação usa o número da transação do seu recibo, que só você tem.</p>
       </div>
     </div>
 

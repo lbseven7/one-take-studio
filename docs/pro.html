@@ -192,6 +192,16 @@
   .key-row input:focus{ border-color: var(--accent-amber); }
   .key-row input::placeholder{ color: #55555c; }
 
+  .key-warn{
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--panel-line);
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--text-dim);
+  }
+  .key-warn strong{ color: var(--accent-amber); }
+
   .actions{ display: flex; gap: 10px; flex-wrap: wrap; }
   .actions button{
     font-family: var(--font-mono);
@@ -293,6 +303,7 @@
         <button id="activate-btn">Ativar chave</button>
       </div>
       <div id="msg"></div>
+      <p class="key-warn"><strong>⚠️ Não compartilhe a sua chave de ativação.</strong> Ela é pessoal e intransferível. Se ela vazar, você pode ficar sem conseguir ativar em outro aparelho e perder o controle do acesso. A recuperação usa o número da transação do seu recibo, que só você tem.</p>
     </div>
 
     <div class="card">

@@ -4,7 +4,7 @@
   var STORE = 'app_state';
   var LIMIT = 5;
   var PRECO = 'R$ 67';
-  var CHECKOUT_URL = 'https://lbseven7.github.io/one-take-studio/venda.html';
+  var CHECKOUT_URL = 'https://www.takeumstudio.com.br/venda.html';
 
   var ACOES = {
     'roteirizador-gerar': 'Reescrever roteiro com IA',
@@ -300,7 +300,7 @@
         body.set('_subject', 'Lead upsell Take Um Studio — ' + nome);
         body.set('_captcha', 'false');
         body.set('_honey', '');
-        body.set('_next', 'https://lbseven7.github.io/one-take-studio/');
+        body.set('_next', 'https://www.takeumstudio.com.br/');
         await fetch('https://formsubmit.co/takeumst@gmail.com', {
           method: 'POST',
           headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Accept': 'application/json' },

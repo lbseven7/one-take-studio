@@ -2,7 +2,7 @@
 
 Ferramentas gratuitas, em português, para quem **grava e organiza vídeo sozinho** — direto no navegador, sem instalar nada.
 
-> **Site publicado:** https://lbseven7.github.io/one-take-studio/
+> **Site publicado:** https://www.takeumstudio.com.br/
 
 Leia seu roteiro sem decorar, planeje suas pautas, marque seus takes e publique como numa produção de verdade. Tudo roda localmente no seu navegador e **seus dados ficam só com você**.
 

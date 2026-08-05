@@ -84,6 +84,8 @@
   #rewrite-btn:hover, #desc-btn:hover{ border-color: var(--accent-purple); }
   #rewrite-btn:disabled, #desc-btn:disabled{ opacity: 0.5; cursor: not-allowed; color: var(--text-dim); }
   #rewrite-btn:disabled:hover, #desc-btn:disabled:hover{ border-color: var(--panel-line); }
+  #copy-btn, #tele-btn{ color: var(--accent-amber); }
+  #copy-btn:hover, #tele-btn:hover{ border-color: var(--accent-amber); }
 
   #content{
     flex: 1;
@@ -454,6 +456,8 @@
     <div class="actions">
       <button id="rewrite-btn" title="Reescrever com IA">✍ IA</button><span class="tu-count" data-tu-count="roteirizador-gerar"></span>
       <button id="desc-btn" title="Gerar descrição com IA">📝 Descrição</button><span class="tu-count" data-tu-count="roteirizador-desc"></span>
+      <button id="copy-btn" title="Copiar roteiro pronto">📋 Copiar</button>
+      <button id="tele-btn" title="Enviar para o Teleprompter">🎥 Teleprompter</button>
       <button id="library-btn" title="Roteiros salvos">📂</button>
       <button id="new-btn">+ Novo</button>
       <button id="save-btn">Salvar</button>
@@ -521,6 +525,8 @@
   const saveBtn = document.getElementById('save-btn');
   const newBtn = document.getElementById('new-btn');
   const libraryBtn = document.getElementById('library-btn');
+  const copyBtn = document.getElementById('copy-btn');
+  const teleBtn = document.getElementById('tele-btn');
   const modalBackdrop = document.getElementById('modal-backdrop');
   const modalBody = document.getElementById('modal-body');
   const modalClose = document.getElementById('modal-close');
@@ -734,6 +740,43 @@
     return sections.some(s => s.content.trim());
   }
 
+  function buildScriptText(){
+    const parts = [];
+    const title = fieldTitle.value.trim();
+    if(title) parts.push(title);
+    sections.forEach(s => {
+      const c = (s.content || '').trim();
+      if(!c) return;
+      parts.push('[' + s.name + ']', c);
+    });
+    return parts.join('\n\n');
+  }
+
+  async function copyScript(){
+    const text = buildScriptText();
+    if(!text.trim()){ showToast('Escreva algo no roteiro antes de copiar.'); return; }
+    try{
+      await navigator.clipboard.writeText(text);
+      showToast('Roteiro copiado!');
+    }catch(e){
+      showToast('Não foi possível copiar. Selecione o texto e copie manualmente.');
+    }
+  }
+
+  async function sendToTeleprompter(){
+    const text = buildScriptText();
+    if(!text.trim()){ showToast('Escreva algo no roteiro antes de enviar.'); return; }
+    try{
+      const existing = await OneTakeDB.get('teleprompter_state', 'state') || {};
+      await OneTakeDB.put('teleprompter_state', { id: 'state', ...existing, script: text });
+      showToast('Enviado para o Teleprompter!');
+      window.open('./teleprompter.html', '_blank');
+    }catch(e){
+      showToast('Não foi possível enviar para o Teleprompter.');
+      console.error('roteirizador: falha ao enviar p/ teleprompter', e);
+    }
+  }
+
   // ---------- IA: reescrever ----------
   async function rewriteWithAI(){
     if(!scriptHasContent()){
@@ -842,6 +885,8 @@
   });
 
   libraryBtn.addEventListener('click', openLibrary);
+  copyBtn.addEventListener('click', copyScript);
+  teleBtn.addEventListener('click', sendToTeleprompter);
   modalClose.addEventListener('click', closeLibrary);
   modalBackdrop.addEventListener('click', (e) => {
     if(e.target === modalBackdrop) closeLibrary();

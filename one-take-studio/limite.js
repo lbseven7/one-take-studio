@@ -215,9 +215,15 @@
     return OneTakeDB.get(STORE, 'leads').then(r => (r && r.lista) || []);
   }
 
+  function esc(str){
+    const d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+  }
+
   function mostrarUpsell(acao){
     somCash();
-    const nome = ACOES[acao] || 'essa ação';
+    const nome = Object.prototype.hasOwnProperty.call(ACOES, acao) ? ACOES[acao] : 'essa ação';
     const old = document.querySelector('.tu-upsell-overlay');
     if(old) old.remove();
 
@@ -228,9 +234,9 @@
       '<div class="tu-upsell">' +
         '<div class="tu-star">★</div>' +
         '<h3>Limite gratuito atingido</h3>' +
-        '<p class="tu-sub">Você usou as <strong>' + LIMIT + ' criações gratuitas</strong> de <em>' + nome + '</em>. Com o <strong>Take Um Pro</strong>, crie sem limites.</p>' +
-        '<div class="tu-price">' + PRECO + '<span>pagamento único</span></div>' +
-        '<a class="tu-buy" href="' + CHECKOUT_URL + '" target="_blank" rel="noopener">Desbloquear ilimitado</a>' +
+        '<p class="tu-sub">Você usou as <strong>' + LIMIT + ' criações gratuitas</strong> de <em>' + esc(nome) + '</em>. Com o <strong>Take Um Pro</strong>, crie sem limites.</p>' +
+        '<div class="tu-price">' + esc(PRECO) + '<span>pagamento único</span></div>' +
+        '<a class="tu-buy" href="' + esc(CHECKOUT_URL) + '" target="_blank" rel="noopener">Desbloquear ilimitado</a>' +
         '<form class="tu-emailbox" novalidate>' +
           '<p class="tu-email-title">Não quer comprar agora?</p>' +
           '<p class="tu-email-sub">Deixa seu e-mail: você não perde seu progresso e recebe dicas para gravar melhor.</p>' +

@@ -635,14 +635,24 @@
     autoSaveTimer = setTimeout(() => {
       const script = getCurrentScript();
       currentId = script.id;
-      OneTakeDB.put('roteirizador_scripts', script).catch(() => {});
+      OneTakeDB.put('roteirizador_scripts', script).catch((e) => {
+        console.error('roteirizador: falha no autosave', e);
+      });
     }, 600);
   }
 
-  async function saveScript(){
-    const script = getCurrentScript();
-    await OneTakeDB.put('roteirizador_scripts', script);
-    currentId = script.id;
+  async function saveScript(showFeedback){
+    try{
+      const script = getCurrentScript();
+      await OneTakeDB.put('roteirizador_scripts', script);
+      currentId = script.id;
+      if(showFeedback) showToast('Roteiro salvo!');
+      return script;
+    }catch(e){
+      if(showFeedback) showToast('Não foi possível salvar o roteiro.');
+      console.error('roteirizador: falha ao salvar', e);
+      return null;
+    }
   }
 
   async function loadScripts(){
@@ -818,7 +828,7 @@
 
   // ---- Events ----
   saveBtn.addEventListener('click', async () => {
-    await saveScript();
+    await saveScript(true);
     await loadScripts();
   });
 

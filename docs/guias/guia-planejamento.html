@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Guia de Planejamento · Bônus do Take Um Pro</title>
+<meta name="description" content="Bônus exclusivo do Take Um Pro: o Guia de Planejamento de 90 dias para quem grava e organiza vídeo sozinho, com calendário, checklists e métricas.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://www.takeumstudio.com.br/guias/guia-planejamento.html">
+<!--
+  COMO GERAR O PDF (bônus entregue na Hotmart):
+  1. Com o Pro ativo, abra esta página.
+  2. Ctrl+P (ou Cmd+P) -> Destino: "Salvar como PDF".
+  3. Em "Mais configurações", marque "Imprimir segundo plano" (gráficos).
+  4. Salve e adicione o PDF ao conteúdo do produto Take Um Pro na Hotmart.
+-->
+<style>
+  :root{
+    --ink: #1c1c20;
+    --ink-soft: #55555f;
+    --line: #e3e2dd;
+    --amber: #d98f00;
+    --green: #0f8a4d;
+    --bg: #ffffff;
+    --muted: #f6f5f1;
+    --dark: #0a0a0c;
+    --dark-panel: #141417;
+    --dark-line: #232328;
+    --accent-amber: #ffb020;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html, body{
+    margin: 0;
+    padding: 0;
+    background: var(--dark);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 11pt;
+    line-height: 1.55;
+  }
+
+  /* ---------- Barra do app (não vai no PDF) ---------- */
+  .topbar{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 18px;
+    background: var(--dark-panel);
+    border-bottom: 1px solid var(--dark-line);
+    color: var(--dark-line);
+  }
+  .topbar img.mark{
+    width: 24px; height: 24px;
+    border-radius: 5px;
+    object-fit: cover;
+  }
+  .topbar .name{
+    font-family: "Archivo", -apple-system, sans-serif;
+    font-weight: 900;
+    font-size: 14px;
+    color: #f5f4ef;
+    flex: 1;
+    letter-spacing: -0.01em;
+  }
+  .topbar .name small{
+    display: block;
+    font-family: -apple-system, sans-serif;
+    font-weight: 400;
+    font-size: 10px;
+    color: #8a8a92;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .topbar a{
+    color: #8a8a92;
+    font-size: 11px;
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .topbar a:hover{ color: #f5f4ef; }
+
+  /* ---------- Gate (bloqueio para não-Pro) ---------- */
+  #gate{
+    max-width: 480px;
+    margin: 48px auto 24px;
+    background: var(--dark-panel);
+    border: 1px solid var(--dark-line);
+    border-radius: 12px;
+    padding: 34px 26px;
+    text-align: center;
+    color: #f5f4ef;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  #gate .lock{ font-size: 34px; margin-bottom: 12px; }
+  #gate h1{
+    font-family: "Archivo", -apple-system, sans-serif;
+    font-weight: 900;
+    font-size: 19px;
+    margin: 0 0 8px;
+    letter-spacing: -0.01em;
+  }
+  #gate p{ color: #8a8a92; font-size: 13px; line-height: 1.65; margin: 0 0 20px; }
+  #gate a{
+    display: inline-block;
+    background: var(--accent-amber);
+    color: #1a1200;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 13px 22px;
+    border-radius: 6px;
+  }
+  #gate a:hover{ filter: brightness(1.1); }
+  #gate .hint{ margin-top: 14px; font-size: 11px; color: #55555c; }
+  #gate .hint a{ all: unset; color: var(--accent-amber); cursor: pointer; text-transform: none; letter-spacing: normal; font-weight: 600; }
+
+  /* ---------- Documento (impressão) ---------- */
+  #doc{ display: none; }
+  body.pro #doc{ display: block; }
+  body.pro #gate{ display: none; }
+
+  .doc-inner{
+    background: var(--bg);
+    padding: 28px 22px 56px;
+    max-width: 780px;
+    margin: 0 auto;
+  }
+
+  @page{
+    size: A4;
+    margin: 24mm 22mm 26mm 22mm;
+  }
+
+  .cover{
+    text-align: center;
+    padding: 28px 0 34px;
+    border-bottom: 3px solid var(--ink);
+    margin-bottom: 26px;
+    page-break-after: avoid;
+  }
+  .cover .brand{
+    font-size: 10pt;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 10px;
+  }
+  .cover h1{
+    font-size: 27pt;
+    line-height: 1.08;
+    margin: 0 0 10px;
+    letter-spacing: -0.01em;
+  }
+  .cover .sub{
+    font-size: 12pt;
+    color: var(--ink-soft);
+    max-width: 460px;
+    margin: 0 auto;
+  }
+
+  h2{
+    font-size: 16pt;
+    margin: 0 0 4px;
+    letter-spacing: -0.01em;
+    page-break-after: avoid;
+  }
+  h3{
+    font-size: 12.5pt;
+    margin: 16px 0 4px;
+    page-break-after: avoid;
+  }
+
+  .section{
+    margin-bottom: 26px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+    page-break-inside: avoid;
+  }
+  .section.allow-break{ page-break-inside: auto; }
+
+  .kicker{
+    font-size: 9pt;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 6px;
+  }
+
+  p{ margin: 8px 0; color: var(--ink-soft); }
+  strong{ color: var(--ink); }
+
+  ul, ol{ margin: 8px 0 8px 20px; padding: 0; color: var(--ink-soft); }
+  li{ margin: 4px 0; }
+
+  .box{
+    background: var(--muted);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--amber);
+    padding: 12px 18px;
+    margin: 14px 0;
+    page-break-inside: avoid;
+  }
+  .box strong{ display: block; margin-bottom: 2px; }
+  .box strong.inline{ display: inline; margin-bottom: 0; }
+  .formula-box strong, .formula-box b{ display: inline; margin: 0; font-weight: 700; }
+
+  table{
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0;
+    font-size: 10pt;
+  }
+  th, td{
+    border: 1px solid var(--line);
+    padding: 6px 8px;
+    text-align: left;
+    vertical-align: top;
+  }
+  th{
+    background: var(--muted);
+    font-size: 9pt;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  td.blank{ height: 22px; }
+
+  .pillars td{ width: 33%; }
+  .pillar-num{
+    font-weight: 700;
+    color: var(--amber);
+    font-size: 9pt;
+    letter-spacing: 0.1em;
+  }
+
+  .steps ol{ counter-reset: step; list-style: none; margin-left: 0; }
+  .steps li{
+    counter-increment: step;
+    position: relative;
+    padding-left: 30px;
+    margin: 8px 0;
+  }
+  .steps li::before{
+    content: counter(step);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 20px;
+    height: 20px;
+    border: 1.5px solid var(--amber);
+    border-radius: 50%;
+    color: var(--amber);
+    font-weight: 700;
+    font-size: 10pt;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .checklist{ list-style: none; margin-left: 0; }
+  .checklist li{
+    padding-left: 26px;
+    position: relative;
+    margin: 5px 0;
+  }
+  .checklist li::before{
+    content: "✓";
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: var(--green);
+    font-weight: 700;
+  }
+
+  .grid2{ display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .grid2 .box{ margin: 0; }
+
+  .foot{
+    margin-top: 30px;
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+    text-align: center;
+    font-size: 9.5pt;
+    color: var(--ink-soft);
+  }
+
+  @media print{
+    .topbar{ display: none; }
+    #gate{ display: none; }
+    body.pro #doc{ display: block; }
+    .doc-inner{ padding: 0 16mm; max-width: none; }
+    .section{ page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="topbar">
+    <img class="mark" src="../icons/icon-192.png" alt="Take Um Studio">
+    <div class="name">Take Um Studio<small>Bônus do Take Um Pro</small></div>
+    <a href="../pro.html">Plano Pro</a>
+    <a href="../index.html">Voltar ao app</a>
+  </div>
+
+  <!-- ===== Bloqueio para quem não tem o Pro ===== -->
+  <div id="gate">
+    <div class="lock">🔒</div>
+    <h1>Bônus exclusivo do Take Um Pro</h1>
+    <p>O Guia de Planejamento de 90 dias é um bônus de quem tem a licença vitalícia do Take Um Studio Pro — junto com a criação ilimitada em todas as ferramentas.</p>
+    <a href="../venda.html">Desbloquear com o Pro</a>
+    <p class="hint">Já tem o Pro? Ative sua chave na página <a href="../pro.html">Plano Pro</a> e volte aqui.</p>
+  </div>
+
+  <!-- ===== Conteúdo do guia ===== -->
+  <div id="doc">
+    <div class="doc-inner">
+
+      <div class="cover">
+        <div class="brand">Take Um Studio · Bônus do Pro</div>
+        <h1>Guia de Planejamento<br>para quem grava sozinho</h1>
+        <p class="sub">Um plano de 90 dias para sair do improviso: defina seu tema, monte a rotina semanal, organize o mês e acompanhe o que funciona.</p>
+      </div>
+
+      <!-- 1. POSICIONAMENTO -->
+      <div class="section">
+        <div class="kicker">Passo 1 · antes de gravar</div>
+        <h2>Seu tema e sua promessa</h2>
+        <p>Quem grava sozinho perde tempo quando muda de assunto toda semana. Antes de planejar a agenda, fixe <strong>uma frase de posicionamento</strong> — ela decide todos os seus vídeos.</p>
+        <div class="box formula-box">
+          <strong>Fórmula:</strong>
+          <span class="formula">"Eu ajudo <b>[quem]</b> a <b>[resultado]</b> por meio de <b>[formato/tema]</b>."</span>
+        </div>
+        <p>Exemplo pronto: <em>"Eu ajudo criadores iniciantes a gravar vídeos com qualidade profissional sem gastar em equipamento caro."</em></p>
+        <h3>Como preencher a sua</h3>
+        <ol>
+          <li><strong>Quem</strong> — o público exato (ex.: mães que querem monetizar, micro-empresários locais, professores).</li>
+          <li><strong>Resultado</strong> — o que muda na vida deles (aprender, vender mais, se posicionar).</li>
+          <li><strong>Tema/Formato</strong> — o assunto dos vídeos (ex.: videoaulas curtas, bastidores, dicas de 60 segundos).</li>
+        </ol>
+      </div>
+
+      <!-- 2. PILARES -->
+      <div class="section">
+        <div class="kicker">Passo 2 · estrutura do conteúdo</div>
+        <h2>Seus pilares de conteúdo</h2>
+        <p>Pilares são os 3 ou 4 blocos de assunto do seu canal. Com eles, qualquer ideia vira vídeo na hora e o público sempre sabe o que esperar.</p>
+        <table class="pillars">
+          <tr>
+            <th>Pilar 1</th>
+            <th>Pilar 2</th>
+            <th>Pilar 3</th>
+            <th>Pilar 4 (opcional)</th>
+          </tr>
+          <tr>
+            <td class="blank"></td>
+            <td class="blank"></td>
+            <td class="blank"></td>
+            <td class="blank"></td>
+          </tr>
+        </table>
+        <p>Recomendação para quem começa: <strong>70% utilidade</strong> (ensine algo), <strong>20% bastidores/personalidade</strong> (conecte-se), <strong>10% ofertas/opiniões</strong> (gere conversa).</p>
+      </div>
+
+      <!-- 3. CADÊNCIA -->
+      <div class="section">
+        <div class="kicker">Passo 3 · quanto publicar</div>
+        <h2>Defina a cadência</h2>
+        <p>Mais importante que quantidade é <strong>consistência</strong>. Comece pelo número que você aguenta manter por 90 dias sem queimar.</p>
+        <table>
+          <tr><th>Cadência</th><th>Volume mensal</th><th>Ideal para</th><th>Dedicação semanal</th></tr>
+          <tr><td><strong>1/semana</strong></td><td>4 vídeos</td><td>Quem tem 1–3 h livres por semana</td><td>~3 h</td></tr>
+          <tr><td><strong>2/semana</strong></td><td>8–9 vídeos</td><td>Quem já tem rotina de gravação</td><td>~6 h</td></tr>
+          <tr><td><strong>3/semana</strong></td><td>13 vídeos</td><td>Canais em crescimento rápido</td><td>~9 h</td></tr>
+        </table>
+        <div class="box">
+          <strong>Minha cadência dos próximos 90 dias:</strong>
+          1 vídeo por semana · 2 vídeos por semana · 3+ vídeos por semana
+        </div>
+      </div>
+
+      <!-- 4. ROTINA SEMANAL -->
+      <div class="section allow-break">
+        <div class="kicker">Passo 4 · o motor da semana</div>
+        <h2>Sua rotina de produção</h2>
+        <p>Não tente fazer tudo no mesmo dia. Separe <strong>um dia para produzir</strong> (roteiro + gravação) e <strong>um dia para publicar</strong> (edição, capa, descrição e divulgação). Exemplo de semana:</p>
+        <div class="steps">
+          <ol>
+            <li><strong>Segunda (30 min) — Roteirize.</strong> Escolha o tema, o gancho e a estrutura no Roteirizador do Take Um Studio.</li>
+            <li><strong>Terça (1 h) — Grave.</strong> Teleprompter na tela, câmera do celular, checklist de gravação conferido.</li>
+            <li><strong>Quarta (1 h) — Edite.</strong> Corte as pausas, ajuste o áudio, monte a capa na ferramenta de Capa.</li>
+            <li><strong>Quinta (30 min) — Publique.</strong> Título, descrição e tags com o Pack de Publicação; agende o horário ideal.</li>
+            <li><strong>Sexta (15 min) — Divulgue.</strong> Checklist de divulgação: story, comunidade, link no perfil.</li>
+          </ol>
+        </div>
+        <div class="box">
+          <strong>Regra dos lotes:</strong> grave 2 vídeos no mesmo dia em vez de 1. Um dia de "maratona" dá uma semana de folga no planejamento.
+        </div>
+      </div>
+
+      <!-- 5. CALENDÁRIO MENSAL -->
+      <div class="section allow-break">
+        <div class="kicker">Passo 5 · o mês no papel</div>
+        <h2>Calendário do mês</h2>
+        <p>Anote 1 linha por vídeo. Use o Calendário do Take Um Studio para acompanhar as etapas em tempo real.</p>
+        <table>
+          <tr><th style="width:14%">Data</th><th style="width:40%">Título / tema do vídeo</th><th style="width:22%">Pilar</th><th style="width:24%">Etapa (roteiro → gravado → editado → postado)</th></tr>
+          <tr><td>Semana 1</td><td class="blank"></td><td class="blank"></td><td class="blank"></td></tr>
+          <tr><td>Semana 1</td><td class="blank"></td><td class="blank"></td><td class="blank"></td></tr>
+          <tr><td>Semana 2</td><td class="blank"></td><td class="blank"></td><td class="blank"></td></tr>
+          <tr><td>Semana 2</td><td class="blank"></td><td class="blank"></td><td class="blank"></td></tr>
+          <tr><td>Semana 3</td><td class="blank"></td><td class="blank"></td><td class="blank"></td></tr>
+          <tr><td>Semana 3</td><td class="blank"></td><td class="blank"></td><td class="blank"></td></tr>
+          <tr><td>Semana 4</td><td class="blank"></td><td class="blank"></td><td class="blank"></td></tr>
+          <tr><td>Semana 4</td><td class="blank"></td><td class="blank"></td><td class="blank"></td></tr>
+        </table>
+        <p>Dica: grave uma cópia desta página em branco para cada mês dos 90 dias.</p>
+      </div>
+
+      <!-- 6. CHECKLIST -->
+      <div class="section allow-break">
+        <div class="kicker">Passo 6 · na hora de produzir</div>
+        <h2>Checklist de cada vídeo</h2>
+        <ul class="checklist">
+          <li><strong>Roteiro pronto</strong> — gancho nos primeiros 10 segundos, problema + solução, um CTA.</li>
+          <li><strong>Iluminação e áudio</strong> — rosto iluminado, microfone próximo, sem ruído de fundo.</li>
+          <li><strong>Gravação limpa</strong> — sem interrupções, refaça o take quando necessário.</li>
+          <li><strong>Edição rápida</strong> — cortes nas pausas, não deixe o vídeo engolir a sua semana.</li>
+          <li><strong>Capa chamativa</strong> — texto grande, contraste alto, legível no celular.</li>
+          <li><strong>Título e descrição</strong> — palavra-chave no começo, CTA na descrição.</li>
+          <li><strong>Divulgado</strong> — pelo menos 1 post curto sobre o vídeo no mesmo dia.</li>
+        </ul>
+        <p>Tudo isso tem checklist pronto dentro do site — use a <strong>Checklist de Gravação</strong> e a <strong>Checklist de Divulgação</strong> para não esquecer nada.</p>
+      </div>
+
+      <!-- 7. MÉTRICAS -->
+      <div class="section">
+        <div class="kicker">Passo 7 · o que olhar</div>
+        <h2>Métricas para acompanhar (sem virar refém)</h2>
+        <div class="box">
+          <strong>Como o YouTube decide mostrar seu vídeo:</strong>
+          O algoritmo <em>não</em> entrega o seu vídeo — ele <strong>segue as pessoas</strong>. Ele estuda o que cada espectador está querendo assistir e procura vídeos que entreguem esse valor. Se o seu vídeo entrega conteúdo de valor de verdade (título e capa honestos + conteúdo que segura até o fim), ele passa a ser mostrado para mais gente. Você não precisa "vencer" o algoritmo: precisa entregar o que prometeu a quem clicou.
+        </div>
+        <p>Nos primeiros 90 dias, o número que importa é <strong>consistência</strong>, não views. Acompanhe estas 4 no Tracker do Take Um Studio — são os sinais que o algoritmo lê:</p>
+        <div class="grid2">
+          <div class="box">
+            <strong>Impressões × CTR</strong>
+            Sua capa e título atraem clique? CTR acima de 4% é bom sinal.
+          </div>
+          <div class="box">
+            <strong>Retenção média</strong>
+            Seu vídeo segura a atenção? Comece a assistir os 10 primeiros segundos dos seus vídeos.
+          </div>
+          <div class="box">
+            <strong>Views por dia 7</strong>
+            Depois de 1 semana, todo vídeo "esquenta". Compare vídeo com vídeo.
+          </div>
+          <div class="box">
+            <strong>Inscritos</strong>
+            Não é o que mais cresce no início — anote a tendência, não o número do dia.
+          </div>
+        </div>
+        <p><strong>Meta realista dos 90 dias:</strong> 12 vídeos no ar (3 meses × 1/semana), todos com capa + descrição, e uma decisão clara sobre o que repetir no trimestre seguinte.</p>
+      </div>
+
+      <!-- 8. REVISÃO -->
+      <div class="section">
+        <div class="kicker">Fechamento · todo fim de mês</div>
+        <h2>Revisão de 30 minutos</h2>
+        <ol>
+          <li>Quais 3 vídeos tiveram melhor retenção? O que tinham em comum (tema, formato, capa)?</li>
+          <li>Quais 2 vídeos floparam? <strong>Não é o fim</strong> — anote o que não repetir.</li>
+          <li>O que travou a produção (medo de gravar, edição demorada)? Ajuste a rotina do passo 4.</li>
+          <li>Repita o que funcionou no mês seguinte e descarte o resto.</li>
+        </ol>
+      </div>
+
+      <div class="foot">
+        Take Um Studio · ferramentas gratuitas para quem grava e organiza vídeo sozinho<br>
+        Este guia acompanha o plano: foco, pilares, rotina, calendário e revisão.
+      </div>
+
+    </div>
+  </div>
+
+<script src="../db.js"></script>
+<script src="../chave-core.js"></script>
+<script src="../limite.js"></script>
+<script>
+(async function(){
+  try{
+    var dev = !location.hostname || location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.protocol === 'file:';
+    if(dev){ document.body.classList.add('pro'); return; }
+    if(window.OneTakeMigrate){ await OneTakeMigrate(); }
+    const pro = window.TakeUmLimite && await TakeUmLimite.ehPro();
+    document.body.classList.toggle('pro', !!pro);
+  }catch(e){
+    document.body.classList.add('pro');
+  }
+})();
+</script>
+</body>
+</html>

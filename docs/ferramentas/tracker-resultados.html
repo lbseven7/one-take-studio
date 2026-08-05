@@ -121,6 +121,42 @@
   .form-card textarea{ resize: vertical; min-height: 44px; }
   .form-card select{ appearance: none; }
 
+  .thumb-preview{
+    position: relative;
+    width: 100%;
+    max-width: 260px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--panel-line);
+    background: var(--card);
+    margin-bottom: 12px;
+  }
+  .thumb-preview img{
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+  }
+  .thumb-preview.hidden{ display: none; }
+  #thumb-clear{
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(10,10,12,.85);
+    color: var(--text-main);
+    font-size: 14px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #thumb-clear:hover{ background: var(--accent-red); }
+
   .form-actions{
     display: flex;
     gap: 10px;
@@ -289,6 +325,26 @@
     align-items: flex-start;
     gap: 10px;
   }
+  .vcard .v-thumb{
+    width: 96px;
+    height: 54px;
+    border-radius: 6px;
+    object-fit: cover;
+    flex-shrink: 0;
+    background: var(--card);
+    border: 1px solid var(--panel-line);
+    cursor: pointer;
+    display: block;
+    overflow: hidden;
+  }
+  .vcard .v-thumb img{
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .vcard .v-thumb:hover{ border-color: var(--accent-amber); }
+  .vcard .v-name-wrap{ flex: 1; min-width: 0; }
   .vcard .v-name{
     font-family: var(--font-display);
     font-weight: 700;
@@ -297,6 +353,20 @@
     flex: 1;
     min-width: 0;
   }
+  .vcard .v-name a{
+    color: var(--text-main);
+    text-decoration: none;
+  }
+  .vcard .v-name a:hover{ color: var(--accent-amber); }
+  .vcard .v-link{
+    display: block;
+    font-size: 10.5px;
+    color: var(--accent-blue);
+    text-decoration: none;
+    margin-top: 4px;
+    word-break: break-all;
+  }
+  .vcard .v-link:hover{ text-decoration: underline; }
   .vcard .v-meta{
     display: flex;
     gap: 6px;
@@ -386,14 +456,21 @@
 
   <div id="content">
     <p class="intro">Anote <strong>views, likes, comentários e compartilhamentos</strong> de cada vídeo e descubra
-      o que a sua audiência gosta de verdade — em vez de adivinhar.</p>
+      o que a sua audiência gosta de verdade — em vez de adivinhar. <strong>Cole o link do vídeo</strong> e o título
+      e a capa são preenchidos automaticamente.</p>
 
     <div class="form-card">
       <div class="row">
         <div>
+          <label for="f-url">Link do vídeo</label>
+          <input id="f-url" type="url" placeholder="ex.: https://youtu.be/..." autocomplete="off" inputmode="url">
+        </div>
+        <div>
           <label for="f-titulo">Título do vídeo</label>
           <input id="f-titulo" type="text" placeholder="ex.: Como gravar meu primeiro vídeo" autocomplete="off">
         </div>
+      </div>
+      <div class="row">
         <div>
           <label for="f-plataforma">Plataforma</label>
           <select id="f-plataforma">
@@ -403,6 +480,13 @@
             <option value="Reels">Reels</option>
             <option value="Outro">Outro</option>
           </select>
+        </div>
+        <div class="thumb-box" id="thumb-box">
+          <label>Capa <span class="opt">(automática)</span></label>
+          <div id="thumb-preview" class="thumb-preview hidden">
+            <img id="thumb-img" alt="Capa do vídeo">
+            <button type="button" id="thumb-clear" title="Remover capa">×</button>
+          </div>
         </div>
       </div>
       <div class="row">
@@ -457,7 +541,7 @@
     <div id="video-list"></div>
     <div id="empty">
       <strong>Nenhum vídeo anotado ainda.</strong><br>
-      Preencha o formulário acima e salve o primeiro resultado. Quanto mais vídeos, melhor o insight.
+      Cole o link do vídeo e salve o primeiro resultado. Quanto mais vídeos, melhor o insight.
     </div>
   </div>
 </div>
@@ -470,7 +554,11 @@
   const STORE = 'tracker_videos';
 
   const fTitulo = document.getElementById('f-titulo');
+  const fUrl = document.getElementById('f-url');
   const fPlataforma = document.getElementById('f-plataforma');
+  const thumbPreview = document.getElementById('thumb-preview');
+  const thumbImg = document.getElementById('thumb-img');
+  const thumbClear = document.getElementById('thumb-clear');
   const fData = document.getElementById('f-data');
   const fViews = document.getElementById('f-views');
   const fLikes = document.getElementById('f-likes');
@@ -499,6 +587,72 @@
   }
 
   function num(v){ const n = parseInt(v, 10); return isNaN(n) || n < 0 ? 0 : n; }
+
+  function setThumb(url){
+    if(url){
+      thumbImg.src = url;
+      thumbPreview.classList.remove('hidden');
+    }else{
+      thumbImg.removeAttribute('src');
+      thumbPreview.classList.add('hidden');
+    }
+  }
+
+  function detectPlatform(url){
+    let u;
+    try{ u = new URL(url); }catch(e){ return null; }
+    const host = u.hostname.toLowerCase();
+    if(host === 'youtu.be' || host.endsWith('.youtube.com') || host === 'youtube.com' || host === 'm.youtube.com'){
+      if(host === 'youtu.be') return 'YouTube';
+      if(/\/shorts\//.test(u.pathname)) return 'Shorts';
+      if(/\/watch/.test(u.pathname) || /\/live\//.test(u.pathname) || /\/embed\//.test(u.pathname)) return 'YouTube';
+      return 'YouTube';
+    }
+    if(host === 'tiktok.com' || host.endsWith('.tiktok.com')) return 'TikTok';
+    return null;
+  }
+
+  function youtubeId(url){
+    let u;
+    try{ u = new URL(url); }catch(e){ return null; }
+    const host = u.hostname.toLowerCase();
+    if(host === 'youtu.be'){
+      const id = u.pathname.split('/')[1] || '';
+      return /^[\w-]{11}$/.test(id) ? id : null;
+    }
+    if(host.endsWith('.youtube.com') || host === 'youtube.com'){
+      if(/\/watch/.test(u.pathname)){
+        const id = u.searchParams.get('v') || '';
+        return /^[\w-]{11}$/.test(id) ? id : null;
+      }
+      const m = u.pathname.match(/\/(?:shorts|embed|live)\/([\w-]{11})/);
+      return m ? m[1] : null;
+    }
+    return null;
+  }
+
+  function youtubeThumb(id){
+    return 'https://i.ytimg.com/vi/' + id + '/hqdefault.jpg';
+  }
+
+  function displayUrl(url){
+    return url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
+  }
+
+  async function fetchTitle(url){
+    const endpoint = 'https://noembed.com/embed?url=' + encodeURIComponent(url);
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 8000);
+    try{
+      const res = await fetch(endpoint, { signal: ctrl.signal });
+      if(!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      if(data.error) throw new Error(data.error);
+      return data.title || '';
+    }finally{
+      clearTimeout(timer);
+    }
+  }
 
   function fmt(n){
     if(n >= 1000000) return (n / 1000000).toFixed(1).replace('.', ',') + 'M';
@@ -608,7 +762,18 @@
       const card = document.createElement('div');
       card.className = 'vcard';
       card.innerHTML =
-        '<div class="v-head"><div class="v-name">' + escapeHtml(v.titulo) + '</div></div>' +
+        '<div class="v-head">' +
+          (v.capa
+            ? (v.url
+              ? '<a class="v-thumb" href="' + escapeHtml(v.url) + '" target="_blank" rel="noopener"><img src="' + escapeHtml(v.capa) + '" alt="Capa" loading="lazy"></a>'
+              : '<img class="v-thumb" src="' + escapeHtml(v.capa) + '" alt="Capa" loading="lazy">')
+            : '') +
+          '<div class="v-name-wrap"><div class="v-name">' +
+            (v.url ? '<a href="' + escapeHtml(v.url) + '" target="_blank" rel="noopener">' + escapeHtml(v.titulo) + '</a>' : escapeHtml(v.titulo)) +
+          '</div>' +
+          (v.url ? '<a class="v-link" href="' + escapeHtml(v.url) + '" target="_blank" rel="noopener">' + escapeHtml(displayUrl(v.url)) + '</a>' : '') +
+          '</div>' +
+        '</div>' +
         '<div class="v-meta">' +
           '<span>' + escapeHtml(v.plataforma || 'Outro') + '</span>' +
           '<span>' + dateLabel(v.data) + '</span>' +
@@ -640,6 +805,7 @@
     saveBtn.textContent = '+ Salvar vídeo';
     cancelBtn.classList.remove('show');
     fTitulo.value = '';
+    fUrl.value = '';
     fPlataforma.value = 'YouTube';
     fData.value = '';
     fViews.value = '';
@@ -647,6 +813,7 @@
     fComent.value = '';
     fCompart.value = '';
     fNota.value = '';
+    setThumb(null);
   }
 
   async function save(){
@@ -655,6 +822,8 @@
     const record = {
       id: editingId || (Date.now().toString(36) + Math.random().toString(36).slice(2, 8)),
       titulo: titulo,
+      url: fUrl.value.trim(),
+      capa: thumbImg.src || '',
       plataforma: fPlataforma.value,
       data: fData.value,
       views: num(fViews.value),
@@ -687,6 +856,7 @@
       if(!v) return;
       editingId = id;
       fTitulo.value = v.titulo;
+      fUrl.value = v.url || '';
       fPlataforma.value = v.plataforma || 'YouTube';
       fData.value = v.data || '';
       fViews.value = v.views || '';
@@ -694,6 +864,7 @@
       fComent.value = v.coment || '';
       fCompart.value = v.compart || '';
       fNota.value = v.nota || '';
+      setThumb(v.capa || null);
       saveBtn.textContent = 'Salvar alterações';
       cancelBtn.classList.add('show');
       document.getElementById('content').scrollTop = 0;
@@ -704,6 +875,62 @@
 
   saveBtn.addEventListener('click', save);
   cancelBtn.addEventListener('click', resetForm);
+  thumbClear.addEventListener('click', () => setThumb(null));
+
+  let fetching = false;
+  async function autoFill(){
+    const url = fUrl.value.trim();
+    if(!url || fetching) return;
+    const platform = detectPlatform(url);
+    if(!platform){
+      showToast('Link não reconhecido (YouTube, Shorts ou TikTok).');
+      return;
+    }
+    fetching = true;
+    fUrl.disabled = true;
+    try{
+      let titulo = '', capa = '';
+      if(platform === 'YouTube' || platform === 'Shorts'){
+        const id = youtubeId(url);
+        if(!id) throw new Error('ID de vídeo não encontrado no link.');
+        capa = youtubeThumb(id);
+        if(!fTitulo.value.trim()){
+          try{
+            titulo = await fetchTitle('https://www.youtube.com/watch?v=' + id);
+          }catch(e){ /* título é opcional; capa já foi preenchida */ }
+          if(titulo) fTitulo.value = titulo;
+        }
+      }else if(platform === 'TikTok'){
+        const ctrl = new AbortController();
+        const timer = setTimeout(() => ctrl.abort(), 8000);
+        try{
+          const res = await fetch('https://www.tiktok.com/oembed?url=' + encodeURIComponent(url), { signal: ctrl.signal });
+          if(!res.ok) throw new Error('HTTP ' + res.status);
+          const data = await res.json();
+          if(data.error) throw new Error(data.error);
+          titulo = data.title || '';
+          capa = data.thumbnail_url || '';
+        }finally{
+          clearTimeout(timer);
+        }
+        if(titulo && !fTitulo.value.trim()) fTitulo.value = titulo;
+      }
+      if(capa) setThumb(capa);
+      fPlataforma.value = platform;
+      if(fTitulo.value.trim() && capa) showToast('Título e capa preenchidos.');
+      else if(fTitulo.value.trim()) showToast('Título preenchido.');
+      else if(capa) showToast('Capa preenchida.');
+      else showToast('Link válido, mas sem título/capa para preencher.');
+    }catch(e){
+      showToast('Não foi possível buscar o vídeo: ' + e.message);
+    }finally{
+      fetching = false;
+      fUrl.disabled = false;
+    }
+  }
+
+  fUrl.addEventListener('blur', autoFill);
+  fUrl.addEventListener('keydown', (e) => { if(e.key === 'Enter'){ e.preventDefault(); autoFill(); } });
   fData.value = (function(){ const n = new Date(); return n.getFullYear() + '-' + String(n.getMonth() + 1).padStart(2, '0') + '-' + String(n.getDate()).padStart(2, '0'); })();
 
   load().catch(e => showToast('Erro ao carregar: ' + e.message));

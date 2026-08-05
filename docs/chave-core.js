@@ -1,4 +1,6 @@
 (function(root){
+  // NÃO alterar ALPHABET nem SALT: chaves já emitidas dependem destes
+  // valores para o checksum. Mudar aqui invalida todas as chaves ativas.
   var ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   var SALT = 'takeum-pro-solo-2026';
 
@@ -55,11 +57,16 @@
     if(n.slice(0, 6) !== 'TAKEUM') return false;
     var rest = n.slice(6);
     if(rest.length !== 25) return false;
+    // Caracteres fora do ALPHABET (ex.: I, O, 0, 1) nunca aparecem em
+    // chaves legítimas — rejeita de cara em vez de deixar o checksum falhar.
+    for(var i = 0; i < rest.length; i++){
+      if(ALPHABET.indexOf(rest.charAt(i)) === -1) return false;
+    }
     var payload = rest.slice(0, 20);
     var expected = checksum(payload);
     var got = rest.slice(20, 25);
     var diff = 0;
-    for(var i = 0; i < 5; i++) diff |= expected.charCodeAt(i) ^ got.charCodeAt(i);
+    for(var j = 0; j < 5; j++) diff |= expected.charCodeAt(j) ^ got.charCodeAt(j);
     return diff === 0;
   }
 

@@ -432,10 +432,11 @@
   async function loadCards(){
     try{
       cards = await OneTakeDB.getAll('pauta_cards') || [];
-      if(cards.length === 0){
+      if(cards.length === 0 && !localStorage.getItem('tu-pauta-seeded')){
         const seed = { id: uid(), title: 'Bastidores da rotina de gravação', platform: 'reels', notes: 'Mostrar setup, teleprompter, luz. Gancho: "isso mudou minha forma de gravar".', status: 'ideia', createdAt: Date.now() };
         cards.push(seed);
         await OneTakeDB.put('pauta_cards', seed);
+        localStorage.setItem('tu-pauta-seeded', '1');
       }
     }catch(e){
       cards = [];

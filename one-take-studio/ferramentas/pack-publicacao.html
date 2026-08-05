@@ -497,6 +497,7 @@
         hashtags: Array.isArray(data.hashtags) ? data.hashtags : []
       };
       renderResults();
+      persistPack();
       showToast('Pack gerado com IA!');
       if(window.TakeUmLimite){ window.TakeUmLimite.usar('pack-gerar').catch(function(){}); }
     }catch(err){
@@ -514,8 +515,20 @@
     current = buildFallback();
     if(!current) return;
     renderResults();
+    persistPack();
     showToast('Pack gerado (sem IA)!');
     if(window.TakeUmLimite){ window.TakeUmLimite.usar('pack-gerar').catch(function(){}); }
+  }
+
+  function persistPack(){
+    OneTakeDB.put('app_state', {
+      id: 'pack',
+      titulo: current.titulo || '',
+      alternativas: current.alternativas || [],
+      descricao: current.descricao || '',
+      tags: current.tags || [],
+      hashtags: current.hashtags || []
+    }).catch(function(){});
   }
 
   function renderResults(){

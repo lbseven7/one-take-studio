@@ -98,5 +98,28 @@
     }
   };
 
+  const SupabaseChaves = {
+    configured: configured,
+
+    async validarCodigo(codigo){
+      if(!configured()) return false;
+      const r = await api('/rest/v1/rpc/validar_pro_codigo', {
+        method: 'POST',
+        body: { p_codigo: String(codigo || '').trim() }
+      });
+      return !!r;
+    },
+
+    async validarChave(chave){
+      if(!configured()) return false;
+      const r = await api('/rest/v1/rpc/validar_pro_chave', {
+        method: 'POST',
+        body: { p_chave: String(chave || '').trim() }
+      });
+      return !!r;
+    }
+  };
+
   window.SupabaseLeads = SupabaseLeads;
+  window.SupabaseChaves = SupabaseChaves;
 })();

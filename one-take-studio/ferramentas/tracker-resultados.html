@@ -704,7 +704,7 @@
 
   saveBtn.addEventListener('click', save);
   cancelBtn.addEventListener('click', resetForm);
-  fData.value = new Date().toISOString().slice(0, 10);
+  fData.value = (function(){ const n = new Date(); return n.getFullYear() + '-' + String(n.getMonth() + 1).padStart(2, '0') + '-' + String(n.getDate()).padStart(2, '0'); })();
 
   load().catch(e => showToast('Erro ao carregar: ' + e.message));
 })();

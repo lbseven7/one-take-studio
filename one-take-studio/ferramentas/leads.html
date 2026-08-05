@@ -139,6 +139,7 @@
   .cloud-info{ font-size: 12px; color: var(--text-dim); flex: 1; }
   .cloud-info.online{ color: var(--accent-green); }
   .login-form{ display: flex; gap: 6px; flex-wrap: wrap; }
+  .login-form[hidden]{ display: none !important; }
   .login-form input{
     background: var(--bg);
     border: 1px solid var(--panel-line);
@@ -465,10 +466,10 @@
     }
   });
 
-  logoutBtn.addEventListener('click', () => {
+  logoutBtn.addEventListener('click', async () => {
     cloud.logout();
     setCloudUI();
-    load();
+    await load();
     setMsg('Desconectado da nuvem.', 'ok');
   });
 

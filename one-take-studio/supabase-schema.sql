@@ -26,3 +26,52 @@ create policy "leads_auth_select" on public.leads
 drop policy if exists "leads_auth_delete" on public.leads;
 create policy "leads_auth_delete" on public.leads
   for delete to authenticated using (true);
+
+-- ============================================================
+-- Chaves Pro (fecha o bypass do paywall)
+-- ------------------------------------------------------------
+-- O site SÓ ativa uma chave se ela existir nesta tabela. A
+-- consulta é feita por função RPC (retorna apenas true/false),
+-- então a tabela em si não fica legível pelo anon — nada vaza.
+-- ------------------------------------------------------------
+-- COMO CADASTRAR UMA COMPRA (você, admin):
+--  1. Gere a chave do número de transação (no Node, dentro da
+--     pasta one-take-studio):
+--       node -e "const c=require('./chave-core.js'); console.log(c.gerarDeCodigo('SEU-CODIGO-DA-COMPRA'))"
+--  2. Insira no SQL Editor:
+--       insert into public.chaves_pro (codigo, chave)
+--       values ('SEU-CODIGO-DA-COMPRA', 'TAKEUM-XXXXX-XXXXX-XXXXX-XXXXX-XXXXX');
+--  Feito isso, o comprador recupera a chave na página de resgate
+--  com o próprio código e ativa no site — agora validado online.
+-- ============================================================
+
+create table if not exists public.chaves_pro (
+  id bigint generated always as identity primary key,
+  codigo text not null unique,
+  chave text not null unique,
+  criada_em timestamptz not null default now()
+);
+
+alter table public.chaves_pro enable row level security;
+
+drop function if exists public.validar_pro_codigo(text);
+create or replace function public.validar_pro_codigo(p_codigo text)
+returns boolean
+language sql
+security definer
+set search_path = public
+as $$
+  select exists(select 1 from public.chaves_pro where codigo = p_codigo);
+$$;
+grant execute on function public.validar_pro_codigo(text) to anon, authenticated;
+
+drop function if exists public.validar_pro_chave(text);
+create or replace function public.validar_pro_chave(p_chave text)
+returns boolean
+language sql
+security definer
+set search_path = public
+as $$
+  select exists(select 1 from public.chaves_pro where chave = p_chave);
+$$;
+grant execute on function public.validar_pro_chave(text) to anon, authenticated;

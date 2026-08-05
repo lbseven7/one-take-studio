@@ -687,6 +687,9 @@ Ex: Olá, seja bem-vindo ao vídeo de hoje. Vamos falar sobre..."></textarea>
   let scrollPos = 0;
   let rafId = null;
   let idleTimer = null;
+  let countdownActive = false;
+  let countdownTimerId = null;
+  let suppressRecStopUi = false;
 
   let mediaStream = null;
   let mediaRecorder = null;
@@ -743,6 +746,8 @@ Ex: Olá, seja bem-vindo ao vídeo de hoje. Vamos falar sobre..."></textarea>
   startBtn.addEventListener('click', enterPrompter);
 
   function enterPrompter(){
+    cancelCountdown();
+    suppressRecStopUi = false;
     scriptDisplay.textContent = scriptInput.value;
     editView.style.display = 'none';
     prompterView.style.display = 'block';
@@ -767,14 +772,26 @@ Ex: Olá, seja bem-vindo ao vídeo de hoje. Vamos falar sobre..."></textarea>
   }
 
   function runCountdown(n, done){
+    countdownActive = true;
     countdownEl.style.display = 'flex';
     countdownEl.textContent = n;
     if(n <= 0){
+      countdownActive = false;
       countdownEl.style.display = 'none';
       done();
       return;
     }
-    setTimeout(() => runCountdown(n-1, done), 1000);
+    clearTimeout(countdownTimerId);
+    countdownTimerId = setTimeout(() => {
+      if(!countdownActive) return;
+      runCountdown(n-1, done);
+    }, 1000);
+  }
+
+  function cancelCountdown(){
+    countdownActive = false;
+    clearTimeout(countdownTimerId);
+    countdownEl.style.display = 'none';
   }
 
   // ---------- CAMERA ----------
@@ -799,6 +816,10 @@ Ex: Olá, seja bem-vindo ao vídeo de hoje. Vamos falar sobre..."></textarea>
   }
 
   flipCameraBtn.addEventListener('click', async () => {
+    if(isRecording){
+      statusText.textContent = 'ENCONTRE UM BOM ENQUADRAMENTO ANTES DE GRAVAR';
+      return;
+    }
     state.facingMode = state.facingMode === 'user' ? 'environment' : 'user';
     try{ await startCamera(); }catch(e){ cameraError.style.display = 'block'; }
   });
@@ -855,6 +876,7 @@ Ex: Olá, seja bem-vindo ao vídeo de hoje. Vamos falar sobre..."></textarea>
   }
 
   function onRecordingStop(){
+    if(suppressRecStopUi) return;
     const mimeType = mediaRecorder.mimeType || 'video/webm';
     const blob = new Blob(recordedChunks, { type: mimeType });
     if(lastBlobUrl) URL.revokeObjectURL(lastBlobUrl);
@@ -945,6 +967,8 @@ Ex: Olá, seja bem-vindo ao vídeo de hoje. Vamos falar sobre..."></textarea>
   exitBtn.addEventListener('click', backToEdit);
 
   function backToEdit(){
+    cancelCountdown();
+    suppressRecStopUi = true;
     setPlaying(false);
     if(isRecording) stopRecording();
     stopCamera();

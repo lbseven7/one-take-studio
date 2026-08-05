@@ -1243,12 +1243,7 @@
       });
 
       // ---------- NEWSLETTER ----------
-      const nlForm = document.querySelector('#newsletter form');
-      if (nlForm) {
-        nlForm.addEventListener('submit', () => {
-          if(window.tuTrack){ window.tuTrack('newsletter_signup'); }
-        });
-      }
+      // (o evento newsletter_signup é disparado na página de confirmação)
 
       // ---------- BACKUP ----------
       async function doExport(msgEl, okMsg) {

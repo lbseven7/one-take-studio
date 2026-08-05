@@ -606,7 +606,8 @@
   function loadScriptIntoUI(script){
     currentId = script.id;
     fieldTitle.value = script.title || '';
-    script.sections.forEach((s, i) => {
+    sections.forEach(s => { s.content = ''; });
+    (script.sections || []).forEach((s, i) => {
       if(i < sections.length){
         sections[i].content = s.content || '';
         sections[i].duration = s.duration || 30;
@@ -633,7 +634,8 @@
     clearTimeout(autoSaveTimer);
     autoSaveTimer = setTimeout(() => {
       const script = getCurrentScript();
-      OneTakeDB.put('roteirizador_scripts', script);
+      currentId = script.id;
+      OneTakeDB.put('roteirizador_scripts', script).catch(() => {});
     }, 600);
   }
 
@@ -820,9 +822,9 @@
     await loadScripts();
   });
 
-  newBtn.addEventListener('click', () => {
+  newBtn.addEventListener('click', async () => {
     if(sections.some(s => s.content.trim())){
-      saveScript();
+      await saveScript();
     }
     currentId = null;
     fieldTitle.value = '';

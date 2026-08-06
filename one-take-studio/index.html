@@ -157,16 +157,15 @@
 
     #theme-toggle {
       flex-shrink: 0;
-      margin-top: 10px;
       font-family: var(--font-display);
       font-weight: 700;
       font-size: 11px;
-      padding: 9px 12px;
-      border-radius: 6px;
+      padding: 7px 12px;
+      border-radius: 4px;
       cursor: pointer;
       border: 1px solid var(--panel-line);
-      background: var(--panel);
-      color: var(--text-main);
+      background: transparent;
+      color: var(--text-dim);
       text-transform: uppercase;
       letter-spacing: 0.05em;
       transition: border-color .15s ease, color .15s ease;
@@ -979,7 +978,6 @@
         <div class="nav-item" data-id="pro" data-file="pro.html" data-name="Plano Pro"><span class="dot" style="background:var(--accent-amber)"></span>Plano Pro</div>
         <div class="nav-item" data-id="sobre" data-file="sobre.html" data-name="Sobre"><span class="dot" style="background:var(--text-dim)"></span>Sobre</div>
       </nav>
-      <button id="theme-toggle" type="button">Tema claro</button>
       <div id="sidebar-data">
         <div class="sd-title">Seus dados</div>
         <p>Seus dados ficam salvos só neste navegador. Para nunca perdê-los e poder levar para outro celular ou computador, faça um backup.</p>
@@ -1172,6 +1170,7 @@
         <div id="tool-topbar">
           <button id="back-btn">← Início</button>
           <span id="tool-name"></span>
+          <button id="theme-toggle" type="button" style="margin-left: auto;">Tema claro</button>
         </div>
         <iframe id="tool-frame" allow="camera; microphone; fullscreen" src="about:blank"></iframe>
       </div>

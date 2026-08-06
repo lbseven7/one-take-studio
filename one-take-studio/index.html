@@ -155,6 +155,28 @@
       flex-shrink: 0;
     }
 
+    #theme-toggle {
+      flex-shrink: 0;
+      margin-top: 10px;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 11px;
+      padding: 9px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      border: 1px solid var(--panel-line);
+      background: var(--panel);
+      color: var(--text-main);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      transition: border-color .15s ease, color .15s ease;
+    }
+
+    #theme-toggle:hover {
+      border-color: var(--accent-amber);
+      color: var(--accent-amber);
+    }
+
     #sidebar-data {
       flex-shrink: 0;
       margin-top: 10px;
@@ -913,6 +935,8 @@
   </style>
 <script src="analytics.js"></script>
 <link rel="stylesheet" href="mobile.css">
+<link rel="stylesheet" href="theme.css">
+<script src="theme.js"></script>
 </head>
 
 <body>
@@ -955,6 +979,7 @@
         <div class="nav-item" data-id="pro" data-file="pro.html" data-name="Plano Pro"><span class="dot" style="background:var(--accent-amber)"></span>Plano Pro</div>
         <div class="nav-item" data-id="sobre" data-file="sobre.html" data-name="Sobre"><span class="dot" style="background:var(--text-dim)"></span>Sobre</div>
       </nav>
+      <button id="theme-toggle" type="button">Tema claro</button>
       <div id="sidebar-data">
         <div class="sd-title">Seus dados</div>
         <p>Seus dados ficam salvos só neste navegador. Para nunca perdê-los e poder levar para outro celular ou computador, faça um backup.</p>
@@ -1165,6 +1190,20 @@
       const backBtn = document.getElementById('back-btn');
       const sidebar = document.getElementById('sidebar');
       const menuToggle = document.getElementById('menu-toggle');
+
+      // ---------- TEMA CLARO / ESCURO ----------
+      const themeToggle = document.getElementById('theme-toggle');
+      function refreshThemeLabel() {
+        themeToggle.textContent = window.TuTheme.get() === 'light' ? 'Tema escuro' : 'Tema claro';
+      }
+      refreshThemeLabel();
+      themeToggle.addEventListener('click', () => {
+        window.TuTheme.toggle();
+        refreshThemeLabel();
+      });
+      window.addEventListener('storage', (e) => {
+        if (e.key === 'tu-theme') refreshThemeLabel();
+      });
 
       function setActiveNav(id) {
         [...nav.children].forEach(el => el.classList.toggle('active', el.dataset.id === id));

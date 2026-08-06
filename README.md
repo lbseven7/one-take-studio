@@ -74,16 +74,16 @@ python -m http.server 8080
 # abra http://localhost:8080
 ```
 
-> O service worker e o `indexedDB` funcionam melhor com `localhost` ou HTTPS (GitHub Pages já é HTTPS).
+> O service worker e o `indexedDB` funcionam melhor com `localhost` ou HTTPS (Vercel já é HTTPS).
 
 ---
 
 ## 📦 Deploy
 
-O deploy é automático via **GitHub Actions** (`.github/workflows/deploy.yml`): todo `push` para `master` (ou `new-feat`) publica o conteúdo de `one-take-studio/` na branch `gh-pages` (pasta `docs`), que serve o site em:
+O site é publicado automaticamente na **Vercel** (projeto conectado ao repositório, com root directory `one-take-studio`). Todo `push` para `master` gera um preview e publica em produção em:
 
 ```
-https://<seu-usuario>.github.io/one-take-studio/
+https://www.takeumstudio.com.br/
 ```
 
 Para publicar:
@@ -94,6 +94,8 @@ git commit -m "sua mudança"
 git push
 ```
 
+> O workflow legado `.github/workflows/deploy.yml` (GitHub Actions → gh-pages) e o script `scripts/deploy.ps1` (`npm run deploy`) ficaram como backup — o deploy atual é pela Vercel.
+
 > **Atenção:** quando mudar `index.html`, `sw.js` ou qualquer asset precacheado, **bump a versão** do cache no topo do `sw.js` (ex.: `const CACHE = 'takeum-v37'`) para os usuários receberem a versão nova.
 
 ---
@@ -102,8 +104,8 @@ git push
 
 ```
 setup-leob/
-├── .github/workflows/deploy.yml   # GitHub Actions → gh-pages
-└── one-take-studio/               # o site (PWA)
+├── vercel.json                   # config estática Vercel (headers de cache)
+└── one-take-studio/               # o site (PWA) — root directory na Vercel
     ├── index.html                 # shell: sidebar + home
     ├── db.js                      # IndexedDB (OneTakeDB) + backup
     ├── ia.js                      # integração Google Gemini

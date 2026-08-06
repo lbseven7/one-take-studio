@@ -9,7 +9,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: deploy-site
+  group: deploy-site-${{ github.ref }}
 
 jobs:
   publish:

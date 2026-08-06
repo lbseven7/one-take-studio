@@ -1,4 +1,4 @@
-const CACHE = 'takeum-v49';
+const CACHE = 'takeum-v52';
 
 const ASSETS = [
   './',
@@ -9,6 +9,10 @@ const ASSETS = [
   './chave-core.js',
   './limite.js',
   './supabase.js',
+  './mobile.css',
+  './theme.css',
+  './back-btn.js',
+  './theme.js',
   './fonts.css',
   './fonts/archivo-500.woff2',
   './fonts/plexmono-400.woff2',

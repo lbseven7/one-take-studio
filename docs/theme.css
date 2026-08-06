@@ -1,0 +1,32 @@
+/* ============================================================
+   Tema claro · Take Um Studio
+   Ativado quando <html class="light"> é aplicado pelo theme.js.
+   As cores do site vêm de variáveis CSS definidas em cada página;
+   aqui elas são trocadas para a versão clara.
+   ============================================================ */
+html.light {
+  --bg: #f4f3ef;
+  --panel: #ffffff;
+  --panel-line: #e2e0d9;
+  --card: #ffffff;
+  --text-main: #1d1c19;
+  --text-dim: #6f6d66;
+  --accent-amber: #b36e00;
+  --accent-red: #cf2d24;
+  --accent-green: #0e9f55;
+  --accent-blue: #1a66cc;
+  --accent-purple: #7a3ce8;
+}
+
+/* Botão "Voltar" flutuante acompanha o tema claro */
+html.light .tu-back {
+  background: rgba(255, 255, 255, 0.92);
+}
+
+/* Polimento no menu do app (index.html) */
+html.light .nav-item:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+html.light .nav-item.active {
+  background: rgba(180, 110, 0, 0.10);
+}

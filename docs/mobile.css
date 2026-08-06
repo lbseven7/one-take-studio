@@ -1,0 +1,290 @@
+/* ============================================================
+   Take Um Studio · Ajustes Mobile
+   Este arquivo é carregado POR ÚLTIMO em todas as páginas
+   (depois do CSS inline de cada uma), então suas regras vencem
+   na cascata. Sempre edite os ajustes de celular aqui.
+   ============================================================ */
+
+/* Bloqueia scroll horizontal acidental e evita "inflação" de
+   fonte em rotação de tela no mobile */
+html,
+body {
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* ---------- ÁREA DE TOQUE MÍNIMA (44px) ---------- */
+@media (max-width: 560px) {
+  /* Shell / index */
+  #menu-toggle,
+  #back-btn,
+  #tool-topbar button {
+    min-height: 44px;
+  }
+
+  /* Botões de cabeçalho e barras de ferramentas */
+  header button,
+  .actions button,
+  .actions a,
+  .result .actions a,
+  .result .actions button,
+  .modal-actions button,
+  .step-actions button,
+  .reset-btn,
+  .eye-btn,
+  #footer-actions button,
+  #add-btn,
+  .del-item,
+  #take-minus,
+  #take-plus,
+  .cta a {
+    min-height: 44px;
+  }
+}
+
+/* ---------- CABEÇALHOS: permitir quebra de linha ---------- */
+@media (max-width: 560px) {
+  header {
+    flex-wrap: wrap;
+  }
+  header .count {
+    white-space: normal;
+  }
+}
+
+/* ---------- FIX: zoom automático do iOS em inputs ---------- */
+@media (max-width: 560px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  input[type="url"],
+  input[type="search"],
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}
+
+/* ---------- Touch: botões de excluir sempre visíveis ----------
+   No celular não existe :hover — mostramos o botão de remover
+   dos checklists o tempo todo. */
+@media (hover: none) {
+  .del-item {
+    opacity: 1 !important;
+  }
+}
+
+/* ============================================================
+   Painel de Pauta
+   ============================================================ */
+@media (max-width: 560px) {
+  .modal-actions {
+    flex-wrap: wrap;
+  }
+  .modal-actions button {
+    flex: 1 1 auto;
+  }
+}
+
+/* ============================================================
+   Calendário de Conteúdo
+   ============================================================ */
+@media (max-width: 560px) {
+  .month-nav {
+    flex-wrap: wrap;
+  }
+  .calendar-grid {
+    gap: 4px;
+  }
+}
+
+/* ============================================================
+   Gerador de Capa
+   ============================================================ */
+@media (max-width: 560px) {
+  header .actions {
+    flex-wrap: wrap;
+  }
+  .cap-actions {
+    flex-wrap: wrap;
+  }
+  .cap-actions button {
+    flex: 1 1 calc(50% - 6px);
+    white-space: nowrap;
+  }
+  /* Menos colunas = células maiores para tocar */
+  .emoji-grid,
+  .swatches {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+/* ============================================================
+   Claquete Digital
+   ============================================================ */
+@media (max-width: 560px) {
+  .field-row {
+    flex-wrap: wrap;
+  }
+  .field-row > .field {
+    flex: 1 1 100%;
+  }
+  .stepper input[type="number"] {
+    max-width: 72px;
+  }
+}
+
+/* ============================================================
+   Roteirizador
+   ============================================================ */
+@media (max-width: 560px) {
+  header .actions {
+    flex-wrap: wrap;
+  }
+  .section-card .section-header {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+}
+
+/* ============================================================
+   Pack de Publicação
+   ============================================================ */
+@media (max-width: 560px) {
+  .form-card .actions {
+    flex-wrap: wrap;
+  }
+  .form-card .actions button {
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+}
+
+/* ============================================================
+   IA · Configuração
+   ============================================================ */
+@media (max-width: 560px) {
+  .key-row {
+    flex-wrap: wrap;
+  }
+  .field select {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+/* ============================================================
+   Pro / Resgatar
+   ============================================================ */
+@media (max-width: 560px) {
+  .key-row {
+    flex-wrap: wrap;
+  }
+  .result .actions a,
+  .result .actions button {
+    flex: 1 1 100%;
+  }
+}
+
+/* ============================================================
+   Checklists (gravação e divulgação)
+   ============================================================ */
+@media (max-width: 560px) {
+  #footer-actions {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  #add-btn {
+    min-width: 56px;
+  }
+}
+
+/* ============================================================
+   Guia de Planejamento (bônus do Pro)
+   ============================================================ */
+@media (max-width: 560px) {
+  .topbar {
+    flex-wrap: wrap;
+  }
+  .grid2 {
+    grid-template-columns: 1fr;
+  }
+  /* tabelas de 4 colunas ficam ilegíveis/estouram no celular */
+  .pillars td {
+    width: auto;
+  }
+  table {
+    font-size: 9pt;
+  }
+  table th,
+  table td {
+    padding: 5px 6px;
+  }
+}
+
+/* ============================================================
+   Venda (widget Hotmart pode estourar)
+   ============================================================ */
+@media (max-width: 560px) {
+  header {
+    flex-wrap: wrap;
+  }
+  #hotmart-widget {
+    overflow-x: auto;
+  }
+}
+
+/* ============================================================
+   Equipamentos / Guias / Blog: links de chamada mais tocáveis
+   ============================================================ */
+@media (max-width: 560px) {
+  .guide {
+    align-items: flex-start;
+  }
+  .guide > div:last-child {
+    flex: 1;
+    min-width: 0;
+  }
+  .cta a {
+    display: block;
+    text-align: center;
+  }
+}
+
+/* ============================================================
+   Botão Voltar (páginas abertas fora do app / direto via QR ou link)
+   Injetado pelo back-btn.js só no mobile quando a página NÃO
+   está dentro do shell.
+   ============================================================ */
+.tu-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  min-height: 44px;
+  background: rgba(20, 20, 23, 0.92);
+  border: 1px solid var(--panel-line, #232328);
+  border-radius: 22px;
+  color: var(--text-main, #f5f4ef);
+  font-family: var(--font-mono, monospace);
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-decoration: none;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.tu-back--float {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 99999;
+}
+
+.tu-back:active {
+  border-color: var(--accent-amber, #f5c344);
+}

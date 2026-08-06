@@ -362,7 +362,21 @@
 
     #home-view {
       overflow-y: auto;
-      padding: clamp(28px, 5vw, 64px);
+      padding: 0;
+    }
+
+    #hero-banner {
+      width: 100%;
+      overflow: hidden;
+      margin-bottom: 0;
+    }
+
+    .hero-image {
+      width: 100%;
+      height: auto;
+      display: block;
+      max-height: 400px;
+      object-fit: cover;
     }
 
     #home-view h1 {
@@ -386,6 +400,9 @@
       grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
       gap: 16px;
       max-width: 900px;
+      padding: 0 clamp(28px, 5vw, 64px);
+      margin-left: auto;
+      margin-right: auto;
     }
 
     #backup-section {
@@ -635,6 +652,8 @@
       background: rgba(57, 255, 136, 0.06);
       border: 1px solid rgba(57, 255, 136, 0.3);
       border-radius: 10px;
+      margin-left: clamp(28px, 5vw, 64px);
+      margin-right: clamp(28px, 5vw, 64px);
     }
 
     #install-row {
@@ -1094,10 +1113,9 @@
 
     <main id="main">
       <div id="home-view" class="active">
-        <h1>Take Um Studio</h1>
-        <div class="sub"><STRong>Ferramentas pensadas pra quem grava e organiza vídeo sozinho: leia seu roteiro sem decorar,
-          planeje suas pautas e marque seus takes como numa produção de verdade. SIMPLES E DIRETO!</STRong></div>
-        <div id="install-row"><button id="install-btn" hidden>📲 Instalar app</button></div>
+        <div id="hero-banner">
+          <img src="image/hero-site.png" alt="Take Um Studio - Ferramentas para criadores de vídeo" class="hero-image">
+        </div>
         <div id="journey-banner">
           <div class="jb-icon">★</div>
           <div class="jb-body">

@@ -367,16 +367,70 @@
 
     #hero-banner {
       width: 100%;
+      max-width: 980px;
+      margin-left: auto;
+      margin-right: auto;
+      margin-top: clamp(16px, 3vw, 28px);
+      padding: 0;
       overflow: hidden;
       margin-bottom: 0;
+      position: relative;
+      isolation: isolate;
+    }
+
+    #hero-banner::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -1px;
+      height: 90px;
+      background: linear-gradient(to bottom, transparent, var(--bg));
+      pointer-events: none;
+      z-index: 1;
+      transition: background 0.6s ease;
     }
 
     .hero-image {
       width: 100%;
       height: auto;
       display: block;
-      max-height: 400px;
+      max-height: 300px;
       object-fit: cover;
+      object-position: center 30%;
+      border-radius: 18px;
+    }
+
+    @media (max-width: 860px) {
+      .hero-image {
+        max-height: none;
+        object-fit: contain;
+        object-position: center;
+      }
+      #hero-banner::after {
+        height: 60px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero-image {
+        max-height: none;
+        object-fit: contain;
+        object-position: center;
+      }
+      #hero-banner::after {
+        height: 44px;
+      }
+    }
+
+    @media (max-width: 860px) {
+      #hero-banner,
+      #tool-grid,
+      #testimonials,
+      #backup-section {
+        padding-left: clamp(28px, 5vw, 64px);
+        padding-right: clamp(28px, 5vw, 64px);
+      }
     }
 
     #home-view h1 {
@@ -399,16 +453,18 @@
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
       gap: 16px;
-      max-width: 900px;
-      padding: 0 clamp(28px, 5vw, 64px);
+      max-width: 980px;
+      padding: 0;
       margin-left: auto;
       margin-right: auto;
     }
 
     #backup-section {
-      max-width: 900px;
+      max-width: 980px;
       margin-top: 44px;
-      padding-top: 28px;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 28px 0;
       border-top: 1px solid var(--panel-line);
       content-visibility: auto;
       contain-intrinsic-size: auto 340px;
@@ -500,8 +556,11 @@
     }
 
     #testimonials {
-      max-width: 900px;
+      max-width: 980px;
       margin-top: 44px;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 0;
       content-visibility: auto;
       contain-intrinsic-size: auto 500px;
     }
@@ -646,14 +705,15 @@
       display: flex;
       align-items: center;
       gap: 14px;
-      max-width: 900px;
+      max-width: 980px;
+      margin-top: 22px;
       margin-bottom: 22px;
-      padding: 16px 18px;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 16px clamp(28px, 5vw, 64px);
       background: rgba(57, 255, 136, 0.06);
       border: 1px solid rgba(57, 255, 136, 0.3);
       border-radius: 10px;
-      margin-left: clamp(28px, 5vw, 64px);
-      margin-right: clamp(28px, 5vw, 64px);
     }
 
     #install-row {
@@ -736,9 +796,11 @@
       display: flex;
       align-items: center;
       gap: 14px;
-      max-width: 900px;
+      max-width: 980px;
       margin-top: 22px;
-      padding: 16px 18px;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 16px clamp(28px, 5vw, 64px);
       background: rgba(255, 176, 32, 0.05);
       border: 1px solid rgba(255, 176, 32, 0.25);
       border-radius: 10px;
@@ -806,9 +868,11 @@
     }
 
     #pix-box {
-      max-width: 900px;
+      max-width: 980px;
       margin-top: 12px;
-      padding: 14px 18px;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 14px clamp(28px, 5vw, 64px);
       background: var(--card);
       border: 1px solid var(--panel-line);
       border-radius: 10px;
@@ -853,9 +917,12 @@
     }
 
     #newsletter {
-      max-width: 900px;
+      max-width: 980px;
       margin-top: 22px;
-      padding: 18px;
+      margin-bottom: 44px;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 18px clamp(28px, 5vw, 64px);
       background: var(--card);
       border: 1px dashed rgba(90, 169, 255, 0.35);
       border-radius: 10px;
@@ -1114,7 +1181,10 @@
     <main id="main">
       <div id="home-view" class="active">
         <div id="hero-banner">
-          <img src="image/hero-site.png" alt="Take Um Studio - Ferramentas para criadores de vídeo" class="hero-image">
+          <picture>
+            <source media="(max-width: 860px)" srcset="image/hero-site-mobile.png">
+            <img src="image/hero-site.png" alt="Take Um Studio - Ferramentas para criadores de vídeo" class="hero-image">
+          </picture>
         </div>
         <div id="journey-banner">
           <div class="jb-icon">★</div>

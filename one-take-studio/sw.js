@@ -1,4 +1,4 @@
-const CACHE = 'takeum-v50';
+const CACHE = 'takeum-v51';
 
 const ASSETS = [
   './',
@@ -10,6 +10,7 @@ const ASSETS = [
   './limite.js',
   './supabase.js',
   './mobile.css',
+  './back-btn.js',
   './fonts.css',
   './fonts/archivo-500.woff2',
   './fonts/plexmono-400.woff2',

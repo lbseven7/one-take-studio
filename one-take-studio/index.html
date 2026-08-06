@@ -160,12 +160,12 @@
       font-family: var(--font-display);
       font-weight: 700;
       font-size: 11px;
-      padding: 7px 12px;
-      border-radius: 4px;
+      padding: 9px 12px;
+      border-radius: 6px;
       cursor: pointer;
       border: 1px solid var(--panel-line);
-      background: transparent;
-      color: var(--text-dim);
+      background: var(--panel);
+      color: var(--text-main);
       text-transform: uppercase;
       letter-spacing: 0.05em;
       transition: border-color .15s ease, color .15s ease;
@@ -953,6 +953,7 @@
         <div class="name">Take Um<small>studio</small></div>
       </div>
       <nav id="nav">
+        <button id="theme-toggle" type="button" style="width: 100%; margin-bottom: 14px;">Tema claro</button>
         <div class="nav-item active" data-id="home"><span class="dot" style="background:var(--text-dim)"></span>Início</div>
         <div class="nav-group">Novo aqui</div>
         <div class="nav-item" data-id="jornada" data-file="ferramentas/jornada.html" data-name="Primeiro Vídeo"><span class="dot" style="background:var(--accent-green)"></span>Primeiro Vídeo</div>
@@ -1170,7 +1171,6 @@
         <div id="tool-topbar">
           <button id="back-btn">← Início</button>
           <span id="tool-name"></span>
-          <button id="theme-toggle" type="button" style="margin-left: auto;">Tema claro</button>
         </div>
         <iframe id="tool-frame" allow="camera; microphone; fullscreen" src="about:blank"></iframe>
       </div>

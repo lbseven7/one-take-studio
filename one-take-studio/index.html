@@ -197,6 +197,11 @@
       left: 2px;
       transition: left .25s ease, background .25s ease;
       z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      line-height: 1;
     }
 
     html.light .theme-switch-circle {
@@ -234,6 +239,7 @@
       left: 2px;
       width: 24px;
       height: 24px;
+      font-size: 14px;
     }
 
     html.light #theme-toggle-mobile .theme-switch-circle {
@@ -1053,7 +1059,7 @@
     </button>
     <div id="theme-toggle-mobile" class="theme-switch" style="display: none;">
       <div class="theme-switch-bg"></div>
-      <div class="theme-switch-circle"></div>
+      <div class="theme-switch-circle">☀️</div>
     </div>
 
     <aside id="sidebar">
@@ -1064,7 +1070,7 @@
       <nav id="nav">
         <div id="theme-toggle" class="theme-switch" style="width: 100%; margin-bottom: 14px;">
           <div class="theme-switch-bg"></div>
-          <div class="theme-switch-circle"></div>
+          <div class="theme-switch-circle">☀️</div>
         </div>
         <div class="nav-item active" data-id="home"><span class="dot" style="background:var(--text-dim)"></span>Início</div>
         <div class="nav-group">Novo aqui</div>
@@ -1305,11 +1311,29 @@
       // ---------- TEMA CLARO / ESCURO ----------
       const themeToggle = document.getElementById('theme-toggle');
       const themeToggleMobile = document.getElementById('theme-toggle-mobile');
+      
+      function updateThemeIcon() {
+        const circles = document.querySelectorAll('.theme-switch-circle');
+        const isLight = window.TuTheme.get() === 'light';
+        circles.forEach(circle => {
+          circle.textContent = isLight ? '🌙' : '☀️';
+        });
+      }
+      
+      updateThemeIcon();
+      
       themeToggle.addEventListener('click', () => {
         window.TuTheme.toggle();
+        updateThemeIcon();
       });
+      
       themeToggleMobile.addEventListener('click', () => {
         window.TuTheme.toggle();
+        updateThemeIcon();
+      });
+      
+      window.addEventListener('storage', (e) => {
+        if (e.key === 'tu-theme') updateThemeIcon();
       });
 
       function setActiveNav(id) {

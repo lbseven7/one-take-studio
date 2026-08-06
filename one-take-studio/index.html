@@ -157,23 +157,101 @@
 
     #theme-toggle {
       flex-shrink: 0;
-      font-family: var(--font-display);
-      font-weight: 700;
-      font-size: 11px;
-      padding: 9px 12px;
-      border-radius: 6px;
+      width: 100%;
+      height: 44px;
+      background: none;
+      border: none;
       cursor: pointer;
-      border: 1px solid var(--panel-line);
+      padding: 0;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      position: relative;
+    }
+
+    .theme-switch {
+      position: relative;
+      width: 100%;
+      height: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+    }
+
+    .theme-switch-bg {
+      position: absolute;
+      width: 100%;
+      height: 24px;
       background: var(--panel);
-      color: var(--text-main);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      transition: border-color .15s ease, color .15s ease;
+      border: 1px solid var(--panel-line);
+      border-radius: 12px;
+      transition: background .25s ease;
+    }
+
+    .theme-switch-circle {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: var(--text-dim);
+      border-radius: 50%;
+      left: 2px;
+      transition: left .25s ease, background .25s ease;
+      z-index: 1;
+    }
+
+    html.light .theme-switch-circle {
+      left: calc(100% - 22px);
+      background: var(--accent-green);
+    }
+
+    html.light .theme-switch-bg {
+      background: rgba(57, 255, 136, 0.1);
+      border-color: var(--accent-green);
+    }
+
+    #theme-toggle:hover .theme-switch-bg {
+      border-color: var(--accent-amber);
+    }
+
+    #theme-toggle-mobile {
+      position: fixed;
+      top: 14px;
+      right: 14px;
+      z-index: 40;
+      width: 48px;
+      height: 28px;
+      cursor: pointer;
+      display: none;
+    }
+
+    #theme-toggle-mobile .theme-switch-bg {
+      background: var(--panel);
+      border: 1px solid var(--panel-line);
+      height: 28px;
+    }
+
+    #theme-toggle-mobile .theme-switch-circle {
+      left: 2px;
+      width: 24px;
+      height: 24px;
+    }
+
+    html.light #theme-toggle-mobile .theme-switch-circle {
+      left: calc(100% - 26px);
+      background: var(--accent-green);
+    }
+
+    html.light #theme-toggle-mobile .theme-switch-bg {
+      background: rgba(57, 255, 136, 0.1);
+      border-color: var(--accent-green);
+    }
+
+    #theme-toggle-mobile:hover .theme-switch-bg {
+      border-color: var(--accent-amber);
     }
 
     #theme-toggle:hover {
-      border-color: var(--accent-amber);
-      color: var(--accent-amber);
+      /* hover handled by .theme-switch-bg */
     }
 
     #sidebar-data {
@@ -973,19 +1051,10 @@
         <path d="M3 6h18v2H3zM3 11h18v2H3zM3 16h18v2H3z" />
       </svg>
     </button>
-    <button id="theme-toggle-mobile" aria-label="Alternar tema" type="button" style="display: none;">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-        <circle cx="12" cy="12" r="5"/>
-        <line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        <line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        <line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        <line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-      </svg>
-    </button>
+    <div id="theme-toggle-mobile" class="theme-switch" style="display: none;">
+      <div class="theme-switch-bg"></div>
+      <div class="theme-switch-circle"></div>
+    </div>
 
     <aside id="sidebar">
       <div id="brand">
@@ -993,7 +1062,10 @@
         <div class="name">Take Um<small>studio</small></div>
       </div>
       <nav id="nav">
-        <button id="theme-toggle" type="button" style="width: 100%; margin-bottom: 14px;">Tema claro</button>
+        <div id="theme-toggle" class="theme-switch" style="width: 100%; margin-bottom: 14px;">
+          <div class="theme-switch-bg"></div>
+          <div class="theme-switch-circle"></div>
+        </div>
         <div class="nav-item active" data-id="home"><span class="dot" style="background:var(--text-dim)"></span>Início</div>
         <div class="nav-group">Novo aqui</div>
         <div class="nav-item" data-id="jornada" data-file="ferramentas/jornada.html" data-name="Primeiro Vídeo"><span class="dot" style="background:var(--accent-green)"></span>Primeiro Vídeo</div>
@@ -1233,19 +1305,11 @@
       // ---------- TEMA CLARO / ESCURO ----------
       const themeToggle = document.getElementById('theme-toggle');
       const themeToggleMobile = document.getElementById('theme-toggle-mobile');
-      function refreshThemeLabel() {
-        themeToggle.textContent = window.TuTheme.get() === 'light' ? 'Tema escuro' : 'Tema claro';
-      }
-      refreshThemeLabel();
       themeToggle.addEventListener('click', () => {
         window.TuTheme.toggle();
-        refreshThemeLabel();
       });
       themeToggleMobile.addEventListener('click', () => {
         window.TuTheme.toggle();
-      });
-      window.addEventListener('storage', (e) => {
-        if (e.key === 'tu-theme') refreshThemeLabel();
       });
 
       function setActiveNav(id) {

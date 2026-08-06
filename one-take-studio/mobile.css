@@ -288,3 +288,34 @@ body {
 .tu-back:active {
   border-color: var(--accent-amber, #f5c344);
 }
+
+/* ============================================================
+   Botão "Início" flutuante (index/shell) no mobile
+   Quando uma ferramenta está aberta, o voltar sai da topbar
+   e vira um botão amarelo flutuando sobre o conteúdo.
+   ============================================================ */
+@media (max-width: 860px) {
+  #back-btn {
+    position: fixed;
+    left: 18px;
+    bottom: max(20px, env(safe-area-inset-bottom, 20px));
+    z-index: 50;
+    border: none;
+    background: linear-gradient(180deg, #ffc24d, var(--accent-amber, #ffb020));
+    color: #1a1200;
+    font-family: var(--font-display, 'Archivo', sans-serif);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    text-transform: none;
+    padding: 14px 22px;
+    border-radius: 999px;
+    box-shadow: 0 6px 18px rgba(255, 176, 32, 0.45), 0 1px 0 rgba(255, 255, 255, 0.35) inset;
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+
+  #back-btn:active {
+    transform: scale(0.94);
+    box-shadow: 0 3px 10px rgba(255, 176, 32, 0.4);
+  }
+}

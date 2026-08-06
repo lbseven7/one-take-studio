@@ -423,16 +423,6 @@
       }
     }
 
-    @media (max-width: 860px) {
-      #hero-banner,
-      #tool-grid,
-      #testimonials,
-      #backup-section {
-        padding-left: clamp(28px, 5vw, 64px);
-        padding-right: clamp(28px, 5vw, 64px);
-      }
-    }
-
     #home-view h1 {
       font-family: var(--font-display);
       font-weight: 900;
@@ -563,6 +553,16 @@
       padding: 0;
       content-visibility: auto;
       contain-intrinsic-size: auto 500px;
+    }
+
+    @media (max-width: 860px) {
+      #hero-banner,
+      #tool-grid,
+      #testimonials,
+      #backup-section {
+        padding-left: clamp(28px, 5vw, 64px);
+        padding-right: clamp(28px, 5vw, 64px);
+      }
     }
 
     #testimonials h2 {

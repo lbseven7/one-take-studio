@@ -1114,6 +1114,100 @@
         padding-top: 70px;
       }
     }
+
+    /* ---------- SPLASH (loading) ---------- */
+    #splash {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: #0a0a0c;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 1;
+      transition: opacity .45s ease, visibility .45s ease;
+    }
+
+    #splash.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    #splash-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      padding: 24px;
+      text-align: center;
+    }
+
+    #splash-mascot-wrap {
+      position: relative;
+      width: clamp(130px, 28vw, 160px);
+      aspect-ratio: 460 / 356;
+    }
+
+    #splash-mascot-wrap #splash-fallback {
+      position: absolute;
+      inset: 0;
+      margin: auto;
+      width: 72px;
+      height: 72px;
+      border-radius: 16px;
+      object-fit: cover;
+    }
+
+    #splash-mascot {
+      width: 100%;
+      height: 100%;
+      display: block;
+      border-radius: 26px;
+      box-shadow: 0 12px 40px rgba(255, 176, 32, 0.35);
+      animation: splash-bob 3s ease-in-out infinite;
+    }
+
+    @keyframes splash-bob {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-8px);
+      }
+    }
+
+    #splash-bar {
+      width: clamp(140px, 30vw, 190px);
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.12);
+      overflow: hidden;
+    }
+
+    #splash-bar span {
+      display: block;
+      height: 100%;
+      width: 40%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #ffc24d, var(--accent-amber, #ffb020));
+      animation: splash-bar 1.1s ease-in-out infinite;
+    }
+
+    @keyframes splash-bar {
+      0% {
+        transform: translateX(-100%);
+      }
+      100% {
+        transform: translateX(350%);
+      }
+    }
+
+    @media (max-width: 560px) {
+      #splash-mascot-wrap {
+        width: clamp(130px, 60vw, 160px);
+      }
+    }
   </style>
 <script src="analytics.js"></script>
 <link rel="stylesheet" href="mobile.css">
@@ -1122,6 +1216,17 @@
 </head>
 
 <body>
+
+  <div id="splash" role="status" aria-label="Carregando">
+    <div id="splash-inner">
+      <div id="splash-mascot-wrap">
+        <img id="splash-fallback" src="icons/icon-192.png" alt="Take Um Studio" aria-hidden="true">
+        <video id="splash-mascot" src="video/mascote.mp4" autoplay muted loop playsinline preload="auto"
+          onerror="this.style.display='none'"></video>
+      </div>
+      <div id="splash-bar" role="progressbar" aria-label="Carregando"><span></span></div>
+    </div>
+  </div>
 
   <div id="shell">
     <button id="menu-toggle" aria-label="Menu">
@@ -1615,6 +1720,23 @@
           navigator.serviceWorker.register('sw.js').catch(() => {});
         });
       }
+
+      // ---------- SPLASH (loading) ----------
+      const splash = document.getElementById('splash');
+      const splashStart = Date.now();
+      const SPLASH_MIN_MS = 2500;
+      let splashDone = false;
+      function hideSplash() {
+        if (splashDone) return;
+        splashDone = true;
+        const wait = Math.max(0, SPLASH_MIN_MS - (Date.now() - splashStart));
+        setTimeout(() => {
+          splash.classList.add('hidden');
+          setTimeout(() => splash.remove(), 600);
+        }, wait);
+      }
+      window.addEventListener('load', hideSplash);
+      setTimeout(hideSplash, 4000);
     })();
   </script>
 

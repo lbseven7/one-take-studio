@@ -1,4 +1,4 @@
-const CACHE = 'takeum-v58';
+const CACHE = 'takeum-v59';
 
 const ASSETS = [
   './',

@@ -370,7 +370,7 @@
       max-width: 980px;
       margin-left: auto;
       margin-right: auto;
-      margin-top: clamp(16px, 3vw, 28px);
+      margin-top: clamp(12px, 2vw, 20px);
       padding: 0;
       overflow: hidden;
       margin-bottom: 0;
@@ -384,7 +384,7 @@
       left: 0;
       right: 0;
       bottom: -1px;
-      height: 90px;
+      height: 56px;
       background: linear-gradient(to bottom, transparent, var(--bg));
       pointer-events: none;
       z-index: 1;
@@ -395,7 +395,7 @@
       width: 100%;
       height: auto;
       display: block;
-      max-height: 300px;
+      max-height: 270px;
       object-fit: cover;
       object-position: center 30%;
       border-radius: 18px;
@@ -408,7 +408,7 @@
         object-position: center;
       }
       #hero-banner::after {
-        height: 60px;
+        height: 40px;
       }
     }
 
@@ -419,7 +419,7 @@
         object-position: center;
       }
       #hero-banner::after {
-        height: 44px;
+        height: 32px;
       }
     }
 
@@ -440,13 +440,55 @@
     }
 
     #tool-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-      gap: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 44px;
       max-width: 980px;
       padding: 0;
       margin-left: auto;
       margin-right: auto;
+    }
+
+    .tool-section__head {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .tool-section__icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 9px;
+      background: linear-gradient(180deg, color-mix(in srgb, var(--stage) 22%, var(--card)) 0%, color-mix(in srgb, var(--stage) 8%, var(--card)) 100%);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 3px 6px rgba(0, 0, 0, 0.25);
+      color: var(--stage);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .tool-section__head h2 {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 18px;
+      margin: 0 0 3px 0;
+      letter-spacing: -0.01em;
+    }
+
+    .tool-section__head p {
+      margin: 0;
+      color: var(--text-dim);
+      font-size: 12.5px;
+      line-height: 1.55;
+    }
+
+    .tool-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 16px;
     }
 
     #backup-section {
@@ -665,26 +707,62 @@
     .tool-card {
       background: var(--card);
       border: 1px solid var(--panel-line);
-      border-radius: 10px;
+      border-radius: 12px;
       padding: 20px;
       cursor: pointer;
+      display: flex;
+      flex-direction: column;
       transition: border-color .15s ease, transform .15s ease;
     }
 
     .tool-card:hover {
-      border-color: var(--accent-amber);
+      border-color: var(--stage);
       transform: translateY(-2px);
     }
 
     .tool-card .icon {
-      width: 38px;
-      height: 38px;
-      border-radius: 8px;
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 16px;
-      font-size: 17px;
+      margin-bottom: 18px;
+      position: relative;
+      color: var(--stage);
+      transition: transform .15s ease;
+    }
+
+    .tool-card .icon::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: linear-gradient(180deg, color-mix(in srgb, var(--stage) 14%, #000) 0%, color-mix(in srgb, var(--stage) 26%, #000) 100%);
+      transform: translateY(6px);
+      z-index: -1;
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
+    }
+
+    .tool-card .icon::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: linear-gradient(180deg, color-mix(in srgb, var(--stage) 26%, #fff 5%) 0%, color-mix(in srgb, var(--stage) 10%, var(--card)) 100%);
+      z-index: 0;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
+    }
+
+    .tool-card .icon svg {
+      position: relative;
+      z-index: 1;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .tool-card .icon {
+        transition: none;
+      }
     }
 
     .tool-card h3 {
@@ -1013,6 +1091,27 @@
 
     .tool-card.featured {
       border-color: rgba(57, 255, 136, 0.4);
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .tool-card.featured .icon {
+      margin-bottom: 0;
+      flex-shrink: 0;
+    }
+
+    .tool-card.featured .featured-body {
+      min-width: 0;
+    }
+
+    .tool-card.featured h3 {
+      margin: 6px 0 5px 0;
+    }
+
+    .tool-section:has(.tool-card.featured) .tool-grid {
+      grid-template-columns: 1fr;
     }
 
     .tool-card .badge {
@@ -1311,91 +1410,211 @@
           <button id="journey-btn">Começar</button>
         </div>
         <div id="tool-grid">
-          <div class="tool-card featured" data-id="jornada" data-file="ferramentas/jornada.html" data-name="Primeiro Vídeo">
-            <div class="badge">Comece aqui</div><div class="icon" style="background:var(--accent-green)22; color:var(--accent-green);">★</div>
-            <h3>Primeiro Vídeo</h3>
-            <p>Sua trilha guiada do zero até o primeiro vídeo publicado, passo a passo com as ferramentas do estúdio.</p>
-          </div>
-          <div class="tool-card" data-id="teleprompter" data-file="ferramentas/teleprompter.html" data-name="Teleprompter">
-            <div class="icon" style="background:var(--accent-amber)22; color:var(--accent-amber);">▤</div>
-            <h3>Teleprompter</h3>
-            <p>Leia seu roteiro rolando na tela enquanto grava, com câmera embutida e gravação direto do navegador.</p>
-          </div>
-          <div class="tool-card" data-id="capa" data-file="ferramentas/capa.html" data-name="Gerador de Capa">
-            <div class="icon" style="background:var(--accent-red)22; color:var(--accent-red);">▣</div>
-            <h3>Gerador de Capa</h3>
-            <p>Crie a capa do seu vídeo no navegador: título, emoji, cor de fundo e baixe o PNG pronto. Com formato vertical para Shorts e Reels.</p>
-          </div>
-          <div class="tool-card" data-id="pauta" data-file="ferramentas/painel-pauta.html" data-name="Painel de Pauta">
-            <div class="icon" style="background:var(--accent-blue)22; color:var(--accent-blue);">◫</div>
-            <h3>Painel de Pauta</h3>
-            <p>Organize suas ideias de vídeo num quadro por etapas: ideia, roteiro, gravado, editado e postado.</p>
-          </div>
-          <div class="tool-card" data-id="calendario" data-file="ferramentas/calendario.html" data-name="Calendário de Conteúdo">
-            <div class="icon" style="background:var(--accent-amber)22; color:var(--accent-amber);">▦</div>
-            <h3>Calendário de Conteúdo</h3>
-            <p>Planeje o mês: coloque cada vídeo no dia em que vai planejar, gravar ou publicar e acompanhe as etapas.</p>
-          </div>
-          <div class="tool-card" data-id="claquete" data-file="ferramentas/claquete-digital.html" data-name="Claquete Digital">
-            <div class="icon" style="background:var(--accent-purple)22; color:var(--accent-purple);">◧</div>
-            <h3>Claquete Digital</h3>
-            <p>Contagem regressiva, bate-claquete com som e cronômetro de take, com histórico de gravações.</p>
-          </div>
-          <div class="tool-card" data-id="checklist" data-file="ferramentas/checklist-gravacao.html" data-name="Checklist">
-            <div class="icon" style="background:var(--accent-green)22; color:var(--accent-green);">✓</div>
-            <h3>Checklist</h3>
-            <p>Checklist pré-gravação: nunca mais esqueça bateria, microfone, luz, isolamento e muito mais.</p>
-          </div>
-          <div class="tool-card" data-id="checklist-divulgacao" data-file="ferramentas/checklist-divulgacao.html" data-name="Checklist de Divulgação">
-            <div class="icon" style="background:var(--accent-green)22; color:var(--accent-green);">☑</div>
-            <h3>Checklist de Divulgação</h3>
-            <p>O que fazer depois de publicar: divulgar, responder comentários, stories e acompanhar os resultados.</p>
-          </div>
-          <div class="tool-card" data-id="roteirizador" data-file="ferramentas/roteirizador.html" data-name="Roteirizador">
-            <div class="icon" style="background:var(--accent-amber)22; color:var(--accent-amber);">✍</div>
-            <h3>Roteirizador</h3>
-            <p>Estruture seu roteiro em etapas: gancho, problema, solução com marcadores de tempo e CTA.</p>
-          </div>
-          <div class="tool-card" data-id="ideias" data-file="ferramentas/banco-ideias.html" data-name="Banco de Ideias">
-            <div class="icon" style="background:var(--accent-purple)22; color:var(--accent-purple);">✎</div>
-            <h3>Banco de Ideias</h3>
-            <p>Capture ideias de vídeo na hora, antes que sumam, e envie para o Painel de Pauta quando quiser.</p>
-          </div>
-          <div class="tool-card" data-id="equipamentos" data-file="ferramentas/equipamentos.html" data-name="Equipamentos">
-            <div class="icon" style="background:var(--accent-amber)22; color:var(--accent-amber);">⚙</div>
-            <h3>Equipamentos</h3>
-            <p>Guia de equipamentos com ótimo custo-benefício pra começar: microfone, luz, tripé e mais.</p>
-          </div>
-          <div class="tool-card" data-id="guia" data-file="guias/guia.html" data-name="Guia">
-            <div class="icon" style="background:var(--accent-amber)22; color:var(--accent-amber);">◈</div>
-            <h3>Guia</h3>
-            <p>Aprenda na prática: como gravar o primeiro vídeo, escolher microfone e iluminar com o celular.</p>
-          </div>
-          <div class="tool-card" data-id="pack-publicacao" data-file="ferramentas/pack-publicacao.html" data-name="Pack de Publicação">
-            <div class="icon" style="background:var(--accent-green)22; color:var(--accent-green);">✉</div>
-            <h3>Pack de Publicação</h3>
-            <p>Título, descrição, tags e melhor horário prontos pra colar no YouTube — com IA ou sem.</p>
-          </div>
-          <div class="tool-card" data-id="tracker" data-file="ferramentas/tracker-resultados.html" data-name="Tracker de Resultados">
-            <div class="icon" style="background:var(--accent-blue)22; color:var(--accent-blue);">◈</div>
-            <h3>Tracker de Resultados</h3>
-            <p>Anote views, likes e comentários de cada vídeo e descubra o que a sua audiência gosta.</p>
-          </div>
-          <div class="tool-card" data-id="ia-config" data-file="ferramentas/ia-config.html" data-name="Configuração da IA">
-            <div class="icon" style="background:var(--accent-amber)22; color:var(--accent-amber);">✦</div>
-            <h3>Configuração da IA</h3>
-            <p>Cole sua chave do Google Gemini para roteirizar, reescrever e gerar descrições com IA.</p>
-          </div>
-          <div class="tool-card" data-id="pro" data-file="pro.html" data-name="Plano Pro">
-            <div class="icon" style="background:var(--accent-amber)22; color:var(--accent-amber);">★</div>
-            <h3>Plano Pro</h3>
-            <p>Desbloqueie criação ilimitada nas ferramentas de geração com pagamento único.</p>
-          </div>
-          <div class="tool-card" data-id="sobre" data-file="sobre.html" data-name="Sobre">
-            <div class="icon" style="background:var(--text-dim)22; color:var(--text-dim);">?</div>
-            <h3>Sobre</h3>
-            <p>O que é o Take Um Studio, pra quem é e como seus dados são guardados.</p>
-          </div>
+          <section class="tool-section" style="--stage: var(--accent-green)">
+            <div class="tool-section__head">
+              <span class="tool-section__icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+              </span>
+              <div>
+                <h2>Comece aqui</h2>
+                <p>Novo por aqui? Sua trilha guiada até o primeiro vídeo publicado.</p>
+              </div>
+            </div>
+            <div class="tool-grid">
+              <div class="tool-card featured" data-id="jornada" data-file="ferramentas/jornada.html" data-name="Primeiro Vídeo">
+                <div class="icon" aria-hidden="true">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="5" width="15" height="14" rx="2"/><polygon points="23 7 16 12 23 17 23 7"/></svg>
+                </div>
+                <div class="featured-body">
+                  <div class="badge">Comece aqui</div>
+                  <h3>Primeiro Vídeo</h3>
+                  <p>Sua trilha guiada do zero até o primeiro vídeo publicado, passo a passo com as ferramentas do estúdio.</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="tool-section" style="--stage: var(--accent-blue)">
+            <div class="tool-section__head">
+              <span class="tool-section__icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+              </span>
+              <div>
+                <h2>Planejar</h2>
+                <p>Da ideia ao roteiro pronto, antes de ligar a câmera.</p>
+              </div>
+            </div>
+            <div class="tool-grid">
+              <div class="tool-card" data-id="pauta" data-file="ferramentas/painel-pauta.html" data-name="Painel de Pauta">
+                <div class="icon" aria-hidden="true">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="5" height="16" rx="1"/><rect x="9.5" y="4" width="5" height="16" rx="1"/><rect x="16" y="4" width="5" height="16" rx="1"/></svg>
+                </div>
+                <h3>Painel de Pauta</h3>
+                <p>Organize suas ideias de vídeo num quadro por etapas: ideia, roteiro, gravado, editado e postado.</p>
+              </div>
+              <div class="tool-card" data-id="calendario" data-file="ferramentas/calendario.html" data-name="Calendário de Conteúdo">
+                <div class="icon" aria-hidden="true">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                </div>
+                <h3>Calendário de Conteúdo</h3>
+                <p>Planeje o mês: coloque cada vídeo no dia em que vai planejar, gravar ou publicar e acompanhe as etapas.</p>
+              </div>
+              <div class="tool-card" data-id="roteirizador" data-file="ferramentas/roteirizador.html" data-name="Roteirizador">
+                <div class="icon" aria-hidden="true">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                </div>
+                <h3>Roteirizador</h3>
+                <p>Estruture seu roteiro em etapas: gancho, problema, solução com marcadores de tempo e CTA.</p>
+              </div>
+              <div class="tool-card" data-id="ideias" data-file="ferramentas/banco-ideias.html" data-name="Banco de Ideias">
+                <div class="icon" aria-hidden="true">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.3h6c0-1 .4-1.8 1-2.3A7 7 0 0 0 12 2z"/></svg>
+                </div>
+                <h3>Banco de Ideias</h3>
+                <p>Capture ideias de vídeo na hora, antes que sumam, e envie para o Painel de Pauta quando quiser.</p>
+              </div>
+            </div>
+          </section>
+
+          <section class="tool-section" style="--stage: var(--accent-amber)">
+            <div class="tool-section__head">
+              <span class="tool-section__icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="14" height="12" rx="2"/><polygon points="16 11 22 8 22 16 16 13"/></svg>
+              </span>
+              <div>
+                <h2>Gravar</h2>
+                <p>Na hora da gravação, do roteiro na tela ao checklist final.</p>
+              </div>
+            </div>
+            <div class="tool-grid">
+              <div class="tool-card" data-id="teleprompter" data-file="ferramentas/teleprompter.html" data-name="Teleprompter">
+                <div class="icon" aria-hidden="true">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="6" y1="8" x2="18" y2="8"/><line x1="6" y1="12" x2="13" y2="12"/></svg>
+                </div>
+                <h3>Teleprompter</h3>
+                <p>Leia seu roteiro rolando na tela enquanto grava, com câmera embutida e gravação direto do navegador.</p>
+              </div>
+              <div class="tool-card" data-id="claquete" data-file="ferramentas/claquete-digital.html" data-name="Claquete Digital">
+                <div class="icon" aria-hidden="true">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="18" height="11" rx="2"/><line x1="3" y1="14" x2="21" y2="14"/><path d="M7 9l3-4h6l-3 4"/></svg>
+                </div>
+                <h3>Claquete Digital</h3>
+                <p>Contagem regressiva, bate-claquete com som e cronômetro de take, com histórico de gravações.</p>
+              </div>
+              <div class="tool-card" data-id="checklist" data-file="ferramentas/checklist-gravacao.html" data-name="Checklist">
+                <div class="icon" aria-hidden="true">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                </div>
+                <h3>Checklist</h3>
+                <p>Checklist pré-gravação: nunca mais esqueça bateria, microfone, luz, isolamento e muito mais.</p>
+              </div>
+            </div>
+          </section>
+
+          <section class="tool-section" style="--stage: var(--accent-red)">
+            <div class="tool-section__head">
+              <span class="tool-section__icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+              </span>
+              <div>
+                <h2>Publicar</h2>
+                <p>Da capa à divulgação, e o resultado na palma da mão.</p>
+              </div>
+            </div>
+            <div class="tool-grid">
+              <div class="tool-card" data-id="capa" data-file="ferramentas/capa.html" data-name="Gerador de Capa">
+                <div class="icon" aria-hidden="true">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                </div>
+                <h3>Gerador de Capa</h3>
+                <p>Crie a capa do seu vídeo no navegador: título, emoji, cor de fundo e baixe o PNG pronto. Com formato vertical para Shorts e Reels.</p>
+              </div>
+              <div class="tool-card" data-id="checklist-divulgacao" data-file="ferramentas/checklist-divulgacao.html" data-name="Checklist de Divulgação">
+                <div class="icon" aria-hidden="true">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10v4h2l6 4V6l-6 4H3z"/><path d="M15 9a4 4 0 0 1 0 6"/><path d="M17 6a8 8 0 0 1 0 12"/></svg>
+                </div>
+                <h3>Checklist de Divulgação</h3>
+                <p>O que fazer depois de publicar: divulgar, responder comentários, stories e acompanhar os resultados.</p>
+              </div>
+              <div class="tool-card" data-id="pack-publicacao" data-file="ferramentas/pack-publicacao.html" data-name="Pack de Publicação">
+                <div class="icon" aria-hidden="true">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                </div>
+                <h3>Pack de Publicação</h3>
+                <p>Título, descrição, tags e melhor horário prontos pra colar no YouTube — com IA ou sem.</p>
+              </div>
+              <div class="tool-card" data-id="tracker" data-file="ferramentas/tracker-resultados.html" data-name="Tracker de Resultados">
+                <div class="icon" aria-hidden="true">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
+                </div>
+                <h3>Tracker de Resultados</h3>
+                <p>Anote views, likes e comentários de cada vídeo e descubra o que a sua audiência gosta.</p>
+              </div>
+            </div>
+          </section>
+
+          <section class="tool-section" style="--stage: var(--accent-purple)">
+            <div class="tool-section__head">
+              <span class="tool-section__icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+              </span>
+              <div>
+                <h2>Aprender &amp; apoiar</h2>
+                <p>Aprenda a gravar melhor e mantenha o estúdio de pé.</p>
+              </div>
+            </div>
+            <div class="tool-grid">
+              <div class="tool-card" data-id="equipamentos" data-file="ferramentas/equipamentos.html" data-name="Equipamentos">
+                <div class="icon" aria-hidden="true">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                </div>
+                <h3>Equipamentos</h3>
+                <p>Guia de equipamentos com ótimo custo-benefício pra começar: microfone, luz, tripé e mais.</p>
+              </div>
+              <div class="tool-card" data-id="guia" data-file="guias/guia.html" data-name="Guia">
+                <div class="icon" aria-hidden="true">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                </div>
+                <h3>Guia</h3>
+                <p>Aprenda na prática: como gravar o primeiro vídeo, escolher microfone e iluminar com o celular.</p>
+              </div>
+            </div>
+          </section>
+
+          <section class="tool-section" style="--stage: var(--text-dim)">
+            <div class="tool-section__head">
+              <span class="tool-section__icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+              </span>
+              <div>
+                <h2>Ajustes</h2>
+                <p>IA, plano Pro e informações sobre o estúdio.</p>
+              </div>
+            </div>
+            <div class="tool-grid">
+              <div class="tool-card" data-id="ia-config" data-file="ferramentas/ia-config.html" data-name="Configuração da IA">
+                <div class="icon" aria-hidden="true">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                </div>
+                <h3>Configuração da IA</h3>
+                <p>Cole sua chave do Google Gemini para roteirizar, reescrever e gerar descrições com IA.</p>
+              </div>
+              <div class="tool-card" data-id="pro" data-file="pro.html" data-name="Plano Pro">
+                <div class="icon" aria-hidden="true">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                </div>
+                <h3>Plano Pro</h3>
+                <p>Desbloqueie criação ilimitada nas ferramentas de geração com pagamento único.</p>
+              </div>
+              <div class="tool-card" data-id="sobre" data-file="sobre.html" data-name="Sobre">
+                <div class="icon" aria-hidden="true">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                </div>
+                <h3>Sobre</h3>
+                <p>O que é o Take Um Studio, pra quem é e como seus dados são guardados.</p>
+              </div>
+            </div>
+          </section>
         </div>
         <div id="testimonials">
           <h2>Quem já usou a Jornada</h2>
@@ -1569,6 +1788,24 @@
         if (!card) return;
         openToolFromElement(card);
       });
+
+      // ---------- ÍCONES 3D (inclinação ao passar o mouse) ----------
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        toolGrid.querySelectorAll('.tool-card .icon').forEach((icon) => {
+          const card = icon.parentElement;
+          card.addEventListener('pointermove', (e) => {
+            const r = card.getBoundingClientRect();
+            const px = (e.clientX - r.left) / r.width - 0.5;
+            const py = (e.clientY - r.top) / r.height - 0.5;
+            icon.style.transition = 'transform .08s ease';
+            icon.style.transform = 'perspective(420px) rotateX(' + (-py * 12) + 'deg) rotateY(' + (px * 12) + 'deg) translateY(-2px)';
+          });
+          card.addEventListener('pointerleave', () => {
+            icon.style.transition = '';
+            icon.style.transform = '';
+          });
+        });
+      }
 
       window.TakeUmShell = {
         openToolById,

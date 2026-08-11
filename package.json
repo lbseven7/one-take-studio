@@ -5,6 +5,7 @@
   "scripts": {
     "test": "node --test",
     "test:supabase": "node tests/supabase-smoke.js",
+    "test:dispositivos": "node tests/dispositivos-check.js",
     "deploy": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/deploy.ps1"
   }
 }

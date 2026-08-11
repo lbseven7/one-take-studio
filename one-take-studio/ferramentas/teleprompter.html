@@ -105,7 +105,7 @@
     resize: none;
     background: var(--panel);
     border: 1px solid var(--panel-line);
-    border-radius: 4px;
+    border-radius: 8px;
     color: var(--text-main);
     font-family: var(--font-display);
     font-weight: 500;
@@ -113,6 +113,7 @@
     line-height: 1.6;
     padding: 18px;
     outline: none;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.25);
   }
   #script-input:focus{ border-color: var(--accent-amber); }
   #script-input::placeholder{ color: #55555c; font-family: var(--font-mono); font-size: 13px; }
@@ -132,7 +133,7 @@
     min-width: 150px;
   }
   .field label{
-    font-size: 11px;
+    font-size: 12px;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--text-dim);
@@ -164,7 +165,7 @@
     gap: 10px;
     cursor: pointer;
     user-select: none;
-    font-size: 11px;
+    font-size: 12px;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--text-dim);
@@ -203,7 +204,7 @@
     letter-spacing: 0.08em;
     text-transform: uppercase;
     padding: 14px 28px;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
     transition: filter .15s ease;
   }
@@ -211,7 +212,7 @@
   #start-btn:disabled{ background: var(--panel-line); color: var(--text-dim); cursor: not-allowed; }
 
   #camera-note{
-    font-size: 11px;
+    font-size: 12px;
     color: var(--text-dim);
     margin-top: 6px;
     max-width: 480px;

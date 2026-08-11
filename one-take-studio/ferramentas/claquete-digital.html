@@ -50,11 +50,11 @@
   header h1{
     font-family: var(--font-display);
     font-weight: 900;
-    font-size: 16px;
+    font-size: 18px;
     margin: 0;
   }
   header .n{
-    font-size: 11px;
+    font-size: 12px;
     color: var(--text-dim);
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -71,6 +71,15 @@
 
   /* ---------- SETUP VIEW ---------- */
   #setup-view{ padding: 22px clamp(18px, 6vw, 100px); }
+
+  .setup-card{
+    background: var(--panel);
+    border: 1px solid var(--panel-line);
+    border-radius: 12px;
+    padding: 18px;
+    margin-bottom: 18px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+  }
 
   .slate-visual{
     width: 100%;
@@ -89,6 +98,7 @@
     border: 1px solid var(--panel-line);
     border-radius: 0 0 4px 4px;
     padding: 16px 18px;
+    box-shadow: 0 8px 22px rgba(0,0,0,0.4);
   }
   .clap-row{
     display: flex;
@@ -109,7 +119,7 @@
     margin-bottom: 16px;
   }
   .field label{
-    font-size: 11px;
+    font-size: 12px;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--text-dim);
@@ -183,9 +193,9 @@
   #clap-btn:hover{ filter: brightness(1.1); }
 
   /* history */
-  #history{ margin-top: 26px; }
+  #history{ margin-top: 0; }
   #history h2{
-    font-size: 12px;
+    font-size: 13px;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--text-dim);
@@ -380,45 +390,51 @@
       </div>
     </div>
 
-    <div class="field">
-      <label>Projeto / título do vídeo</label>
-      <input type="text" id="field-title" placeholder="Ex: Vídeo sobre rotina matinal">
-    </div>
+    <div class="setup-card">
 
-    <div class="field-row">
       <div class="field">
-        <label>Cena</label>
-        <input type="text" id="field-scene" placeholder="Ex: Abertura">
+        <label>Projeto / título do vídeo</label>
+        <input type="text" id="field-title" placeholder="Ex: Vídeo sobre rotina matinal">
       </div>
-      <div class="field">
-        <label>Take</label>
-        <div class="stepper">
-          <button id="take-minus">−</button>
-          <input type="number" id="field-take" value="1" min="1">
-          <button id="take-plus">+</button>
+
+      <div class="field-row">
+        <div class="field">
+          <label>Cena</label>
+          <input type="text" id="field-scene" placeholder="Ex: Abertura">
+        </div>
+        <div class="field">
+          <label>Take</label>
+          <div class="stepper">
+            <button id="take-minus">−</button>
+            <input type="number" id="field-take" value="1" min="1">
+            <button id="take-plus">+</button>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="field">
-      <label>Observação</label>
-      <input type="text" id="field-note" placeholder="Ex: variação mais rápida, luz da janela">
-    </div>
-
-    <div class="field">
-      <label>Contagem regressiva</label>
-      <div class="chip-row" id="countdown-chips">
-        <div class="chip" data-v="3">3s</div>
-        <div class="chip active" data-v="5">5s</div>
-        <div class="chip" data-v="10">10s</div>
+      <div class="field">
+        <label>Observação</label>
+        <input type="text" id="field-note" placeholder="Ex: variação mais rápida, luz da janela">
       </div>
+
+      <div class="field">
+        <label>Contagem regressiva</label>
+        <div class="chip-row" id="countdown-chips">
+          <div class="chip" data-v="3">3s</div>
+          <div class="chip active" data-v="5">5s</div>
+          <div class="chip" data-v="10">10s</div>
+        </div>
+      </div>
+
+      <button id="clap-btn">Bater claquete</button>
+
     </div>
 
-    <button id="clap-btn">Bater claquete</button>
-
-    <div id="history">
-      <h2>Takes registrados <button id="clear-history">Limpar tudo</button></h2>
-      <div id="history-list"></div>
+    <div class="setup-card">
+      <div id="history">
+        <h2>Takes registrados <button id="clear-history">Limpar tudo</button></h2>
+        <div id="history-list"></div>
+      </div>
     </div>
   </div>
 

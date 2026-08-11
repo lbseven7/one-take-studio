@@ -55,13 +55,13 @@
   header h1{
     font-family: var(--font-display);
     font-weight: 900;
-    font-size: 16px;
+    font-size: 18px;
     margin: 0;
     letter-spacing: -0.01em;
   }
   header .count{
     color: var(--text-dim);
-    font-size: 11px;
+    font-size: 12px;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     white-space: nowrap;
@@ -78,14 +78,14 @@
   .capture-card{
     background: var(--panel);
     border: 1px solid var(--panel-line);
-    border-radius: 8px;
+    border-radius: 10px;
     padding: 16px 18px;
     margin-bottom: 20px;
   }
   .capture-card h2{
     font-family: var(--font-display);
     font-weight: 700;
-    font-size: 13px;
+    font-size: 14px;
     margin: 0 0 12px 0;
     color: var(--text-dim);
     text-transform: uppercase;
@@ -103,7 +103,7 @@
     margin-bottom: 12px;
   }
   .field label{
-    font-size: 10px;
+    font-size: 12px;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--text-dim);
@@ -173,24 +173,27 @@
 
   /* ---------- LIST ---------- */
   .search-row{
-    margin-bottom: 12px;
+    background: var(--panel);
+    border: 1px solid var(--panel-line);
+    border-radius: 10px;
+    padding: 8px 10px;
+    margin-bottom: 14px;
   }
   .search-row input{
     width: 100%;
-    background: var(--card);
-    border: 1px solid var(--panel-line);
-    border-radius: 4px;
+    background: transparent;
+    border: none;
     color: var(--text-main);
     font-family: var(--font-mono);
-    font-size: 12px;
-    padding: 10px 12px;
+    font-size: 13px;
+    padding: 6px 8px;
     outline: none;
   }
-  .search-row input:focus{ border-color: var(--accent-amber); }
+  .search-row input:focus{ color: var(--text-main); }
   .search-row input::placeholder{ color: #55555c; }
 
   .list-label{
-    font-size: 10px;
+    font-size: 12px;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--text-dim);
@@ -201,7 +204,7 @@
   .idea-item{
     background: var(--card);
     border: 1px solid var(--panel-line);
-    border-radius: 6px;
+    border-radius: 8px;
     padding: 14px 16px;
     margin-bottom: 8px;
     transition: border-color .15s ease;
@@ -272,14 +275,14 @@
   .ai-card{
     background: var(--panel);
     border: 1px solid rgba(192,132,252,0.35);
-    border-radius: 8px;
+    border-radius: 10px;
     padding: 16px 18px;
     margin-bottom: 20px;
   }
   .ai-card h2{
     font-family: var(--font-display);
     font-weight: 700;
-    font-size: 13px;
+    font-size: 14px;
     margin: 0 0 4px 0;
     color: var(--accent-purple);
     text-transform: uppercase;
@@ -290,7 +293,7 @@
   }
   .ai-card .sub{
     color: var(--text-dim);
-    font-size: 11px;
+    font-size: 12px;
     line-height: 1.5;
     margin: 0 0 12px 0;
   }

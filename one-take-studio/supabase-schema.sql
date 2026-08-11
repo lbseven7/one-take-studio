@@ -221,3 +221,101 @@ begin
 end;
 $$;
 grant execute on function public.remover_dispositivo(text, text) to anon, authenticated;
+
+-- ============================================================
+-- V1 — Token anti-forja (o servidor vira a autoridade)
+-- ------------------------------------------------------------
+-- Antes, qualquer pessoa podia forjar uma chave com checksum válido
+-- (o algoritmo do chave-core.js é público) e gravar um record "pro"
+-- no IndexedDB com revalidadoEm no futuro — Pro infinito sem nunca
+-- consultar o servidor. Agora o cliente SÓ aceita Pro com um token
+-- emitido pelo servidor para aquele aparelho. O token é aleatório
+-- (128 bits), gerado somente dentro das RPCs security definer, e
+-- tem expiração curta (7 dias) que renova a cada revalidação (48h).
+-- Um record forjado sem token não passa no ehPro().
+-- ------------------------------------------------------------
+
+alter table public.chaves_ativos
+  add column if not exists token text,
+  add column if not exists token_expira_em timestamptz;
+
+drop function if exists public.ativar_dispositivo(text, text);
+create or replace function public.ativar_dispositivo(p_chave text, p_dispositivo text)
+returns jsonb
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_chave text;
+  v_limite int := 3;
+  v_total int;
+  v_token text := gen_random_uuid()::text || gen_random_uuid()::text;
+  v_exp timestamptz := now() + interval '7 days';
+begin
+  v_chave := upper(regexp_replace(p_chave, '[^A-Za-z0-9]', '', 'g'));
+  if not exists(
+    select 1 from public.chaves_pro
+    where upper(regexp_replace(chave, '[^A-Za-z0-9]', '', 'g')) = v_chave
+  ) then
+    return jsonb_build_object('status', 'chave_invalida');
+  end if;
+
+  insert into public.chaves_ativos (chave, dispositivo, ultimo_acesso, ativado_em, token, token_expira_em)
+  values (v_chave, p_dispositivo, now(), now(), v_token, v_exp)
+  on conflict (chave, dispositivo) do update
+    set ultimo_acesso = now(), token = v_token, token_expira_em = v_exp;
+
+  select count(*) into v_total
+  from public.chaves_ativos
+  where chave = v_chave;
+
+  if v_total > v_limite then
+    delete from public.chaves_ativos
+    where id in (
+      select id from public.chaves_ativos
+      where chave = v_chave and dispositivo <> p_dispositivo
+      order by ultimo_acesso asc
+      limit (v_total - v_limite)
+    );
+  end if;
+
+  return jsonb_build_object('status', 'ok', 'token', v_token, 'exp', v_exp);
+end;
+$$;
+grant execute on function public.ativar_dispositivo(text, text) to anon, authenticated;
+
+drop function if exists public.validar_dispositivo(text, text);
+create or replace function public.validar_dispositivo(p_chave text, p_dispositivo text)
+returns jsonb
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_chave text;
+  v_hit boolean;
+  v_token text := gen_random_uuid()::text || gen_random_uuid()::text;
+  v_exp timestamptz := now() + interval '7 days';
+begin
+  v_chave := upper(regexp_replace(p_chave, '[^A-Za-z0-9]', '', 'g'));
+  if not exists(
+    select 1 from public.chaves_pro
+    where upper(regexp_replace(chave, '[^A-Za-z0-9]', '', 'g')) = v_chave
+  ) then
+    return jsonb_build_object('ok', false);
+  end if;
+  select exists(
+    select 1 from public.chaves_ativos
+    where chave = v_chave and dispositivo = p_dispositivo
+  ) into v_hit;
+  if not v_hit then
+    return jsonb_build_object('ok', false);
+  end if;
+  update public.chaves_ativos
+  set ultimo_acesso = now(), token = v_token, token_expira_em = v_exp
+  where chave = v_chave and dispositivo = p_dispositivo;
+  return jsonb_build_object('ok', true, 'token', v_token, 'exp', v_exp);
+end;
+$$;
+grant execute on function public.validar_dispositivo(text, text) to anon, authenticated;

@@ -43,7 +43,7 @@ Leia seu roteiro sem decorar, planeje suas pautas, marque seus takes e publique 
 
 - **Uso grátis:** cada ferramenta paga de IA/geração tem um limite de criações gratuitas (`limite.js`), com contador no topo e aviso de upsell ao atingir o limite.
 - **E-mails capturados** no aviso de limite ficam gravados no IndexedDB e, se o backend estiver configurado, também vão para a nuvem — todos os visitantes. Página admin `ferramentas/leads.html` (fora do menu público) mostra os locais e, com login, os da nuvem; exporta CSV.
-- **Take Um Pro:** uma chave (válida via `chave-core.js`) desbloqueia criações ilimitadas. A chave é resgatada na página `resgatar.html` e ativada no aviso de upsell ou em `pro.html`. Cada chave fica ativa em até **3 aparelhos** (evicção LRU no servidor via RPC Supabase); o app revalida online a cada **48h** com janela offline. A gestão de aparelhos fica em `aparelhos.html`.
+- **Take Um Pro:** uma chave (válida via `chave-core.js`) desbloqueia criações ilimitadas. A chave é resgatada na página `resgatar.html` e ativada no aviso de upsell ou em `pro.html`. Cada chave fica ativa em até **3 aparelhos** (evicção LRU no servidor via RPC Supabase); o app revalida online a cada **48h** com janela offline. A gestão de aparelhos fica em `aparelhos.html`. O servidor emite um **token anti-forja** (128 bits, expira em 7 dias) no registro do aparelho: o cliente só libera Pro com token válido, então não dá para forjar um record "pro" local com checksum público.
 
 ### Backend de leads (opcional, Supabase)
 

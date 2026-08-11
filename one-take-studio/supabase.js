@@ -137,28 +137,30 @@
     },
 
     async ativarDispositivo(chave, dispositivo){
-      if(!configured()) return 'indisponivel';
+      if(!configured()) return { status: 'indisponivel' };
       try{
         const r = await api('/rest/v1/rpc/ativar_dispositivo', {
           method: 'POST',
           body: { p_chave: String(chave || '').trim(), p_dispositivo: String(dispositivo || '') }
         });
-        return typeof r === 'string' && r ? r : String(r || 'erro');
+        if(r && typeof r === 'object' && ('status' in r)) return r;
+        return { status: 'erro' };
       }catch(e){
-        return 'erro';
+        return { status: 'erro' };
       }
     },
 
     async validarDispositivo(chave, dispositivo){
-      if(!configured()) return false;
+      if(!configured()) return { ok: false };
       try{
         const r = await api('/rest/v1/rpc/validar_dispositivo', {
           method: 'POST',
           body: { p_chave: String(chave || '').trim(), p_dispositivo: String(dispositivo || '') }
         });
-        return !!r;
+        if(r && typeof r === 'object' && ('ok' in r)) return r;
+        return { ok: false };
       }catch(e){
-        return false;
+        return { ok: false };
       }
     },
 

@@ -26,19 +26,25 @@
   async function validarDispositivoOnline(chave){
     try{
       const disp = window.SupabaseChaves && window.SupabaseChaves.dispositivoId ? window.SupabaseChaves.dispositivoId() : '';
-      let ok = false;
-      try{ ok = await window.SupabaseChaves.validarDispositivo(chave, disp); }catch(e){ ok = false; }
-      if(!ok){
+      let token = null, exp = 0;
+      try{
+        const r = await window.SupabaseChaves.validarDispositivo(chave, disp);
+        if(r && r.ok && r.token){ token = r.token; exp = Date.parse(r.exp) || 0; }
+      }catch(e){}
+      if(!token){
         try{
-          const r = await window.SupabaseChaves.ativarDispositivo(chave, disp);
-          ok = r === 'ok';
-        }catch(e){ ok = false; }
+          const a = await window.SupabaseChaves.ativarDispositivo(chave, disp);
+          if(a && a.status === 'ok' && a.token){ token = a.token; exp = Date.parse(a.exp) || 0; }
+        }catch(e){}
       }
-      if(ok){
+      if(token){
         const rec = await OneTakeDB.get(STORE, 'pro') || {};
-        await OneTakeDB.put(STORE, Object.assign({}, rec, { id: 'pro', ativo: true, revalidadoEm: Date.now() }));
+        await OneTakeDB.put(STORE, Object.assign({}, rec, {
+          id: 'pro', ativo: true, dispositivo: disp,
+          token: token, tokenExp: exp, revalidadoEm: Date.now()
+        }));
       }
-      return ok;
+      return !!token;
     }catch(e){
       return false;
     }
@@ -50,8 +56,18 @@
       try{
         const rec = await OneTakeDB.get(STORE, 'pro');
         if(!rec || !rec.ativo || !window.TakeUmChave || !window.TakeUmChave.validar(rec.chave)) return false;
-        const last = rec.revalidadoEm || 0;
-        if(Date.now() - last < REVALIDAR_MS) return true;
+        const disp = window.SupabaseChaves && window.SupabaseChaves.dispositivoId ? window.SupabaseChaves.dispositivoId() : '';
+        const now = Date.now();
+        // Token emitido pelo servidor: imprevisível (128 bits) e com
+        // expiração real (7 dias). Record forjado sem token não passa.
+        const tokenOk = !!rec.token && rec.dispositivo === disp &&
+          typeof rec.tokenExp === 'number' && rec.tokenExp > now &&
+          rec.tokenExp < now + 45 * 24 * 60 * 60 * 1000;
+        // Janela offline de 48h. RevalidadoEm no FUTURO é inválido:
+        // era o truque que pulava a validação online para sempre.
+        const last = typeof rec.revalidadoEm === 'number' ? rec.revalidadoEm : 0;
+        const janelaOk = last <= now + 60000 && now - last < REVALIDAR_MS;
+        if(tokenOk && janelaOk) return true;
         return await validarDispositivoOnline(rec.chave);
       }catch(e){
         return false;
@@ -166,17 +182,20 @@
       return { ok: false, msg: 'Chave não encontrada na base de compras. Confira a chave no seu recibo ou entre em contato.' };
     }
     const disp = window.SupabaseChaves.dispositivoId();
-    const rAtiv = await window.SupabaseChaves.ativarDispositivo(norm, disp);
-    if(rAtiv !== 'ok'){
+    const a = await window.SupabaseChaves.ativarDispositivo(norm, disp);
+    if(!a || a.status !== 'ok'){
       return { ok: false, msg: 'Não foi possível registrar este aparelho. Conecte-se à internet e tente de novo.' };
     }
+    const tokenExp = (a.exp && Date.parse(a.exp)) || 0;
     await OneTakeDB.put(STORE, {
       id: 'pro',
       ativo: true,
       chave: norm,
       compraEm: Date.now(),
       revalidadoEm: Date.now(),
-      dispositivo: disp
+      dispositivo: disp,
+      token: a.token,
+      tokenExp: tokenExp
     });
     return { ok: true, msg: 'Take Um Pro ativado! Criação ilimitada liberada.' };
   }

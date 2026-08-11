@@ -94,7 +94,7 @@ git commit -m "sua mudança"
 git push
 ```
 
-> O workflow legado `.github/workflows/deploy.yml` (GitHub Actions → gh-pages) e o script `scripts/deploy.ps1` (`npm run deploy`) ficaram como backup — o deploy atual é pela Vercel.
+> O deploy é feito somente pela Vercel. A branch `gh-pages` foi removida e o script `scripts/deploy.ps1` (`npm run deploy`) ficou desativado — ele só mostra um aviso.
 
 > **Atenção:** quando mudar `index.html`, `sw.js` ou qualquer asset precacheado, **bump a versão** do cache no topo do `sw.js` (ex.: `const CACHE = 'takeum-v37'`) para os usuários receberem a versão nova.
 

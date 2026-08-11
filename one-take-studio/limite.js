@@ -6,6 +6,13 @@
   var PRECO = 'R$ 67';
   var CHECKOUT_URL = 'https://www.takeumstudio.com.br/venda.html';
 
+  // Janela de revalidação online do Pro. Enquanto o aparelho estiver
+  // registrado no servidor, fica ativo mesmo offline até passar 48h;
+  // depois disso, precisa revalidar com internet (senão cai para o
+  // plano grátis até reconectar). Isso trava o compartilhamento de chave.
+  var REVALIDAR_MS = 48 * 60 * 60 * 1000;
+  var ehProBusy = null;
+
   var ACOES = {
     'roteirizador-gerar': 'Reescrever roteiro com IA',
     'roteirizador-desc': 'Gerar descrição com IA',
@@ -16,11 +23,43 @@
     'banco-ideias-sugerir': 'Sugerir ideias com IA'
   };
 
-  async function ehPro(){
+  async function validarDispositivoOnline(chave){
     try{
-      const rec = await OneTakeDB.get(STORE, 'pro');
-      return !!(rec && rec.ativo && window.TakeUmChave && window.TakeUmChave.validar(rec.chave));
-    }catch(e){ return false; }
+      const disp = window.SupabaseChaves && window.SupabaseChaves.dispositivoId ? window.SupabaseChaves.dispositivoId() : '';
+      let ok = false;
+      try{ ok = await window.SupabaseChaves.validarDispositivo(chave, disp); }catch(e){ ok = false; }
+      if(!ok){
+        try{
+          const r = await window.SupabaseChaves.ativarDispositivo(chave, disp);
+          ok = r === 'ok';
+        }catch(e){ ok = false; }
+      }
+      if(ok){
+        const rec = await OneTakeDB.get(STORE, 'pro') || {};
+        await OneTakeDB.put(STORE, Object.assign({}, rec, { id: 'pro', ativo: true, revalidadoEm: Date.now() }));
+      }
+      return ok;
+    }catch(e){
+      return false;
+    }
+  }
+
+  async function ehPro(){
+    if(ehProBusy) return ehProBusy;
+    ehProBusy = (async function(){
+      try{
+        const rec = await OneTakeDB.get(STORE, 'pro');
+        if(!rec || !rec.ativo || !window.TakeUmChave || !window.TakeUmChave.validar(rec.chave)) return false;
+        const last = rec.revalidadoEm || 0;
+        if(Date.now() - last < REVALIDAR_MS) return true;
+        return await validarDispositivoOnline(rec.chave);
+      }catch(e){
+        return false;
+      }finally{
+        ehProBusy = null;
+      }
+    })();
+    return ehProBusy;
   }
 
   async function usos(acao){
@@ -116,20 +155,28 @@
     if(!window.SupabaseChaves){
       return { ok: false, msg: 'Validação online indisponível. Recarregue a página e tente de novo.' };
     }
+    const norm = window.TakeUmChave.normalize(chave);
     let ok = false;
     try{
-      ok = await window.SupabaseChaves.validarChave(window.TakeUmChave.normalize(chave));
+      ok = await window.SupabaseChaves.validarChave(norm);
     }catch(e){
       return { ok: false, msg: 'Sem conexão para validar a chave. Conecte-se à internet e tente de novo.' };
     }
     if(!ok){
       return { ok: false, msg: 'Chave não encontrada na base de compras. Confira a chave no seu recibo ou entre em contato.' };
     }
+    const disp = window.SupabaseChaves.dispositivoId();
+    const rAtiv = await window.SupabaseChaves.ativarDispositivo(norm, disp);
+    if(rAtiv !== 'ok'){
+      return { ok: false, msg: 'Não foi possível registrar este aparelho. Conecte-se à internet e tente de novo.' };
+    }
     await OneTakeDB.put(STORE, {
       id: 'pro',
       ativo: true,
-      chave: window.TakeUmChave.normalize(chave),
-      compraEm: Date.now()
+      chave: norm,
+      compraEm: Date.now(),
+      revalidadoEm: Date.now(),
+      dispositivo: disp
     });
     return { ok: true, msg: 'Take Um Pro ativado! Criação ilimitada liberada.' };
   }

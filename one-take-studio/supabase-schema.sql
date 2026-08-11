@@ -83,3 +83,141 @@ as $$
   );
 $$;
 grant execute on function public.validar_pro_chave(text) to anon, authenticated;
+
+-- ============================================================
+-- Controle de aparelhos por chave Pro (anti-compartilhamento)
+-- ------------------------------------------------------------
+-- Uma chave pode estar ativa em até LIMITE (3) aparelhos. Se um
+-- aparelho novo ativar além do limite, o MENOS USADO é desativado
+-- (evicção LRU). Quem compartilha a chave perde os aparelhos que
+-- não usa; quem pagou nunca fica preso, pois basta abrir o app
+-- (revalidação a cada 48h) para registrar o aparelho de novo.
+--
+-- Nenhuma tabela é legível pelo anon diretamente: todo acesso
+-- passa por funções RPC com security definer (a chave é a senha).
+-- ============================================================
+
+create table if not exists public.chaves_ativos (
+  id bigint generated always as identity primary key,
+  chave text not null,
+  dispositivo text not null,
+  ultimo_acesso timestamptz not null default now(),
+  ativado_em timestamptz not null default now(),
+  constraint uq_chave_dispositivo unique (chave, dispositivo)
+);
+
+alter table public.chaves_ativos enable row level security;
+
+drop function if exists public.ativar_dispositivo(text, text);
+create or replace function public.ativar_dispositivo(p_chave text, p_dispositivo text)
+returns text
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_chave text;
+  v_limite int := 3;
+  v_total int;
+begin
+  v_chave := upper(regexp_replace(p_chave, '[^A-Za-z0-9]', '', 'g'));
+  if not exists(
+    select 1 from public.chaves_pro
+    where upper(regexp_replace(chave, '[^A-Za-z0-9]', '', 'g')) = v_chave
+  ) then
+    return 'chave_invalida';
+  end if;
+
+  insert into public.chaves_ativos (chave, dispositivo, ultimo_acesso, ativado_em)
+  values (v_chave, p_dispositivo, now(), now())
+  on conflict (chave, dispositivo) do update
+    set ultimo_acesso = now();
+
+  select count(*) into v_total
+  from public.chaves_ativos
+  where chave = v_chave;
+
+  if v_total > v_limite then
+    delete from public.chaves_ativos
+    where id in (
+      select id from public.chaves_ativos
+      where chave = v_chave and dispositivo <> p_dispositivo
+      order by ultimo_acesso asc
+      limit (v_total - v_limite)
+    );
+  end if;
+
+  return 'ok';
+end;
+$$;
+grant execute on function public.ativar_dispositivo(text, text) to anon, authenticated;
+
+drop function if exists public.validar_dispositivo(text, text);
+create or replace function public.validar_dispositivo(p_chave text, p_dispositivo text)
+returns boolean
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_chave text;
+  v_hit boolean;
+begin
+  v_chave := upper(regexp_replace(p_chave, '[^A-Za-z0-9]', '', 'g'));
+  if not exists(
+    select 1 from public.chaves_pro
+    where upper(regexp_replace(chave, '[^A-Za-z0-9]', '', 'g')) = v_chave
+  ) then
+    return false;
+  end if;
+  select exists(
+    select 1 from public.chaves_ativos
+    where chave = v_chave and dispositivo = p_dispositivo
+  ) into v_hit;
+  if v_hit then
+    update public.chaves_ativos
+    set ultimo_acesso = now()
+    where chave = v_chave and dispositivo = p_dispositivo;
+  end if;
+  return v_hit;
+end;
+$$;
+grant execute on function public.validar_dispositivo(text, text) to anon, authenticated;
+
+drop function if exists public.listar_dispositivos(text);
+create or replace function public.listar_dispositivos(p_chave text)
+returns table (dispositivo text, ultimo_acesso timestamptz, ativado_em timestamptz)
+language sql
+security definer
+set search_path = public
+as $$
+  select a.dispositivo, a.ultimo_acesso, a.ativado_em
+  from public.chaves_ativos a
+  where a.chave = upper(regexp_replace(p_chave, '[^A-Za-z0-9]', '', 'g'))
+  order by a.ultimo_acesso desc;
+$$;
+grant execute on function public.listar_dispositivos(text) to anon, authenticated;
+
+drop function if exists public.remover_dispositivo(text, text);
+create or replace function public.remover_dispositivo(p_chave text, p_dispositivo text)
+returns boolean
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_chave text;
+begin
+  v_chave := upper(regexp_replace(p_chave, '[^A-Za-z0-9]', '', 'g'));
+  if not exists(
+    select 1 from public.chaves_pro
+    where upper(regexp_replace(chave, '[^A-Za-z0-9]', '', 'g')) = v_chave
+  ) then
+    return false;
+  end if;
+  delete from public.chaves_ativos
+  where chave = v_chave and dispositivo = p_dispositivo;
+  return found;
+end;
+$$;
+grant execute on function public.remover_dispositivo(text, text) to anon, authenticated;

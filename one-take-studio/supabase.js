@@ -101,6 +101,23 @@
   const SupabaseChaves = {
     configured: configured,
 
+    // ID persistente deste navegador/aparelho. Usado para registrar a
+    // ativação no servidor e controlar o limite de aparelhos por chave.
+    dispositivoId: function(){
+      try{
+        let id = localStorage.getItem('tu-dispositivo-id');
+        if(!id){
+          id = 'dev-' + (window.crypto && window.crypto.randomUUID
+            ? window.crypto.randomUUID()
+            : (Date.now().toString(36) + Math.random().toString(36).slice(2)));
+          localStorage.setItem('tu-dispositivo-id', id);
+        }
+        return id;
+      }catch(e){
+        return 'dev-' + Date.now().toString(36);
+      }
+    },
+
     async validarCodigo(codigo){
       if(!configured()) return false;
       const r = await api('/rest/v1/rpc/validar_pro_codigo', {
@@ -117,6 +134,58 @@
         body: { p_chave: String(chave || '').trim() }
       });
       return !!r;
+    },
+
+    async ativarDispositivo(chave, dispositivo){
+      if(!configured()) return 'indisponivel';
+      try{
+        const r = await api('/rest/v1/rpc/ativar_dispositivo', {
+          method: 'POST',
+          body: { p_chave: String(chave || '').trim(), p_dispositivo: String(dispositivo || '') }
+        });
+        return typeof r === 'string' && r ? r : String(r || 'erro');
+      }catch(e){
+        return 'erro';
+      }
+    },
+
+    async validarDispositivo(chave, dispositivo){
+      if(!configured()) return false;
+      try{
+        const r = await api('/rest/v1/rpc/validar_dispositivo', {
+          method: 'POST',
+          body: { p_chave: String(chave || '').trim(), p_dispositivo: String(dispositivo || '') }
+        });
+        return !!r;
+      }catch(e){
+        return false;
+      }
+    },
+
+    async listarDispositivos(chave){
+      if(!configured()) return [];
+      try{
+        const r = await api('/rest/v1/rpc/listar_dispositivos', {
+          method: 'POST',
+          body: { p_chave: String(chave || '').trim() }
+        });
+        return Array.isArray(r) ? r : [];
+      }catch(e){
+        return [];
+      }
+    },
+
+    async removerDispositivo(chave, dispositivo){
+      if(!configured()) return false;
+      try{
+        const r = await api('/rest/v1/rpc/remover_dispositivo', {
+          method: 'POST',
+          body: { p_chave: String(chave || '').trim(), p_dispositivo: String(dispositivo || '') }
+        });
+        return !!r;
+      }catch(e){
+        return false;
+      }
     }
   };
 

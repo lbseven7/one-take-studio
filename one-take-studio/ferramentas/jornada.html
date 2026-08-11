@@ -74,8 +74,17 @@
     padding: 20px;
   }
 
+  .hero-note{
+    font-size: 12.5px;
+    color: var(--text-dim);
+    line-height: 1.7;
+    margin: 0 0 20px 0;
+  }
+  .hero-note strong{ color: var(--accent-amber); font-weight: 600; }
+
+  /* ---------- PROGRESSO ---------- */
   .progress-wrap{
-    margin-bottom: 22px;
+    margin-bottom: 18px;
   }
   .progress-label{
     display: flex;
@@ -112,113 +121,213 @@
     width: 0;
     border-radius: 3px;
     background: var(--accent-green);
-    transition: width .3s ease;
+    transition: width .35s ease;
   }
 
-  .step-card{
-    background: var(--panel);
-    border: 1px solid var(--panel-line);
-    border-radius: 10px;
-    padding: 18px;
-    margin-bottom: 14px;
-    border-left: 3px solid var(--panel-line);
+  /* ---------- STEADER (passos) ---------- */
+  .stepper-wrap{
+    margin-bottom: 20px;
   }
-  .step-card.current{
-    border-left-color: var(--accent-amber);
-  }
-  .step-card.done{
-    border-left-color: var(--accent-green);
-    background: rgba(57, 255, 136, 0.03);
-  }
-
-  .step-head{
+  .stepper{
     display: flex;
-    align-items: flex-start;
-    gap: 12px;
+    align-items: center;
   }
-  .step-num{
-    width: 30px;
-    height: 30px;
-    border-radius: 8px;
+  .s-item{
+    flex-shrink: 0;
+  }
+  .s-item button{
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font-family: var(--font-display);
+    font-weight: 900;
+  }
+  .s-dot{
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
     background: var(--card);
-    border: 1px solid var(--panel-line);
+    border: 2px solid var(--panel-line);
+    color: var(--text-dim);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: var(--font-display);
-    font-weight: 900;
-    font-size: 13px;
-    color: var(--text-dim);
-    flex-shrink: 0;
+    font-size: 12px;
     transition: all .2s ease;
   }
-  .step-card.current .step-num{ color: var(--accent-amber); border-color: var(--accent-amber); }
-  .step-card.done .step-num{ background: var(--accent-green); color: #06281a; border-color: var(--accent-green); }
-  .step-card.current .step-tag{ color: var(--accent-amber); border-color: rgba(255,176,32,.4); }
-
-  .step-title{
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: 15px;
-    margin: 0 0 2px 0;
-    line-height: 1.3;
+  .s-item.done .s-dot{
+    background: var(--accent-green);
+    border-color: var(--accent-green);
+    color: #06281a;
   }
+  .s-item.active .s-dot{
+    border-color: var(--accent-amber);
+    color: var(--accent-amber);
+    background: rgba(255,176,32,.08);
+    box-shadow: 0 0 0 4px rgba(255,176,32,.12), 0 0 14px rgba(255,176,32,.4);
+  }
+  .s-item.locked .s-dot{
+    opacity: .45;
+    cursor: default;
+  }
+  .s-line{
+    flex: 1;
+    height: 2px;
+    background: var(--panel-line);
+    margin: 0 4px;
+    transition: background .25s ease;
+  }
+  .s-line.on{
+    background: var(--accent-green);
+  }
+  .lock-hint{
+    text-align: center;
+    font-size: 11px;
+    color: var(--accent-amber);
+    min-height: 16px;
+    margin-top: 10px;
+  }
+
+  /* ---------- CARD DO PASSO ---------- */
+  .step-card{
+    background: var(--panel);
+    border: 1px solid var(--panel-line);
+    border-radius: 14px;
+    padding: 22px;
+    position: relative;
+    overflow: hidden;
+  }
+  .step-card::before{
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(600px 120px at 50% -40px, color-mix(in srgb, var(--stage) 14%, transparent), transparent);
+    pointer-events: none;
+  }
+
+  .step-card.anim-next{ animation: enterNext .32s ease; }
+  .step-card.anim-prev{ animation: enterPrev .32s ease; }
+  @keyframes enterNext{ from{ transform: translateX(28px); opacity: 0; } to{ transform: translateX(0); opacity: 1; } }
+  @keyframes enterPrev{ from{ transform: translateX(-28px); opacity: 0; } to{ transform: translateX(0); opacity: 1; } }
+
+  .step-top{
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    position: relative;
+  }
+  .step-icon{
+    width: 48px;
+    height: 48px;
+    border-radius: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: var(--stage);
+    position: relative;
+    background: linear-gradient(180deg, color-mix(in srgb, var(--stage) 26%, #fff 5%) 0%, color-mix(in srgb, var(--stage) 10%, var(--card)) 100%);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.14), 0 4px 8px rgba(0,0,0,.35);
+  }
+  .step-icon svg{ position: relative; z-index: 1; }
+  .step-meta{ min-width: 0; }
   .step-tag{
     display: inline-block;
     font-size: 10px;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--text-dim);
     border: 1px solid var(--panel-line);
     border-radius: 4px;
     padding: 2px 8px;
-    margin-top: 4px;
   }
+  .step-card.active .step-tag{
+    color: var(--accent-amber);
+    border-color: rgba(255,176,32,.4);
+  }
+  .step-card.done .step-tag{
+    color: var(--accent-green);
+    border-color: rgba(57,255,136,.4);
+  }
+  .step-title{
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 19px;
+    margin: 7px 0 0 0;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+  }
+
+  .step-status{
+    margin-left: auto;
+    flex-shrink: 0;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--text-dim);
+    border: 1px solid var(--panel-line);
+    border-radius: 999px;
+    padding: 4px 10px;
+    white-space: nowrap;
+  }
+  .step-card.active .step-status{ color: var(--accent-amber); border-color: rgba(255,176,32,.4); }
+  .step-card.done .step-status{ color: var(--accent-green); border-color: rgba(57,255,136,.4); }
 
   .step-desc{
     color: var(--text-dim);
-    font-size: 13px;
-    line-height: 1.7;
-    margin: 12px 0 0 0;
+    font-size: 13.5px;
+    line-height: 1.75;
+    margin: 18px 0 0 0;
+    position: relative;
   }
   .step-desc strong{ color: var(--text-main); font-weight: 600; }
 
   .step-actions{
     display: flex;
     gap: 10px;
-    margin-top: 14px;
+    margin-top: 20px;
     flex-wrap: wrap;
+    position: relative;
   }
   .step-actions button{
     font-family: var(--font-display);
     font-weight: 700;
     font-size: 13px;
-    padding: 10px 16px;
-    border-radius: 6px;
+    padding: 11px 18px;
+    border-radius: 8px;
     cursor: pointer;
     border: 1px solid var(--panel-line);
     background: var(--card);
     color: var(--text-main);
+    transition: border-color .15s ease, background .15s ease, filter .15s ease;
   }
-  .step-actions button:hover{ border-color: var(--accent-amber); }
+  .step-actions button.ghost{ color: var(--text-dim); }
+  .step-actions button.ghost:hover{ color: var(--text-main); border-color: var(--accent-amber); }
   .step-actions button.primary{
     background: var(--accent-amber);
     border-color: var(--accent-amber);
     color: #1a1200;
+    flex: 1;
+    min-width: 160px;
   }
   .step-actions button.primary:hover{ filter: brightness(1.08); }
   .step-actions button.done-btn{
-    border-color: rgba(57,255,136,.35);
+    border-color: rgba(57,255,136,.4);
     color: var(--accent-green);
+    flex: 1;
+    min-width: 160px;
   }
   .step-actions button.done-btn:hover{ background: rgba(57,255,136,.08); }
-  .step-actions button.done-btn.revert{ color: var(--text-dim); border-color: var(--panel-line); }
 
-  .done-hint{
-    font-size: 11px;
-    color: var(--accent-green);
-    margin-top: 10px;
+  .step-hint{
+    font-size: 11.5px;
+    color: var(--text-dim);
+    margin-top: 14px;
+    position: relative;
   }
+  .step-hint b{ color: var(--accent-amber); font-weight: 600; }
 
   /* ---------- COMPLETION ---------- */
   #done-panel{
@@ -226,17 +335,27 @@
     text-align: center;
     background: var(--panel);
     border: 1px solid rgba(57,255,136,.3);
-    border-radius: 12px;
+    border-radius: 14px;
     padding: 34px 22px;
     margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  #done-panel::before{
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(420px 140px at 50% -50px, rgba(57,255,136,.16), transparent);
+    pointer-events: none;
   }
   #done-panel.show{ display: block; }
-  #done-panel .big{ font-size: 40px; margin-bottom: 8px; }
+  #done-panel .big{ font-size: 40px; margin-bottom: 8px; position: relative; }
   #done-panel h2{
     font-family: var(--font-display);
     font-weight: 900;
     font-size: 20px;
     margin: 0 0 8px 0;
+    position: relative;
   }
   #done-panel p{
     color: var(--text-dim);
@@ -244,29 +363,22 @@
     line-height: 1.7;
     margin: 0 auto 18px auto;
     max-width: 420px;
+    position: relative;
   }
   #done-panel p strong{ color: var(--accent-green); font-weight: 600; }
-  #done-actions{ display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+  #done-actions{ display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; position: relative; }
   #done-actions button{
     font-family: var(--font-display);
     font-weight: 700;
     font-size: 13px;
     padding: 11px 18px;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
   }
   #done-actions .b-primary{ background: var(--accent-amber); border: none; color: #1a1200; }
   #done-actions .b-ghost{ background: var(--card); border: 1px solid var(--panel-line); color: var(--text-dim); }
   #done-actions .b-primary:hover{ filter: brightness(1.08); }
   #done-actions .b-ghost:hover{ color: var(--text-main); border-color: var(--accent-amber); }
-
-  .hero-note{
-    font-size: 12px;
-    color: var(--text-dim);
-    line-height: 1.7;
-    margin: 0 0 20px 0;
-  }
-  .hero-note strong{ color: var(--accent-amber); font-weight: 600; }
 </style>
 <link rel="stylesheet" href="../mobile.css">
 <link rel="stylesheet" href="../theme.css">
@@ -282,12 +394,17 @@
   </header>
 
   <div id="content">
-    <p class="hero-note">Uma trilha passo a passo do <strong>zero até o primeiro vídeo publicado</strong>. Cada passo abre uma ferramenta do Take Um Studio — use, conclua e siga em frente. Sem pressa.</p>
+    <p class="hero-note">Uma trilha passo a passo do <strong>zero até o primeiro vídeo publicado</strong>. Conclua cada etapa para desbloquear a próxima — como uma produção de verdade.</p>
 
     <div class="progress-wrap">
-      <div class="progress-label"><span>Progresso · fica salvo neste navegador</span><b id="progress-pct">0%</b></div>
+      <div class="progress-label"><span>Progresso · salvo neste navegador</span><b id="progress-pct">0%</b></div>
       <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
       <button class="reset-btn" id="reset-btn">Zerar progresso</button>
+    </div>
+
+    <div class="stepper-wrap">
+      <div class="stepper" id="stepper"></div>
+      <div class="lock-hint" id="lock-hint"></div>
     </div>
 
     <div id="done-panel">
@@ -300,7 +417,7 @@
       </div>
     </div>
 
-    <div id="steps"></div>
+    <div id="step-card"></div>
   </div>
 </div>
 
@@ -312,77 +429,83 @@
 
   const STEPS = [
     {
-      id: 'ideia',
-      n: '1',
+      id: 'ideia', n: '1',
       title: 'Escolha a sua ideia',
-      tag: 'Ideia',
-      tool: 'ideias',
-      toolLabel: 'Abrir Banco de Ideias',
+      stage: 'Planejar',
+      color: 'var(--accent-blue)',
+      icon: '<path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.3h6c0-1 .4-1.8 1-2.3A7 7 0 0 0 12 2z"/>',
+      tool: 'ideias', toolLabel: 'Abrir Banco de Ideias',
       desc: 'Escreva a ideia do seu primeiro vídeo no <strong>Banco de Ideias</strong>. Não precisa ser perfeita — só precisa existir. Pense no que você já sabe e gostaria de mostrar.'
     },
     {
-      id: 'roteiro',
-      n: '2',
+      id: 'roteiro', n: '2',
       title: 'Escreva o roteiro',
-      tag: 'Roteiro',
-      tool: 'roteirizador',
-      toolLabel: 'Abrir Roteirizador',
+      stage: 'Planejar',
+      color: 'var(--accent-blue)',
+      icon: '<path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>',
+      tool: 'roteirizador', toolLabel: 'Abrir Roteirizador',
       desc: 'No <strong>Roteirizador</strong>, monte o gancho (os primeiros segundos), o conteúdo principal e o pedido final. Vídeo de iniciante pode ser curto: 1 a 3 minutos está ótimo.'
     },
     {
-      id: 'pauta',
-      n: '3',
+      id: 'pauta', n: '3',
       title: 'Encaixe na sua pauta',
-      tag: 'Organização',
-      tool: 'pauta',
-      toolLabel: 'Abrir Painel de Pauta',
+      stage: 'Planejar',
+      color: 'var(--accent-blue)',
+      icon: '<rect x="3" y="4" width="5" height="16" rx="1"/><rect x="9.5" y="4" width="5" height="16" rx="1"/><rect x="16" y="4" width="5" height="16" rx="1"/>',
+      tool: 'pauta', toolLabel: 'Abrir Painel de Pauta',
       desc: 'Leve sua ideia para o <strong>Painel de Pauta</strong> e acompanhe o card passando pelas etapas: ideia, roteiro, gravado, editado e postado. É o seu mapa do vídeo.'
     },
     {
-      id: 'checklist',
-      n: '4',
+      id: 'checklist', n: '4',
       title: 'Prepare o ambiente',
-      tag: 'Preparação',
-      tool: 'checklist',
-      toolLabel: 'Abrir Checklist',
+      stage: 'Gravar',
+      color: 'var(--accent-amber)',
+      icon: '<polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>',
+      tool: 'checklist', toolLabel: 'Abrir Checklist',
       desc: 'Rode o <strong>Checklist de Gravação</strong>: bateria carregada, microfone ok, luz ligada, celular em modo avião. Cinco minutos aqui evitam gravar tudo de novo.'
     },
     {
-      id: 'gravacao',
-      n: '5',
+      id: 'gravacao', n: '5',
       title: 'Grave o take',
-      tag: 'Gravação',
-      tool: 'teleprompter',
-      toolLabel: 'Abrir Teleprompter',
+      stage: 'Gravar',
+      color: 'var(--accent-amber)',
+      icon: '<rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="6" y1="8" x2="18" y2="8"/><line x1="6" y1="12" x2="13" y2="12"/>',
+      tool: 'teleprompter', toolLabel: 'Abrir Teleprompter',
       desc: 'Abra o <strong>Teleprompter</strong> e leia o roteiro rolando na tela enquanto grava. Errou? Respira e começa de novo — claquete marca cada tentativa. O primeiro take raramente é o bom.'
     },
     {
-      id: 'capa',
-      n: '6',
+      id: 'capa', n: '6',
       title: 'Crie a capa',
-      tag: 'Capa',
-      tool: 'capa',
-      toolLabel: 'Abrir Gerador de Capa',
+      stage: 'Publicar',
+      color: 'var(--accent-red)',
+      icon: '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>',
+      tool: 'capa', toolLabel: 'Abrir Gerador de Capa',
       desc: 'No <strong>Gerador de Capa</strong>, coloque o título do vídeo em poucas palavras e escolha uma cor chamativa. A capa é o que faz a pessoa clicar — vale caprichar.'
     },
     {
-      id: 'publicar',
-      n: '7',
+      id: 'publicar', n: '7',
       title: 'Publique e guarde',
-      tag: 'Publicação',
-      tool: null,
-      toolLabel: null,
+      stage: 'Publicar',
+      color: 'var(--accent-red)',
+      icon: '<line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/>',
+      tool: null, toolLabel: null,
       desc: 'Poste seu primeiro vídeo na sua plataforma e comemore! Depois, volte à home e baixe um <strong>backup dos seus dados</strong> para nunca perdê-los.'
     }
   ];
 
-  const stepsEl = document.getElementById('steps');
+  const TOTAL = STEPS.length;
+  const stepsEl = document.getElementById('stepper');
+  const cardEl = document.getElementById('step-card');
   const doneCountEl = document.getElementById('done-count');
   const progressPctEl = document.getElementById('progress-pct');
   const progressFill = document.getElementById('progress-fill');
   const donePanel = document.getElementById('done-panel');
+  const lockHint = document.getElementById('lock-hint');
+  const contentEl = document.getElementById('content');
 
   let done = {};
+  let viewIndex = 0;
+  let anim = '';
 
   function shellOpen(toolId){
     try{
@@ -406,19 +529,28 @@
     return false;
   }
 
+  function firstIncompleteIndex(){
+    return STEPS.findIndex(s => !done[s.id]);
+  }
+
+  function allDone(){
+    return STEPS.every(s => done[s.id]);
+  }
+
   async function loadState(){
-    const valid = STEPS.map(s => s.id);
     done = {};
     try{
       const s = await OneTakeDB.get(STORE, STATE_ID);
       if(s && s.done && typeof s.done === 'object'){
-        valid.forEach(id => {
-          if(s.done[id]) done[id] = s.done[id];
+        STEPS.forEach(step => {
+          if(s.done[step.id]) done[step.id] = s.done[step.id];
         });
       }
     }catch(e){
       done = {};
     }
+    const first = firstIncompleteIndex();
+    viewIndex = first === -1 ? TOTAL - 1 : first;
   }
 
   async function saveState(){
@@ -427,83 +559,157 @@
     }catch(e){}
   }
 
-  async function toggleStep(id){
-    if(done[id]){
-      delete done[id];
-    }else{
-      done[id] = Date.now();
-    }
+  async function markDone(id){
+    done[id] = Date.now();
     await saveState();
+    const next = firstIncompleteIndex();
+    viewIndex = next === -1 ? TOTAL - 1 : next;
+    anim = 'next';
+    render();
+    contentEl.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  async function unmark(id){
+    delete done[id];
+    await saveState();
+    viewIndex = STEPS.findIndex(s => s.id === id);
+    anim = 'prev';
     render();
   }
 
-  function firstIncomplete(){
-    return STEPS.find(s => !done[s.id]);
+  async function resetProgress(){
+    if(!window.confirm('Zerar todo o progresso da trilha? Os dados das ferramentas (ideias, roteiros) não serão apagados.')) return;
+    done = {};
+    await saveState();
+    viewIndex = 0;
+    anim = '';
+    render();
+  }
+
+  function goto(index){
+    if(index === viewIndex) return;
+    const step = STEPS[index];
+    if(done[step.id] || index === firstIncompleteIndex()){
+      anim = index > viewIndex ? 'next' : 'prev';
+      viewIndex = index;
+      render();
+    }else{
+      lockHint.textContent = '🔒 Conclua a etapa anterior para desbloquear esta.';
+      clearTimeout(lockHint._t);
+      lockHint._t = setTimeout(() => { lockHint.textContent = ''; }, 2200);
+    }
   }
 
   function render(){
-    const currentId = firstIncomplete() ? firstIncomplete().id : null;
-    const total = STEPS.length;
     const completed = Object.keys(done).length;
+    const activeIndex = firstIncompleteIndex();
+    const pct = Math.round((completed / TOTAL) * 100);
 
     doneCountEl.textContent = completed;
-    progressPctEl.textContent = Math.round((completed / total) * 100) + '%';
-    progressFill.style.width = (completed / total) * 100 + '%';
+    progressPctEl.textContent = pct + '%';
+    progressFill.style.width = pct + '%';
+    donePanel.classList.toggle('show', allDone());
 
-    donePanel.classList.toggle('show', completed === total);
+    renderStepper(activeIndex);
+    renderCard(activeIndex);
+  }
 
+  function renderStepper(activeIndex){
     stepsEl.innerHTML = '';
-
-    STEPS.forEach(step => {
-      const isDone = !!done[step.id];
-      const isCurrent = step.id === currentId;
-
-      const card = document.createElement('div');
-      card.className = 'step-card' + (isDone ? ' done' : '') + (isCurrent ? ' current' : '');
-
-      let actions = '';
-      if(step.tool && step.toolLabel){
-        actions += `<button class="primary" data-open="${step.tool}">${step.toolLabel}</button>`;
+    STEPS.forEach((step, i) => {
+      if(i > 0){
+        const line = document.createElement('div');
+        line.className = 's-line' + (done[STEPS[i - 1].id] ? ' on' : '');
+        stepsEl.appendChild(line);
       }
-      actions += isDone
-        ? `<button class="done-btn revert" data-toggle="${step.id}">Desmarcar</button>`
-        : `<button class="done-btn" data-toggle="${step.id}">Marcar como feito</button>`;
+      const item = document.createElement('div');
+      let cls = 's-item';
+      if(done[step.id]) cls += ' done';
+      else if(i === activeIndex) cls += ' active';
+      else if(activeIndex !== -1 && i > activeIndex) cls += ' locked';
+      item.className = cls;
 
-      const hint = isDone ? '<div class="done-hint">✓ Passo concluído</div>' : '';
-
-      card.innerHTML = `
-        <div class="step-head">
-          <div class="step-num">${step.n}</div>
-          <div>
-            <div class="step-title">${step.title}</div>
-            <span class="step-tag">${step.tag}${isCurrent ? ' · você está aqui' : ''}</span>
-          </div>
-        </div>
-        <p class="step-desc">${step.desc}</p>
-        <div class="step-actions">${actions}</div>
-        ${hint}
-      `;
-      stepsEl.appendChild(card);
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.setAttribute('aria-label', 'Etapa ' + step.n + ': ' + step.title + (done[step.id] ? ' (concluída)' : ''));
+      btn.innerHTML = '<span class="s-dot">' + (done[step.id] ? '✓' : step.n) + '</span>';
+      btn.addEventListener('click', () => goto(i));
+      item.appendChild(btn);
+      stepsEl.appendChild(item);
     });
+  }
 
-    document.querySelectorAll('[data-open]').forEach(btn => {
+  function renderCard(activeIndex){
+    const step = STEPS[viewIndex];
+    const isDone = !!done[step.id];
+    const isActive = activeIndex === viewIndex && !allDone();
+
+    let cls = 'step-card';
+    if(isDone) cls += ' done';
+    else if(isActive) cls += ' active';
+    if(anim) cls += ' anim-' + anim;
+    anim = '';
+
+    let status = isDone ? '✓ Concluído' : (isActive ? 'Você está aqui' : 'Bloqueado');
+
+    let actions = '';
+    if(viewIndex > 0){
+      actions += `<button class="ghost" data-nav="prev">← Anterior</button>`;
+    }
+    if(step.tool && step.toolLabel){
+      actions += `<button class="primary" data-open="${step.tool}">${step.toolLabel}</button>`;
+    }
+    if(isDone){
+      if(viewIndex < TOTAL - 1){
+        actions += `<button class="primary" data-nav="next">Próximo passo →</button>`;
+      }
+      actions += `<button class="ghost" data-unmark="${step.id}">Desmarcar</button>`;
+    }else{
+      actions += `<button class="done-btn" data-done="${step.id}">Marcar como feito</button>`;
+    }
+
+    const hint = (!isDone && isActive && viewIndex < TOTAL - 1)
+      ? `<div class="step-hint">Ao concluir, a próxima etapa é <b>desbloqueada</b> automaticamente.</div>`
+      : '';
+
+    cardEl.className = cls;
+    cardEl.style.setProperty('--stage', step.color);
+    cardEl.innerHTML = `
+      <div class="step-top">
+        <div class="step-icon" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${step.icon}</svg>
+        </div>
+        <div class="step-meta">
+          <span class="step-tag">${step.stage}</span>
+          <h2 class="step-title">${step.n} · ${step.title}</h2>
+        </div>
+        <div class="step-status">${status}</div>
+      </div>
+      <p class="step-desc">${step.desc}</p>
+      <div class="step-actions">${actions}</div>
+      ${hint}
+    `;
+
+    cardEl.querySelectorAll('[data-open]').forEach(btn => {
       btn.addEventListener('click', () => shellOpen(btn.dataset.open));
     });
-    document.querySelectorAll('[data-toggle]').forEach(btn => {
-      btn.addEventListener('click', () => toggleStep(btn.dataset.toggle));
+    cardEl.querySelectorAll('[data-done]').forEach(btn => {
+      btn.addEventListener('click', () => markDone(btn.dataset.done));
+    });
+    cardEl.querySelectorAll('[data-unmark]').forEach(btn => {
+      btn.addEventListener('click', () => unmark(btn.dataset.unmark));
+    });
+    cardEl.querySelectorAll('[data-nav]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = btn.dataset.nav === 'next' ? viewIndex + 1 : viewIndex - 1;
+        if(target >= 0 && target < TOTAL) goto(target);
+      });
     });
   }
 
   document.getElementById('backup-btn').addEventListener('click', openHome);
   document.getElementById('restart-btn').addEventListener('click', resetProgress);
   document.getElementById('reset-btn').addEventListener('click', resetProgress);
-
-  async function resetProgress(){
-    if(!window.confirm('Zerar todo o progresso da trilha? Os dados das ferramentas (ideias, roteiros) não serão apagados.')) return;
-    done = {};
-    await saveState();
-    render();
-  }
 
   loadState().then(render);
 })();

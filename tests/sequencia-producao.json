@@ -1,0 +1,184 @@
+{
+  "format": "takeum-backup",
+  "version": 1,
+  "exportedAt": "2026-08-11T00:00:00.000Z",
+  "note": "Dados de teste da sequência 'Primeiro Vídeo' (7 missões). Importe em 'Seus dados' > restaurar backup. A trilha começa zerada para você percorrer as 7 missões.",
+  "data": {
+    "banco_ideias": [
+      {
+        "id": "teste_ideia_1",
+        "title": "O jeito preguiçoso de começar no YouTube",
+        "notes": "Setup fixo + zero edição + constância. Gancho: para gravar 216 vídeos num ano você não precisa de câmera cara.",
+        "platform": "youtube",
+        "createdAt": 1784300000000
+      },
+      {
+        "id": "teste_ideia_2",
+        "title": "Meu setup de gravação (celular + luz de R$ 100)",
+        "notes": "Mostrar o pedestal, a luz e o microfone lapela. Pode virar um Short.",
+        "platform": "shorts",
+        "createdAt": 1784303600000
+      }
+    ],
+    "roteirizador_scripts": [
+      {
+        "id": "teste_roteiro_1",
+        "title": "O jeito preguiçoso de começar no YouTube",
+        "sections": [
+          { "id": "gancho", "name": "Gancho", "content": "Para gravar 216 vídeos num ano, você não precisa de câmera cara, editor nem roteiro perfeito. Só de um jeito que não depende de inspiração.", "duration": 15 },
+          { "id": "problema", "name": "Problema / Contexto", "content": "A maioria das ferramentas de vídeo está espalhada em vários sites, cobra em dólar e é em inglês. Aí quem quer começar trava antes do primeiro take.", "duration": 30 },
+          { "id": "solucao", "name": "Solução / Conteúdo principal", "content": "[00:00] A ideia é simples: celular fixo, luz boa, microfone e play e pause, sem edição, um take só.\n[00:40] Eu planejo, roteirizo e gravo tudo num lugar só, grátis e em português.\n[01:20] Constância vence perfeição. Um vídeo por semana já é muita coisa.", "duration": 120 },
+          { "id": "cta", "name": "CTA", "content": "Se inscreve, deixa o like e abre o estúdio no link da descrição. Semana que vem eu mostro o setup completo.", "duration": 20 }
+        ],
+        "updatedAt": 1784300600000
+      }
+    ],
+    "pauta_cards": [
+      {
+        "id": "teste_pauta_1",
+        "title": "O jeito preguiçoso de começar no YouTube",
+        "notes": "EP 1 da série. Gancho forte nos primeiros 5 segundos.",
+        "status": "ideia",
+        "platform": "youtube",
+        "createdAt": 1784301200000
+      }
+    ],
+    "checklist_state": [
+      {
+        "id": "items",
+        "list": [
+          { "id": "bateria", "label": "Bateria carregada / celular carregando", "default": true, "checked": false },
+          { "id": "cartao", "label": "Cartão de memória ok", "default": true, "checked": false },
+          { "id": "microfone", "label": "Microfone funcionando", "default": true, "checked": false },
+          { "id": "luz", "label": "Iluminação ligada", "default": true, "checked": false },
+          { "id": "cenario", "label": "Cenário arrumado", "default": true, "checked": false },
+          { "id": "roupa", "label": "Roupa / figurino", "default": true, "checked": false },
+          { "id": "isolamento", "label": "Janelas fechadas (isolamento acústico)", "default": true, "checked": false },
+          { "id": "notif", "label": "Notificações do celular silenciadas", "default": true, "checked": false },
+          { "id": "roteiro", "label": "Roteiro aberto no teleprompter", "default": true, "checked": false },
+          { "id": "claquete", "label": "Claquete configurada", "default": true, "checked": false },
+          { "id": "lente", "label": "Lente limpa", "default": true, "checked": false },
+          { "id": "agua", "label": "Copo d'água por perto", "default": true, "checked": false }
+        ]
+      }
+    ],
+    "teleprompter_state": [
+      {
+        "id": "state",
+        "script": "[Gancho]\nPara gravar 216 vídeos num ano, você não precisa de câmera cara, editor nem roteiro perfeito. Só de um jeito que não depende de inspiração.\n\n[Problema / Contexto]\nA maioria das ferramentas de vídeo está espalhada em vários sites, cobra em dólar e é em inglês. Aí quem quer começar trava antes do primeiro take.\n\n[Solução / Conteúdo principal]\n[00:00] A ideia é simples: celular fixo, luz boa, microfone e play e pause, sem edição, um take só.\n[00:40] Eu planejo, roteirizo e gravo tudo num lugar só, grátis e em português.\n[01:20] Constância vence perfeição. Um vídeo por semana já é muita coisa.\n\n[CTA]\nSe inscreve, deixa o like e abre o estúdio no link da descrição. Semana que vem eu mostro o setup completo.",
+        "speed": 3,
+        "fontSize": 40,
+        "mirrored": false,
+        "useCountdown": true,
+        "useCamera": false
+      }
+    ],
+    "claquete_state": [
+      {
+        "id": "state",
+        "title": "O jeito preguiçoso",
+        "scene": "Cena 1 · Apresentação",
+        "take": 2,
+        "note": "Olhar na lente e pausar de verdade",
+        "countdown": 5
+      }
+    ],
+    "claquete_takes": [
+      {
+        "id": "teste_take_1",
+        "title": "O jeito preguiçoso",
+        "scene": "Cena 1 · Apresentação",
+        "take": "1",
+        "duration": 47,
+        "timestamp": 1784301800000
+      },
+      {
+        "id": "teste_take_2",
+        "title": "O jeito preguiçoso",
+        "scene": "Cena 1 · Apresentação",
+        "take": "2",
+        "duration": 51,
+        "timestamp": 1784301900000
+      }
+    ],
+    "capa_state": [
+      {
+        "id": "meta",
+        "activeId": "cap_1"
+      },
+      {
+        "id": "cap_1",
+        "name": "Capa 1",
+        "state": {
+          "format": "yt",
+          "title": "O JEITO PREGUIÇOSO",
+          "emoji": "🎬",
+          "bg": "#ffb020",
+          "fg": "#1a1200",
+          "gradient": false,
+          "gradFrom": "#ff8c42",
+          "gradTo": "#ff3b30",
+          "bgImage": null,
+          "bgTransform": { "scale": 1, "x": 0, "y": 0 },
+          "posX": "center",
+          "posY": "middle",
+          "textScale": 100,
+          "textBg": false,
+          "textBgColor": "#0a0a0c",
+          "textBgOpacity": 75,
+          "outline": false,
+          "outlineColor": "#0a0a0c",
+          "outlineWidth": 4,
+          "safeZone": false,
+          "face": null,
+          "facePos": "tr",
+          "faceSize": 26,
+          "drag": { "x": 0, "y": 0 },
+          "faceDrag": { "x": 0, "y": 0 }
+        },
+        "updatedAt": 1784302400000
+      }
+    ],
+    "calendario_entries": [
+      {
+        "id": "teste_cal_1",
+        "data": "2026-08-14",
+        "titulo": "O jeito preguiçoso de começar no YouTube",
+        "status": "publicado",
+        "plataforma": "YouTube",
+        "nota": "Publicar às 19h",
+        "criadoEm": 1784302600000
+      }
+    ],
+    "tracker_videos": [
+      {
+        "id": "teste_tracker_1",
+        "titulo": "O jeito preguiçoso de começar no YouTube",
+        "url": "https://youtube.com/watch?v=exemplo",
+        "capa": "",
+        "plataforma": "YouTube",
+        "data": "2026-08-14",
+        "views": 1234,
+        "likes": 87,
+        "coment": 12,
+        "compart": 9,
+        "nota": "Gancho funcionou bem. Melhorar iluminação no próximo.",
+        "criadoEm": 1784303000000
+      }
+    ],
+    "app_state": [
+      {
+        "id": "pack",
+        "titulo": "O jeito preguiçoso de começar no YouTube",
+        "alternativas": [
+          "Não precisa de câmera cara: o jeito preguiçoso de começar no YouTube",
+          "216 vídeos por ano sem editor: o método do setup fixo",
+          "Comecei um canal sem gastar com ferramenta"
+        ],
+        "descricao": "Para gravar 216 vídeos num ano você não precisa de câmera cara nem editor. Neste vídeo mostro o método do setup fixo: celular no pedestal, luz simples, microfone bom, play e pause, sem edição, um take só. E tudo planejado e roteirizado num lugar só, grátis e em português. Constância vence perfeição.",
+        "tags": ["youtube", "primeiro video", "comecar canal", "setup de gravacao", "conteudo"],
+        "hashtags": ["#youtube", "#primeirovideo", "#conteudo"]
+      }
+    ]
+  }
+}

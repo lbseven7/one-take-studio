@@ -37,7 +37,7 @@
     height: 100dvh;
     display: flex;
     flex-direction: column;
-    max-width: 900px;
+    max-width: 720px;
     margin: 0 auto;
     width: 100%;
   }
@@ -65,12 +65,8 @@
     letter-spacing: 0.06em;
     text-transform: uppercase;
     white-space: nowrap;
-    border: 1px solid var(--panel-line);
-    border-radius: 999px;
-    padding: 4px 10px;
   }
-  header .count b{ color: var(--accent-amber); font-weight: 700; }
-  header .count .total{ color: var(--text-dim); }
+  header .count .total{ color: var(--accent-amber); }
 
   #content{
     flex: 1;
@@ -78,43 +74,31 @@
     padding: 20px;
   }
 
-  .briefing{
-    font-size: 13px;
-    color: var(--text-dim);
-    line-height: 1.7;
-    margin: 0 0 16px 0;
+  .progress-wrap{
+    margin-bottom: 22px;
   }
-  .briefing b{ color: var(--accent-amber); font-weight: 600; }
-
-  /* ---------- PROGRESSO ---------- */
-  .progress-wrap{ margin-bottom: 18px; }
-  .progress-row{
+  .progress-label{
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    gap: 10px;
-    margin-bottom: 8px;
-  }
-  .progress-row .lbl{
     font-size: 11px;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--text-dim);
+    margin-bottom: 8px;
   }
-  .progress-row .r{ display: flex; align-items: center; gap: 12px; }
-  #progress-pct{ color: var(--accent-green); font-weight: 700; font-size: 12px; }
+  .progress-label b{ color: var(--accent-amber); font-weight: 600; }
   .reset-btn{
+    margin-top: 10px;
     font-family: var(--font-mono);
-    font-size: 10.5px;
+    font-size: 11px;
     letter-spacing: 0.05em;
     text-transform: uppercase;
     color: var(--text-dim);
     background: none;
     border: 1px solid var(--panel-line);
-    border-radius: 6px;
-    padding: 5px 10px;
+    border-radius: 4px;
+    padding: 6px 12px;
     cursor: pointer;
-    min-height: 32px;
   }
   .reset-btn:hover{ color: var(--accent-red); border-color: var(--accent-red); }
   .progress-track{
@@ -128,258 +112,131 @@
     width: 0;
     border-radius: 3px;
     background: var(--accent-green);
-    transition: width .35s ease;
+    transition: width .3s ease;
   }
 
-  /* ---------- TRILHA DE MISSÕES ---------- */
-  .mpath{
-    display: flex;
-    flex-direction: column;
-  }
-
-  .mnode{
-    display: flex;
-    gap: 4px;
-    cursor: pointer;
-    padding: 4px 10px;
-    border-radius: 14px;
-    border: 1px solid transparent;
-    transition: background .2s ease, border-color .2s ease;
-  }
-  .mnode:hover{ background: rgba(255,255,255,.03); }
-  .mnode.open{
+  .step-card{
     background: var(--panel);
-    border-color: var(--panel-line);
-    padding-top: 10px;
-    padding-bottom: 12px;
+    border: 1px solid var(--panel-line);
+    border-radius: 10px;
+    padding: 18px;
+    margin-bottom: 14px;
+    border-left: 3px solid var(--panel-line);
   }
-  .mnode.open.locked .micon{ filter: grayscale(.9); opacity: .5; }
+  .step-card.current{
+    border-left-color: var(--accent-amber);
+  }
+  .step-card.done{
+    border-left-color: var(--accent-green);
+    background: rgba(57, 255, 136, 0.03);
+  }
 
-  .mrail{
-    width: 56px;
-    flex-shrink: 0;
+  .step-head{
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
+    gap: 12px;
   }
-  .mlink{
-    width: 2px;
-    height: 9px;
-    border-radius: 1px;
-    background: var(--panel-line);
-    transition: background .3s ease;
-  }
-  .mlink.on{ background: var(--accent-green); }
-
-  .micon{
-    position: relative;
-    width: 46px;
-    height: 46px;
-    border-radius: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    color: var(--stage);
-    background: linear-gradient(180deg, color-mix(in srgb, var(--stage) 30%, #fff 6%) 0%, color-mix(in srgb, var(--stage) 8%, var(--card)) 100%);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.14), 0 6px 14px rgba(0,0,0,.35);
-    transition: filter .25s ease, opacity .25s ease, box-shadow .25s ease;
-  }
-  .micon::before{
-    content: '';
-    position: absolute;
-    inset: auto 0 0 0;
-    height: 38%;
-    border-radius: 0 0 14px 14px;
-    background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.30) 100%);
-    pointer-events: none;
-  }
-  .micon svg{ position: relative; z-index: 1; }
-  .micon .mlock{
-    position: absolute;
-    right: -6px;
-    bottom: -6px;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
+  .step-num{
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
     background: var(--card);
     border: 1px solid var(--panel-line);
     display: flex;
     align-items: center;
     justify-content: center;
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 13px;
+    color: var(--text-dim);
+    flex-shrink: 0;
+    transition: all .2s ease;
+  }
+  .step-card.current .step-num{ color: var(--accent-amber); border-color: var(--accent-amber); }
+  .step-card.done .step-num{ background: var(--accent-green); color: #06281a; border-color: var(--accent-green); }
+  .step-card.current .step-tag{ color: var(--accent-amber); border-color: rgba(255,176,32,.4); }
+
+  .step-title{
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 15px;
+    margin: 0 0 2px 0;
+    line-height: 1.3;
+  }
+  .step-tag{
+    display: inline-block;
     font-size: 10px;
-    z-index: 2;
-  }
-
-  .mnode.active .micon{
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.14), 0 0 0 3px color-mix(in srgb, var(--stage) 25%, transparent), 0 0 24px color-mix(in srgb, var(--stage) 40%, transparent), 0 6px 14px rgba(0,0,0,.35);
-  }
-  .mnode.done .micon{
-    background: linear-gradient(180deg, color-mix(in srgb, var(--accent-green) 35%, #fff 8%) 0%, color-mix(in srgb, var(--accent-green) 12%, var(--card)) 100%);
-    color: var(--accent-green);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.16), 0 4px 12px rgba(0,0,0,.35);
-  }
-  .mnode.locked .micon{
-    filter: grayscale(.9);
-    opacity: .5;
-  }
-
-  .mnode.active .micon::after{
-    content: '';
-    position: absolute;
-    inset: -6px;
-    border-radius: 18px;
-    border: 2px solid color-mix(in srgb, var(--stage) 45%, transparent);
-    animation: halo 2.2s ease-out infinite;
-  }
-  @keyframes halo{
-    0%{ transform: scale(1); opacity: .9; }
-    70%{ transform: scale(1.35); opacity: 0; }
-    100%{ transform: scale(1.35); opacity: 0; }
-  }
-
-  .mnode.just-unlocked .micon{ animation: unlockPulse .8s ease-out 2; }
-  @keyframes unlockPulse{
-    0%{ box-shadow: 0 0 0 0 color-mix(in srgb, var(--stage) 55%, transparent); }
-    100%{ box-shadow: 0 0 0 18px transparent; }
-  }
-
-  .mbody{
-    flex: 1;
-    min-width: 0;
-    padding: 8px 4px 8px 6px;
-  }
-  .mtag{
-    display: block;
-    font-size: 10px;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--text-dim);
+    border: 1px solid var(--panel-line);
+    border-radius: 4px;
+    padding: 2px 8px;
+    margin-top: 4px;
   }
-  .mnode.open .mtag{ color: var(--stage); font-weight: 700; }
-  .mname{
-    font-family: var(--font-display);
-    font-weight: 800;
-    font-size: 16px;
-    margin: 3px 0 0 0;
-    line-height: 1.25;
-    letter-spacing: -0.01em;
-  }
-  .mnode.locked .mname{ color: var(--text-dim); }
 
-  .mdesc{
-    display: none;
+  .step-desc{
     color: var(--text-dim);
     font-size: 13px;
-    line-height: 1.75;
+    line-height: 1.7;
     margin: 12px 0 0 0;
   }
-  .mdesc strong{ color: var(--text-main); font-weight: 600; }
-  .mnode.open .mdesc{ display: block; animation: fadeUp .3s ease; }
+  .step-desc strong{ color: var(--text-main); font-weight: 600; }
 
-  .mactions{
-    display: none;
+  .step-actions{
+    display: flex;
     gap: 10px;
     margin-top: 14px;
     flex-wrap: wrap;
   }
-  .mnode.open .mactions{ display: flex; animation: fadeUp .3s ease; }
-  .mactions button{
+  .step-actions button{
     font-family: var(--font-display);
     font-weight: 700;
     font-size: 13px;
-    padding: 11px 18px;
-    min-height: 44px;
-    border-radius: 8px;
+    padding: 10px 16px;
+    border-radius: 6px;
     cursor: pointer;
     border: 1px solid var(--panel-line);
     background: var(--card);
     color: var(--text-main);
-    transition: border-color .15s ease, background .15s ease, filter .15s ease;
   }
-  .mactions button.ghost{ color: var(--text-dim); }
-  .mactions button.ghost:hover{ color: var(--text-main); border-color: var(--accent-amber); }
-  .mactions button.primary{
+  .step-actions button:hover{ border-color: var(--accent-amber); }
+  .step-actions button.primary{
     background: var(--accent-amber);
     border-color: var(--accent-amber);
     color: #1a1200;
-    flex: 1;
-    min-width: 150px;
   }
-  .mactions button.primary:hover{ filter: brightness(1.08); }
-  .mactions button.done-btn{
-    border-color: rgba(57,255,136,.45);
+  .step-actions button.primary:hover{ filter: brightness(1.08); }
+  .step-actions button.done-btn{
+    border-color: rgba(57,255,136,.35);
     color: var(--accent-green);
-    flex: 1;
-    min-width: 150px;
   }
-  .mactions button.done-btn:hover{ background: rgba(57,255,136,.08); }
+  .step-actions button.done-btn:hover{ background: rgba(57,255,136,.08); }
+  .step-actions button.done-btn.revert{ color: var(--text-dim); border-color: var(--panel-line); }
 
-  .mpill{
-    align-self: flex-start;
-    margin: 10px 0 0 4px;
-    flex-shrink: 0;
-    font-size: 9.5px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    font-weight: 700;
-    color: var(--text-dim);
-    border: 1px solid var(--panel-line);
-    border-radius: 999px;
-    padding: 4px 10px;
-    white-space: nowrap;
+  .done-hint{
+    font-size: 11px;
+    color: var(--accent-green);
+    margin-top: 10px;
   }
-  .mnode.active .mpill{ color: var(--accent-amber); border-color: rgba(255,176,32,.45); }
-  .mnode.done .mpill{ color: var(--accent-green); border-color: rgba(57,255,136,.45); }
-  .mnode.locked .mpill{ opacity: .6; }
 
-  @keyframes fadeUp{ from{ transform: translateY(6px); opacity: 0; } to{ transform: translateY(0); opacity: 1; } }
-
-  /* ---------- CONCLUSÃO ---------- */
+  /* ---------- COMPLETION ---------- */
   #done-panel{
     display: none;
     text-align: center;
     background: var(--panel);
     border: 1px solid rgba(57,255,136,.3);
-    border-radius: 14px;
+    border-radius: 12px;
     padding: 34px 22px;
-    margin-bottom: 18px;
-    position: relative;
-    overflow: hidden;
-    animation: fadeUp .4s ease;
-  }
-  #done-panel::before{
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(420px 140px at 50% -50px, rgba(57,255,136,.16), transparent);
-    pointer-events: none;
+    margin-bottom: 16px;
   }
   #done-panel.show{ display: block; }
-  .done-check{
-    width: 64px;
-    height: 64px;
-    margin: 0 auto 12px auto;
-    position: relative;
-  }
-  .done-check svg{ width: 100%; height: 100%; }
-  .done-check path{
-    fill: none;
-    stroke: var(--accent-green);
-    stroke-width: 2.5;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    stroke-dasharray: 40;
-    stroke-dashoffset: 40;
-    animation: draw .7s .1s ease forwards;
-  }
-  @keyframes draw{ to{ stroke-dashoffset: 0; } }
+  #done-panel .big{ font-size: 40px; margin-bottom: 8px; }
   #done-panel h2{
     font-family: var(--font-display);
     font-weight: 900;
     font-size: 20px;
     margin: 0 0 8px 0;
-    position: relative;
   }
   #done-panel p{
     color: var(--text-dim);
@@ -387,17 +244,15 @@
     line-height: 1.7;
     margin: 0 auto 18px auto;
     max-width: 420px;
-    position: relative;
   }
   #done-panel p strong{ color: var(--accent-green); font-weight: 600; }
-  #done-actions{ display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; position: relative; }
+  #done-actions{ display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
   #done-actions button{
     font-family: var(--font-display);
     font-weight: 700;
     font-size: 13px;
     padding: 11px 18px;
-    min-height: 44px;
-    border-radius: 8px;
+    border-radius: 6px;
     cursor: pointer;
   }
   #done-actions .b-primary{ background: var(--accent-amber); border: none; color: #1a1200; }
@@ -405,99 +260,13 @@
   #done-actions .b-primary:hover{ filter: brightness(1.08); }
   #done-actions .b-ghost:hover{ color: var(--text-main); border-color: var(--accent-amber); }
 
-  /* ---------- TOAST ---------- */
-  #toast{
-    position: fixed;
-    left: 50%;
-    bottom: 18px;
-    transform: translateX(-50%) translateY(16px);
-    background: var(--panel);
-    border: 1px solid var(--panel-line);
-    color: var(--text-main);
-    font-size: 12.5px;
-    padding: 10px 18px;
-    border-radius: 10px;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity .25s ease, transform .25s ease;
-    z-index: 70;
-    max-width: calc(100vw - 40px);
-    text-align: center;
-    box-shadow: 0 10px 30px rgba(0,0,0,.4);
-  }
-  #toast.show{ opacity: 1; transform: translateX(-50%) translateY(0); }
-
-  /* ---------- CARIMBO + CONFETE ---------- */
-  #stamp{
-    position: fixed;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 55;
-    pointer-events: none;
-    opacity: 0;
-  }
-  #stamp.show{ opacity: 1; }
-  .stamp-box{
-    border: 2px solid var(--accent-green);
-    color: var(--accent-green);
-    background: rgba(10,10,12,.94);
-    padding: 16px 28px;
-    border-radius: 12px;
-    text-align: center;
-    font-family: var(--font-display);
-    font-weight: 900;
-    font-size: 18px;
-    letter-spacing: 0.04em;
-    transform: rotate(-7deg) scale(.5);
-  }
-  #stamp.show .stamp-box{ animation: stampIn .5s cubic-bezier(.34,1.56,.64,1) both; }
-  @keyframes stampIn{ to{ transform: rotate(-7deg) scale(1); opacity: 1; } }
-  .stamp-box small{
-    display: block;
-    margin-top: 6px;
-    font-family: var(--font-mono);
-    font-weight: 400;
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+  .hero-note{
+    font-size: 12px;
     color: var(--text-dim);
+    line-height: 1.7;
+    margin: 0 0 20px 0;
   }
-
-  #confetti{
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 60;
-    overflow: hidden;
-  }
-  #confetti i{
-    position: absolute;
-    top: -5vh;
-    border-radius: 2px;
-    opacity: 0;
-  }
-  #confetti.go i{
-    animation-name: fall;
-    animation-timing-function: ease-in;
-    animation-fill-mode: forwards;
-  }
-  @keyframes fall{
-    0%{ transform: translate(0, -5vh) rotate(0deg); opacity: 1; }
-    100%{ transform: translate(var(--drift, 0px), 115vh) rotate(var(--rot, 360deg)); opacity: 0; }
-  }
-
-  @media (prefers-reduced-motion: reduce){
-    .mnode.active .micon::after,
-    #confetti.go i,
-    #stamp.show .stamp-box,
-    .done-check path,
-    .mnode.open .mdesc,
-    .mnode.open .mactions,
-    .mnode.just-unlocked .micon,
-    #done-panel{ animation: none !important; }
-  }
+  .hero-note strong{ color: var(--accent-amber); font-weight: 600; }
 </style>
 <link rel="stylesheet" href="../mobile.css">
 <link rel="stylesheet" href="../theme.css">
@@ -509,41 +278,31 @@
 <div id="app">
   <header>
     <h1>Seu primeiro vídeo</h1>
-    <div class="count"><b id="done-count">0</b>/<span class="total">7</span> missões</div>
+    <div class="count"><span id="done-count">0</span> de <span class="total">7</span> passos</div>
   </header>
 
   <div id="content">
-    <p class="briefing" id="briefing"></p>
+    <p class="hero-note">Uma trilha passo a passo do <strong>zero até o primeiro vídeo publicado</strong>. Cada passo abre uma ferramenta do Take Um Studio — use, conclua e siga em frente. Sem pressa.</p>
 
     <div class="progress-wrap">
-      <div class="progress-row">
-        <span class="lbl">Progresso · salvo neste navegador</span>
-        <span class="r"><b id="progress-pct">0%</b><button class="reset-btn" id="reset-btn">Zerar</button></span>
-      </div>
+      <div class="progress-label"><span>Progresso · fica salvo neste navegador</span><b id="progress-pct">0%</b></div>
       <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+      <button class="reset-btn" id="reset-btn">Zerar progresso</button>
     </div>
 
     <div id="done-panel">
-      <div class="done-check" aria-hidden="true">
-        <svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
-      </div>
-      <h2>Seu primeiro vídeo está no ar</h2>
-      <p>Sete missões, do zero até a publicação. <strong>Você fez o que a maioria só adia.</strong> Guarde seus dados com um backup e siga para o segundo vídeo.</p>
+      <div class="big">🎉</div>
+      <h2>Primeiro vídeo no ar!</h2>
+      <p>Você saiu do zero e chegou até aqui. <strong>Isso é mais do que muita gente faz.</strong> Guarde seus dados com um backup e siga para o próximo vídeo.</p>
       <div id="done-actions">
         <button class="b-primary" id="backup-btn">Fazer backup dos dados</button>
         <button class="b-ghost" id="restart-btn">Refazer trilha</button>
       </div>
     </div>
 
-    <div class="mpath" id="mpath"></div>
+    <div id="steps"></div>
   </div>
 </div>
-
-<div id="toast" role="status"></div>
-<div id="stamp">
-  <div class="stamp-box">✓ MISSÃO CONCLUÍDA<small>nova missão desbloqueada</small></div>
-</div>
-<div id="confetti"></div>
 
 <script src="../db.js"></script>
 <script>
@@ -553,75 +312,77 @@
 
   const STEPS = [
     {
-      id: 'ideia', name: 'Encontre sua faísca',
-      stage: 'Planejar', color: 'var(--accent-blue)',
-      icon: '<path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.3h6c0-1 .4-1.8 1-2.3A7 7 0 0 0 12 2z"/>',
-      tool: 'ideias', toolLabel: 'Abrir Banco de Ideias',
-      desc: 'Não precisa ser brilhante — só precisa existir. Pega algo que você sabe fazer ou já viveu e escreve no <strong>Banco de Ideias</strong>. É de uma ideia dessas que nasce o seu primeiro vídeo.'
+      id: 'ideia',
+      n: '1',
+      title: 'Escolha a sua ideia',
+      tag: 'Ideia',
+      tool: 'ideias',
+      toolLabel: 'Abrir Banco de Ideias',
+      desc: 'Escreva a ideia do seu primeiro vídeo no <strong>Banco de Ideias</strong>. Não precisa ser perfeita — só precisa existir. Pense no que você já sabe e gostaria de mostrar.'
     },
     {
-      id: 'roteiro', name: 'Escreva o mapa do vídeo',
-      stage: 'Planejar', color: 'var(--accent-blue)',
-      icon: '<path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>',
-      tool: 'roteirizador', toolLabel: 'Abrir Roteirizador',
-      desc: 'Gancho nos primeiros 5 segundos, conteúdo no meio, pedido no fim. Um roteiro de 1 a 3 minutos já muda tudo. Abre o <strong>Roteirizador</strong> e escreve — é mais rápido do que parece.'
+      id: 'roteiro',
+      n: '2',
+      title: 'Escreva o roteiro',
+      tag: 'Roteiro',
+      tool: 'roteirizador',
+      toolLabel: 'Abrir Roteirizador',
+      desc: 'No <strong>Roteirizador</strong>, monte o gancho (os primeiros segundos), o conteúdo principal e o pedido final. Vídeo de iniciante pode ser curto: 1 a 3 minutos está ótimo.'
     },
     {
-      id: 'pauta', name: 'Dê um lar para o vídeo',
-      stage: 'Planejar', color: 'var(--accent-blue)',
-      icon: '<rect x="3" y="4" width="5" height="16" rx="1"/><rect x="9.5" y="4" width="5" height="16" rx="1"/><rect x="16" y="4" width="5" height="16" rx="1"/>',
-      tool: 'pauta', toolLabel: 'Abrir Painel de Pauta',
-      desc: 'Vídeo sem pauta é promessa solta no ar. Coloca o card no <strong>Painel de Pauta</strong> e vê ele atravessar o caminho: ideia, roteiro, gravado, editado e postado.'
+      id: 'pauta',
+      n: '3',
+      title: 'Encaixe na sua pauta',
+      tag: 'Organização',
+      tool: 'pauta',
+      toolLabel: 'Abrir Painel de Pauta',
+      desc: 'Leve sua ideia para o <strong>Painel de Pauta</strong> e acompanhe o card passando pelas etapas: ideia, roteiro, gravado, editado e postado. É o seu mapa do vídeo.'
     },
     {
-      id: 'checklist', name: 'Prepare o set',
-      stage: 'Gravar', color: 'var(--accent-amber)',
-      icon: '<polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>',
-      tool: 'checklist', toolLabel: 'Abrir Checklist',
-      desc: 'Bateria no talo, microfone plugado, luz ligada, celular em modo avião. Cinco minutos de <strong>Checklist</strong> agora evitam regravar tudo depois. Confia.'
+      id: 'checklist',
+      n: '4',
+      title: 'Prepare o ambiente',
+      tag: 'Preparação',
+      tool: 'checklist',
+      toolLabel: 'Abrir Checklist',
+      desc: 'Rode o <strong>Checklist de Gravação</strong>: bateria carregada, microfone ok, luz ligada, celular em modo avião. Cinco minutos aqui evitam gravar tudo de novo.'
     },
     {
-      id: 'gravacao', name: 'Grave o take',
-      stage: 'Gravar', color: 'var(--accent-amber)',
-      icon: '<rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="6" y1="8" x2="18" y2="8"/><line x1="6" y1="12" x2="13" y2="12"/>',
-      tool: 'teleprompter', toolLabel: 'Abrir Teleprompter',
-      desc: 'Abra o <strong>Teleprompter</strong>, respira fundo e lê o roteiro rolando na tela. Errou? Respira de novo. A claquete marca cada take — e o primeiro take raramente é o bom.'
+      id: 'gravacao',
+      n: '5',
+      title: 'Grave o take',
+      tag: 'Gravação',
+      tool: 'teleprompter',
+      toolLabel: 'Abrir Teleprompter',
+      desc: 'Abra o <strong>Teleprompter</strong> e leia o roteiro rolando na tela enquanto grava. Errou? Respira e começa de novo — claquete marca cada tentativa. O primeiro take raramente é o bom.'
     },
     {
-      id: 'capa', name: 'Faça clicarem',
-      stage: 'Publicar', color: 'var(--accent-red)',
-      icon: '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>',
-      tool: 'capa', toolLabel: 'Abrir Gerador de Capa',
-      desc: 'É a capa que faz a pessoa clicar ou passar reto. Poucas palavras, uma cor que chama atenção — o <strong>Gerador de Capa</strong> resolve isso em minutos.'
+      id: 'capa',
+      n: '6',
+      title: 'Crie a capa',
+      tag: 'Capa',
+      tool: 'capa',
+      toolLabel: 'Abrir Gerador de Capa',
+      desc: 'No <strong>Gerador de Capa</strong>, coloque o título do vídeo em poucas palavras e escolha uma cor chamativa. A capa é o que faz a pessoa clicar — vale caprichar.'
     },
     {
-      id: 'publicar', name: 'Coloque no ar',
-      stage: 'Publicar', color: 'var(--accent-red)',
-      icon: '<line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/>',
-      tool: null, toolLabel: null,
-      desc: 'Posta. Respira. Você fez. Depois volta para a home e baixa um <strong>backup dos seus dados</strong> para nunca perder essa trilha.'
+      id: 'publicar',
+      n: '7',
+      title: 'Publique e guarde',
+      tag: 'Publicação',
+      tool: null,
+      toolLabel: null,
+      desc: 'Poste seu primeiro vídeo na sua plataforma e comemore! Depois, volte à home e baixe um <strong>backup dos seus dados</strong> para nunca perdê-los.'
     }
   ];
 
-  const TOTAL = STEPS.length;
-  const pathEl = document.getElementById('mpath');
-  const briefingEl = document.getElementById('briefing');
+  const stepsEl = document.getElementById('steps');
   const doneCountEl = document.getElementById('done-count');
   const progressPctEl = document.getElementById('progress-pct');
   const progressFill = document.getElementById('progress-fill');
   const donePanel = document.getElementById('done-panel');
-  const toastEl = document.getElementById('toast');
-  const stampEl = document.getElementById('stamp');
-  const confettiEl = document.getElementById('confetti');
 
   let done = {};
-  let viewIndex = 0;
-  let celebratedFull = false;
-  let justUnlocked = -1;
-
-  function motionOK(){
-    return !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  }
 
   function shellOpen(toolId){
     try{
@@ -645,28 +406,19 @@
     return false;
   }
 
-  function firstIncompleteIndex(){
-    return STEPS.findIndex(s => !done[s.id]);
-  }
-
-  function allDone(){
-    return STEPS.every(s => done[s.id]);
-  }
-
   async function loadState(){
+    const valid = STEPS.map(s => s.id);
     done = {};
     try{
       const s = await OneTakeDB.get(STORE, STATE_ID);
       if(s && s.done && typeof s.done === 'object'){
-        STEPS.forEach(step => {
-          if(s.done[step.id]) done[step.id] = s.done[step.id];
+        valid.forEach(id => {
+          if(s.done[id]) done[id] = s.done[id];
         });
       }
     }catch(e){
       done = {};
     }
-    const first = firstIncompleteIndex();
-    viewIndex = first === -1 ? TOTAL - 1 : first;
   }
 
   async function saveState(){
@@ -675,208 +427,83 @@
     }catch(e){}
   }
 
-  async function markDone(id){
-    done[id] = Date.now();
-    await saveState();
-    const next = firstIncompleteIndex();
-    viewIndex = next === -1 ? TOTAL - 1 : next;
-    if(next !== -1){
-      justUnlocked = next;
-      clearTimeout(justUnlocked._t);
-      justUnlocked._t = setTimeout(() => { justUnlocked = -1; }, 1900);
-    }
-    render();
-    if(allDone()){
-      if(!celebratedFull){
-        celebratedFull = true;
-        burstConfetti();
-      }
+  async function toggleStep(id){
+    if(done[id]){
+      delete done[id];
     }else{
-      burstConfetti();
-      showStamp();
+      done[id] = Date.now();
     }
-    scrollNode(viewIndex);
-  }
-
-  async function unmark(id){
-    delete done[id];
-    celebratedFull = false;
-    justUnlocked = -1;
     await saveState();
-    viewIndex = STEPS.findIndex(s => s.id === id);
     render();
   }
 
-  async function resetProgress(){
-    if(!window.confirm('Zerar todo o progresso da trilha? Os dados das ferramentas (ideias, roteiros) não serão apagados.')) return;
-    done = {};
-    celebratedFull = false;
-    justUnlocked = -1;
-    await saveState();
-    viewIndex = 0;
-    render();
-  }
-
-  function goto(index){
-    const step = STEPS[index];
-    if(done[step.id] || index === firstIncompleteIndex()){
-      viewIndex = index;
-      render();
-      scrollNode(index);
-    }else{
-      showToast('🔒 Conclua a missão anterior para desbloquear esta.');
-    }
-  }
-
-  function showToast(msg){
-    toastEl.textContent = msg;
-    toastEl.classList.add('show');
-    clearTimeout(toastEl._t);
-    toastEl._t = setTimeout(() => toastEl.classList.remove('show'), 2200);
-  }
-
-  function scrollNode(index){
-    const node = pathEl.children[index];
-    if(node && node.scrollIntoView) node.scrollIntoView({ behavior: motionOK() ? 'smooth' : 'auto', block: 'center' });
-  }
-
-  function burstConfetti(){
-    if(!motionOK()) return;
-    confettiEl.innerHTML = '';
-    const colors = ['#39ff88', '#ffb020', '#ff3b30', '#5aa9ff', '#c084fc'];
-    for(let i = 0; i < 40; i++){
-      const p = document.createElement('i');
-      const sz = 6 + Math.random() * 7;
-      p.style.cssText = 'left:' + (Math.random() * 100).toFixed(1) + '%;' +
-        'width:' + sz.toFixed(1) + 'px;height:' + (sz * 1.6).toFixed(1) + 'px;' +
-        'background:' + colors[i % colors.length] + ';' +
-        '--drift:' + (Math.random() * 160 - 80).toFixed(0) + 'px;' +
-        '--rot:' + (Math.random() * 720 - 360).toFixed(0) + 'deg;' +
-        'animation-delay:' + (Math.random() * 0.25).toFixed(2) + 's;' +
-        'animation-duration:' + (1 + Math.random() * 0.9).toFixed(2) + 's;';
-      confettiEl.appendChild(p);
-    }
-    confettiEl.classList.add('go');
-    clearTimeout(confettiEl._t);
-    confettiEl._t = setTimeout(() => confettiEl.classList.remove('go'), 2500);
-  }
-
-  function showStamp(){
-    if(!motionOK()) return;
-    stampEl.classList.add('show');
-    clearTimeout(stampEl._t);
-    stampEl._t = setTimeout(() => stampEl.classList.remove('show'), 1400);
-  }
-
-  function briefing(){
-    const n = Object.keys(done).length;
-    if(n === 0) return 'Sete missões separam você do seu <b>primeiro vídeo no ar</b>. A primeira começa agora: escolha a ideia.';
-    if(n < TOTAL) return 'Você já completou <b>' + n + ' de ' + TOTAL + '</b>. Não deixe a trilha esfriar — a próxima missão já está liberada.';
-    return 'Missão cumprida. Seu primeiro vídeo está <b>no ar</b>.';
+  function firstIncomplete(){
+    return STEPS.find(s => !done[s.id]);
   }
 
   function render(){
+    const currentId = firstIncomplete() ? firstIncomplete().id : null;
+    const total = STEPS.length;
     const completed = Object.keys(done).length;
-    const activeIndex = firstIncompleteIndex();
-    const pct = Math.round((completed / TOTAL) * 100);
 
     doneCountEl.textContent = completed;
-    progressPctEl.textContent = pct + '%';
-    progressFill.style.width = pct + '%';
-    briefingEl.innerHTML = briefing();
-    donePanel.classList.toggle('show', allDone());
+    progressPctEl.textContent = Math.round((completed / total) * 100) + '%';
+    progressFill.style.width = (completed / total) * 100 + '%';
 
-    renderPath(activeIndex);
-  }
+    donePanel.classList.toggle('show', completed === total);
 
-  function renderPath(activeIndex){
-    pathEl.innerHTML = '';
-    STEPS.forEach((step, i) => {
+    stepsEl.innerHTML = '';
+
+    STEPS.forEach(step => {
       const isDone = !!done[step.id];
-      const isActive = activeIndex === i && !allDone();
-      const isLocked = !isDone && activeIndex !== -1 && i > activeIndex;
-      const isOpen = viewIndex === i;
+      const isCurrent = step.id === currentId;
 
-      let cls = 'mnode';
-      if(isDone) cls += ' done';
-      else if(isActive) cls += ' active';
-      else if(isLocked) cls += ' locked';
-      if(i === justUnlocked && isActive) cls += ' just-unlocked';
-      if(isOpen) cls += ' open';
-
-      let pill = '';
-      if(isDone) pill = 'FEITO';
-      else if(isActive) pill = 'Você está aqui';
-      else if(isLocked) pill = '🔒';
+      const card = document.createElement('div');
+      card.className = 'step-card' + (isDone ? ' done' : '') + (isCurrent ? ' current' : '');
 
       let actions = '';
-      if(isOpen){
-        if(i > 0) actions += '<button class="ghost" data-nav="prev">← Anterior</button>';
-        if(step.tool && step.toolLabel) actions += '<button class="primary" data-open="' + step.tool + '">' + step.toolLabel + '</button>';
-        if(isDone){
-          if(i < TOTAL - 1) actions += '<button class="primary" data-nav="next">Próxima missão →</button>';
-          actions += '<button class="ghost" data-unmark="' + step.id + '">Refazer esta</button>';
-        }else{
-          actions += '<button class="done-btn" data-done="' + step.id + '">Concluir missão →</button>';
-        }
+      if(step.tool && step.toolLabel){
+        actions += `<button class="primary" data-open="${step.tool}">${step.toolLabel}</button>`;
       }
+      actions += isDone
+        ? `<button class="done-btn revert" data-toggle="${step.id}">Desmarcar</button>`
+        : `<button class="done-btn" data-toggle="${step.id}">Marcar como feito</button>`;
 
-      const row = document.createElement('div');
-      row.className = cls;
-      row.style.setProperty('--stage', step.color);
-      row.tabIndex = 0;
-      row.setAttribute('role', 'button');
-      row.setAttribute('aria-label', 'Missão ' + (i + 1) + ': ' + step.name + (isDone ? ' (concluída)' : isLocked ? ' (bloqueada)' : ''));
+      const hint = isDone ? '<div class="done-hint">✓ Passo concluído</div>' : '';
 
-      row.innerHTML =
-        '<div class="mrail">' +
-          (i > 0 ? '<div class="mlink' + (done[STEPS[i - 1].id] ? ' on' : '') + '"></div>' : '') +
-          '<div class="micon">' +
-            '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + step.icon + '</svg>' +
-            (isLocked ? '<span class="mlock">🔒</span>' : '') +
-          '</div>' +
-        '</div>' +
-        '<div class="mbody">' +
-          '<span class="mtag">Missão 0' + (i + 1) + ' · ' + step.stage + '</span>' +
-          '<div class="mname">' + step.name + '</div>' +
-          (isOpen ? '<p class="mdesc">' + step.desc + '</p>' +
-            (actions ? '<div class="mactions">' + actions + '</div>' : '') : '') +
-        '</div>' +
-        '<div class="mpill">' + pill + '</div>';
-
-      row.addEventListener('click', (e) => {
-        if(e.target.closest('button')) return;
-        goto(i);
-      });
-      row.addEventListener('keydown', (e) => {
-        if(e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          goto(i);
-        }
-      });
-      pathEl.appendChild(row);
+      card.innerHTML = `
+        <div class="step-head">
+          <div class="step-num">${step.n}</div>
+          <div>
+            <div class="step-title">${step.title}</div>
+            <span class="step-tag">${step.tag}${isCurrent ? ' · você está aqui' : ''}</span>
+          </div>
+        </div>
+        <p class="step-desc">${step.desc}</p>
+        <div class="step-actions">${actions}</div>
+        ${hint}
+      `;
+      stepsEl.appendChild(card);
     });
 
-    pathEl.querySelectorAll('[data-open]').forEach(btn => {
+    document.querySelectorAll('[data-open]').forEach(btn => {
       btn.addEventListener('click', () => shellOpen(btn.dataset.open));
     });
-    pathEl.querySelectorAll('[data-done]').forEach(btn => {
-      btn.addEventListener('click', () => markDone(btn.dataset.done));
-    });
-    pathEl.querySelectorAll('[data-unmark]').forEach(btn => {
-      btn.addEventListener('click', () => unmark(btn.dataset.unmark));
-    });
-    pathEl.querySelectorAll('[data-nav]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const target = btn.dataset.nav === 'next' ? viewIndex + 1 : viewIndex - 1;
-        if(target >= 0 && target < TOTAL) goto(target);
-      });
+    document.querySelectorAll('[data-toggle]').forEach(btn => {
+      btn.addEventListener('click', () => toggleStep(btn.dataset.toggle));
     });
   }
 
   document.getElementById('backup-btn').addEventListener('click', openHome);
   document.getElementById('restart-btn').addEventListener('click', resetProgress);
   document.getElementById('reset-btn').addEventListener('click', resetProgress);
+
+  async function resetProgress(){
+    if(!window.confirm('Zerar todo o progresso da trilha? Os dados das ferramentas (ideias, roteiros) não serão apagados.')) return;
+    done = {};
+    await saveState();
+    render();
+  }
 
   loadState().then(render);
 })();

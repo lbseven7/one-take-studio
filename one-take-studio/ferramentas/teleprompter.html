@@ -502,6 +502,18 @@
     color: var(--text-dim);
   }
   #retake-btn:hover{ color: var(--text-main); border-color: var(--accent-amber); }
+
+  #convert-note{
+    font-size: 11px;
+    color: var(--text-dim);
+    max-width: 360px;
+    text-align: center;
+    line-height: 1.5;
+  }
+  #download-btn:disabled{
+    opacity: 0.6;
+    cursor: wait;
+  }
 </style>
 <link rel="stylesheet" href="../mobile.css">
 <link rel="stylesheet" href="../theme.css">
@@ -601,6 +613,7 @@ Ex: Olá, seja bem-vindo ao vídeo de hoje. Vamos falar sobre..."></textarea>
         <button id="download-btn">Baixar vídeo</button><span class="tu-count" data-tu-count="teleprompter-baixar"></span>
         <button id="retake-btn">Gravar de novo</button>
       </div>
+      <div id="convert-note">Se o vídeo sair como WebM, ele é convertido automaticamente para MP4 no download — precisa de internet na primeira conversão.</div>
     </div>
   </div>
 
@@ -703,6 +716,7 @@ Ex: Olá, seja bem-vindo ao vídeo de hoje. Vamos falar sobre..."></textarea>
   let recStartTime = 0;
   let recTimerInterval = null;
   let lastBlobUrl = null;
+  let lastBlob = null;
 
   // ---------- EDIT VIEW LOGIC ----------
   scriptInput.addEventListener('input', () => {
@@ -830,37 +844,44 @@ Ex: Olá, seja bem-vindo ao vídeo de hoje. Vamos falar sobre..."></textarea>
   });
 
   // ---------- RECORDING ----------
-  function pickMimeType(){
-    const options = [
-      'video/webm;codecs=vp9,opus',
-      'video/webm;codecs=vp8,opus',
-      'video/webm',
-      'video/mp4'
-    ];
-    for(const opt of options){
+  function pickMimeType(candidates){
+    for(const opt of candidates){
       if(window.MediaRecorder && MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(opt)) return opt;
     }
     return '';
   }
 
-  function startRecording(){
-    if(!mediaStream) return;
-    recordedChunks = [];
-    const mimeType = pickMimeType();
+  function tryStartRecording(mime){
+    let mr;
     try{
-      mediaRecorder = mimeType ? new MediaRecorder(mediaStream, { mimeType }) : new MediaRecorder(mediaStream);
+      mr = mime ? new MediaRecorder(mediaStream, { mimeType: mime }) : new MediaRecorder(mediaStream);
+      mr.ondataavailable = (e) => { if(e.data && e.data.size > 0) recordedChunks.push(e.data); };
+      mr.onstop = onRecordingStop;
+      mr.start();
     }catch(e){
-      mediaRecorder = new MediaRecorder(mediaStream);
+      if(mr && mr.state !== 'inactive'){
+        try{ mr.stop(); }catch(_){}
+      }
+      return false;
     }
-    mediaRecorder.ondataavailable = (e) => { if(e.data && e.data.size > 0) recordedChunks.push(e.data); };
-    mediaRecorder.onstop = onRecordingStop;
-    mediaRecorder.start();
+    mediaRecorder = mr;
     isRecording = true;
     recordBtn.classList.add('recording');
     recBadge.classList.add('show');
     recStartTime = Date.now();
     recTimerInterval = setInterval(updateRecTimer, 250);
     updateRecTimer();
+    return true;
+  }
+
+  function startRecording(){
+    if(!mediaStream) return;
+    recordedChunks = [];
+    const mp4 = pickMimeType(['video/mp4;codecs=avc1,mp4a.40.2', 'video/mp4']);
+    if(mp4 && tryStartRecording(mp4)) return;
+    const webm = pickMimeType(['video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm']);
+    if(webm && tryStartRecording(webm)) return;
+    tryStartRecording('');
   }
 
   function stopRecording(){
@@ -882,15 +903,61 @@ Ex: Olá, seja bem-vindo ao vídeo de hoje. Vamos falar sobre..."></textarea>
 
   function onRecordingStop(){
     if(suppressRecStopUi) return;
-    const mimeType = mediaRecorder.mimeType || 'video/webm';
+    const mimeType = (mediaRecorder && mediaRecorder.mimeType) || 'video/webm';
     const blob = new Blob(recordedChunks, { type: mimeType });
+    lastBlob = blob;
     if(lastBlobUrl) URL.revokeObjectURL(lastBlobUrl);
     lastBlobUrl = URL.createObjectURL(blob);
     reviewVideo.src = lastBlobUrl;
-    const ext = mimeType.includes('mp4') ? 'mp4' : 'webm';
-    downloadBtn.dataset.filename = 'gravacao-teleprompter-' + Date.now() + '.' + ext;
+    const isMp4 = mimeType.includes('mp4');
+    downloadBtn.dataset.isMp4 = isMp4 ? '1' : '0';
+    downloadBtn.textContent = isMp4 ? 'Baixar vídeo' : 'Baixar como MP4';
     setPlaying(false);
     reviewOverlay.classList.add('show');
+  }
+
+  // ---------- MP4 CONVERSION (FFmpeg WASM) ----------
+  const FFMPEG_CDN = 'https://unpkg.com/@ffmpeg/';
+  let ffmpegLoadPromise = null;
+
+  function loadFfmpeg(){
+    if(ffmpegLoadPromise) return ffmpegLoadPromise;
+    ffmpegLoadPromise = new Promise((resolve, reject) => {
+      function loadScript(src){
+        return new Promise((res, rej) => {
+          const s = document.createElement('script');
+          s.src = src;
+          s.onload = res;
+          s.onerror = () => rej(new Error('Falha ao carregar ' + src));
+          document.head.appendChild(s);
+        });
+      }
+      Promise.resolve()
+        .then(() => loadScript(FFMPEG_CDN + '@ffmpeg/util@0.12.1/dist/umd/index.js'))
+        .then(() => loadScript(FFMPEG_CDN + '@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.js'))
+        .then(() => {
+          if(!window.FFmpegWASM || !window.FFmpegUtil){ reject(new Error('FFmpeg não disponível')); return; }
+          resolve();
+        })
+        .catch(reject);
+    });
+    return ffmpegLoadPromise;
+  }
+
+  async function convertWebmToMp4(blob){
+    await loadFfmpeg();
+    const { FFmpeg } = window.FFmpegWASM;
+    const { fetchFile, toBlobURL } = window.FFmpegUtil;
+    const ffmpeg = new FFmpeg();
+    const coreBase = FFMPEG_CDN + '@ffmpeg/core@0.12.6/dist/umd';
+    await ffmpeg.load({
+      coreURL: await toBlobURL(coreBase + '/ffmpeg-core.js', 'text/javascript'),
+      wasmURL: await toBlobURL(coreBase + '/ffmpeg-core.wasm', 'application/wasm')
+    });
+    await ffmpeg.writeFile('input.webm', await fetchFile(blob));
+    await ffmpeg.exec(['-i', 'input.webm', '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '28', '-c:a', 'aac', '-b:a', '128k', '-movflags', '+faststart', 'output.mp4']);
+    const data = await ffmpeg.readFile('output.mp4');
+    return new Blob([data], { type: 'video/mp4' });
   }
 
   recordBtn.addEventListener('click', async () => {
@@ -904,17 +971,32 @@ Ex: Olá, seja bem-vindo ao vídeo de hoje. Vamos falar sobre..."></textarea>
   });
 
   downloadBtn.addEventListener('click', async () => {
-    if(!lastBlobUrl) return;
+    if(!lastBlob) return;
     if(window.TakeUmLimite && !(await window.TakeUmLimite.podeUsar('teleprompter-baixar')).ok){
       window.TakeUmLimite.mostrarUpsell('teleprompter-baixar');
       return;
     }
+    let blob = lastBlob;
+    if(downloadBtn.dataset.isMp4 !== '1'){
+      downloadBtn.disabled = true;
+      const originalText = downloadBtn.textContent;
+      downloadBtn.textContent = 'Convertendo para MP4…';
+      try{
+        blob = await convertWebmToMp4(lastBlob);
+      }catch(e){
+        blob = lastBlob;
+      }
+      downloadBtn.disabled = false;
+      downloadBtn.textContent = originalText;
+    }
+    const ext = blob.type.includes('mp4') ? 'mp4' : 'webm';
     const a = document.createElement('a');
-    a.href = lastBlobUrl;
-    a.download = downloadBtn.dataset.filename || 'gravacao-teleprompter.webm';
+    a.href = URL.createObjectURL(blob);
+    a.download = 'gravacao-teleprompter-' + Date.now() + '.' + ext;
     document.body.appendChild(a);
     a.click();
     a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
     if(window.TakeUmLimite){ window.TakeUmLimite.usar('teleprompter-baixar').catch(function(){}); }
   });
 

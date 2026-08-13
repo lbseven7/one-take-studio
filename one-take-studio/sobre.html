@@ -42,19 +42,41 @@
 
   /* ---------- HERO ---------- */
   #hero{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 18px;
+    display: none;
   }
 
-  #hero .mark{
-    width: 120px;
-    height: 120px;
-    border-radius: 24px;
-    object-fit: contain;
+  /* ---------- BANNER ---------- */
+  #page-banner{
+    position: relative;
+    width: 100%;
+    margin: 6px 0 24px 0;
+    border-radius: 16px;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  #page-banner::after{
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: -1px;
+    height: 24px;
+    background: linear-gradient(to bottom, transparent, var(--bg));
+    pointer-events: none;
+    z-index: 1;
+  }
+  #page-banner img{
+    width: 100%;
+    height: auto;
     display: block;
-    flex-shrink: 0;
+    max-height: 280px;
+    object-fit: cover;
+    object-position: center center;
+  }
+  @media (max-width: 640px){
+    #page-banner img{
+      max-height: none;
+      object-fit: contain;
+    }
+    #page-banner::after{ height: 16px; }
   }
 
   h1{
@@ -203,6 +225,10 @@
 <div id="app">
   <div id="hero">
     <img class="mark" src="image/nova-image-perfil.png" alt="Take Um">
+  </div>
+
+  <div id="page-banner">
+    <img src="image/banner-sobre.png" alt="Take Um - Sobre">
   </div>
 
   <h1>O estúdio de quem tá começando</h1>

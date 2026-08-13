@@ -11,7 +11,7 @@
   function apply(t) {
     var light = t === 'light';
     root.classList.toggle('light', light);
-    if (meta) meta.setAttribute('content', light ? '#ffffff' : '#0a0a0c');
+    if (meta) meta.setAttribute('content', light ? '#ffffff' : '#0d0c0a');
   }
 
   apply(read() || 'dark');

@@ -265,9 +265,9 @@ body {
   padding: 8px 14px;
   min-height: 44px;
   background: rgba(20, 20, 23, 0.92);
-  border: 1px solid var(--panel-line, #232328);
+  border: 1px solid var(--panel-line, #262219);
   border-radius: 22px;
-  color: var(--text-main, #f5f4ef);
+  color: var(--text-main, #f7f4ec);
   font-family: var(--font-mono, monospace);
   font-size: 12px;
   letter-spacing: 0.05em;

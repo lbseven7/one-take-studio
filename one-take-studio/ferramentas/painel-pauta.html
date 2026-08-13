@@ -7,16 +7,16 @@
 <link rel="stylesheet" href="../fonts.css">
 <style>
   :root{
-    --bg: #0a0a0c;
-    --panel: #141417;
-    --panel-line: #232328;
-    --card: #1a1a1e;
-    --text-main: #f5f4ef;
-    --text-dim: #8a8a92;
+    --bg: #0d0c0a;
+    --panel: #16140f;
+    --panel-line: #262219;
+    --card: #1d1a14;
+    --text-main: #f7f4ec;
+    --text-dim: #9c968a;
     --accent-amber: #ffb020;
-    --accent-red: #ff3b30;
-    --accent-green: #39ff88;
-    --accent-blue: #5aa9ff;
+    --accent-red: #ff5c4d;
+    --accent-green: #4dff99;
+    --accent-blue: #6fb5ff;
     --font-display: 'Archivo', sans-serif;
     --font-mono: 'IBM Plex Mono', monospace;
   }
@@ -220,7 +220,7 @@
   #modal-backdrop{
     position: fixed;
     inset: 0;
-    background: rgba(6,6,8,0.8);
+    background: rgba(9,8,6,0.8);
     display: none;
     align-items: center;
     justify-content: center;
@@ -401,10 +401,10 @@
 (function(){
 
   const COLUMNS = [
-    { id: 'ideia',    label: 'Ideia',        color: '#8a8a92' },
+    { id: 'ideia',    label: 'Ideia',        color: '#9c968a' },
     { id: 'roteiro',  label: 'Roteiro pronto', color: 'var(--accent-blue)' },
     { id: 'gravado',  label: 'Gravado',      color: 'var(--accent-amber)' },
-    { id: 'editado',  label: 'Editado',      color: '#c084fc' },
+    { id: 'editado',  label: 'Editado',      color: '#cc9cff' },
     { id: 'postado',  label: 'Postado',      color: 'var(--accent-green)' }
   ];
 
@@ -412,8 +412,8 @@
     { id: 'reels',   label: 'Reels',    color: '#ff5c8a' },
     { id: 'tiktok',  label: 'TikTok',   color: '#39e6e6' },
     { id: 'youtube', label: 'YouTube',  color: '#ff4d4d' },
-    { id: 'shorts',  label: 'Shorts',   color: '#ff3b30' },
-    { id: 'outro',   label: 'Outro',    color: '#8a8a92' }
+    { id: 'shorts',  label: 'Shorts',   color: '#ff5c4d' },
+    { id: 'outro',   label: 'Outro',    color: '#9c968a' }
   ];
 
   const board = document.getElementById('board');

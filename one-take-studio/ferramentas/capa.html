@@ -7,17 +7,17 @@
 <link rel="stylesheet" href="../fonts.css">
 <style>
   :root{
-    --bg: #0a0a0c;
-    --panel: #141417;
-    --panel-line: #232328;
-    --card: #1a1a1e;
-    --text-main: #f5f4ef;
-    --text-dim: #8a8a92;
+    --bg: #0d0c0a;
+    --panel: #16140f;
+    --panel-line: #262219;
+    --card: #1d1a14;
+    --text-main: #f7f4ec;
+    --text-dim: #9c968a;
     --accent-amber: #ffb020;
-    --accent-red: #ff3b30;
-    --accent-green: #39ff88;
-    --accent-blue: #5aa9ff;
-    --accent-purple: #c084fc;
+    --accent-red: #ff5c4d;
+    --accent-green: #4dff99;
+    --accent-blue: #6fb5ff;
+    --accent-purple: #cc9cff;
     --font-display: 'Archivo', sans-serif;
     --font-mono: 'IBM Plex Mono', monospace;
   }
@@ -171,7 +171,7 @@
     padding: 9px 12px;
     border: 1px dashed var(--accent-purple);
     border-radius: 6px;
-    background: rgba(192, 132, 252, 0.06);
+    background: rgba(204, 156, 255, 0.06);
     color: var(--accent-purple);
     font-family: var(--font-mono);
     font-size: 11px;
@@ -661,8 +661,8 @@
   const PACK_ID = 'pack';
 
   const EMOJIS = ['🚀','🔥','💡','🎯','✅','💰','🏆','📱','💪','🧠','⚡','❤️','😱','🤯','✨','🌱','💼','🎮','📈','👀','🎬','🎤','📝','🌟'];
-  const BG_COLORS = ['#ffb020','#ff3b30','#39ff88','#5aa9ff','#c084fc','#ff6b6b','#ff8c42','#ffd166','#2dd4bf','#f43f5e','#3b82f6','#22c55e','#0ea5e9','#a855f7','#f97316','#0a0a0c'];
-  const FG_COLORS = ['#ffffff','#1a1200','#ffb020','#39ff88','#ff3b30','#5aa9ff'];
+  const BG_COLORS = ['#ffb020','#ff5c4d','#4dff99','#6fb5ff','#cc9cff','#ff6b6b','#ff8c42','#ffd166','#2dd4bf','#f43f5e','#3b82f6','#22c55e','#0ea5e9','#a855f7','#f97316','#0d0c0a'];
+  const FG_COLORS = ['#ffffff','#1a1200','#ffb020','#4dff99','#ff5c4d','#6fb5ff'];
   const FORMATS = {
     yt: { w: 1280, h: 720,  label: '1280x720' },
     sq: { w: 1080, h: 1080, label: '1080x1080' },
@@ -673,11 +673,11 @@
   const FACEPOS = [{ v:'tl', l:'⤡ Sup. esq.' },{ v:'tr', l:'⤢ Sup. dir.' },{ v:'bl', l:'⤣ Inf. esq.' },{ v:'br', l:'⤤ Inf. dir.' }];
   const TEMPLATES = [
     { id:'classica', label:'Clássica', state:{ posX:'center', posY:'middle', textBg:false, outline:false, gradient:false } },
-    { id:'banda', label:'Com caixa', state:{ posX:'center', posY:'middle', textBg:true, textBgColor:'#0a0a0c', textBgOpacity:70, outline:false } },
-    { id:'esquerda', label:'Texto à esquerda', state:{ posX:'left', posY:'middle', textBg:false, outline:true, outlineColor:'#0a0a0c', gradient:false } },
-    { id:'canto', label:'Canto inferior', state:{ posX:'left', posY:'bottom', textBg:true, textBgColor:'#0a0a0c', textBgOpacity:65, outline:false } },
-    { id:'gradiente', label:'Gradiente', state:{ gradient:true, gradFrom:'#ff8c42', gradTo:'#ff3b30', posX:'center', posY:'middle', textBg:false, outline:false } },
-    { id:'destaque', label:'Destaque', state:{ gradient:true, gradFrom:'#0a0a0c', gradTo:'#ff3b30', posX:'center', posY:'bottom', textBg:true, textBgOpacity:50, outline:false } }
+    { id:'banda', label:'Com caixa', state:{ posX:'center', posY:'middle', textBg:true, textBgColor:'#0d0c0a', textBgOpacity:70, outline:false } },
+    { id:'esquerda', label:'Texto à esquerda', state:{ posX:'left', posY:'middle', textBg:false, outline:true, outlineColor:'#0d0c0a', gradient:false } },
+    { id:'canto', label:'Canto inferior', state:{ posX:'left', posY:'bottom', textBg:true, textBgColor:'#0d0c0a', textBgOpacity:65, outline:false } },
+    { id:'gradiente', label:'Gradiente', state:{ gradient:true, gradFrom:'#ff8c42', gradTo:'#ff5c4d', posX:'center', posY:'middle', textBg:false, outline:false } },
+    { id:'destaque', label:'Destaque', state:{ gradient:true, gradFrom:'#0d0c0a', gradTo:'#ff5c4d', posX:'center', posY:'bottom', textBg:true, textBgOpacity:50, outline:false } }
   ];
 
   function defaultState(){
@@ -689,17 +689,17 @@
       fg: '#1a1200',
       gradient: false,
       gradFrom: '#ff8c42',
-      gradTo: '#ff3b30',
+      gradTo: '#ff5c4d',
       bgImage: null,
       bgTransform: { scale: 1, x: 0, y: 0 },
       posX: 'center',
       posY: 'middle',
       textScale: 100,
       textBg: false,
-      textBgColor: '#0a0a0c',
+      textBgColor: '#0d0c0a',
       textBgOpacity: 75,
       outline: false,
-      outlineColor: '#0a0a0c',
+      outlineColor: '#0d0c0a',
       outlineWidth: 4,
       safeZone: false,
       face: null,
@@ -846,7 +846,7 @@
     container.innerHTML = '';
     colors.forEach(color => {
       const b = document.createElement('button');
-      b.className = 'swatch' + (color === '#0a0a0c' || color === '#1a1200' ? ' dark-border' : '');
+      b.className = 'swatch' + (color === '#0d0c0a' || color === '#1a1200' ? ' dark-border' : '');
       b.style.background = color;
       b.dataset.color = color;
       b.addEventListener('click', () => {
@@ -1202,7 +1202,7 @@
       g.fillStyle = '#ffb020';
       g.fill();
       g.lineWidth = Math.max(2, Math.round(hr * 0.3));
-      g.strokeStyle = '#0a0a0c';
+      g.strokeStyle = '#0d0c0a';
       g.stroke();
       g.restore();
     } else {
@@ -1292,7 +1292,7 @@
       g.fillStyle = '#ffb020';
       g.fill();
       g.lineWidth = Math.max(2, Math.round(handleR * 0.3));
-      g.strokeStyle = '#0a0a0c';
+      g.strokeStyle = '#0d0c0a';
       g.stroke();
       g.restore();
     } else {

@@ -1,4 +1,4 @@
-const CACHE = 'takeum-v66';
+const CACHE = 'takeum-v67';
 
 const ASSETS = [
   './',
@@ -94,6 +94,21 @@ self.addEventListener('fetch', e => {
           return res;
         })
         .catch(() => caches.match(e.request).then(c => c || caches.match('./index.html')))
+    );
+    return;
+  }
+
+  // Manifest e ícones nunca vêm do cache antigo: sempre da rede,
+  // para o prompt de instalação mostrar a logo atual.
+  if (url.pathname.endsWith('/manifest.json') || url.pathname.includes('/icons/')) {
+    e.respondWith(
+      fetch(e.request, { cache: 'no-store' })
+        .then(res => {
+          const copy = res.clone();
+          caches.open(CACHE).then(c => c.put(e.request, copy));
+          return res;
+        })
+        .catch(() => caches.match(e.request))
     );
     return;
   }

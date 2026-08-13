@@ -1,4 +1,4 @@
-const CACHE = 'takeum-v67';
+const CACHE = 'takeum-v68';
 
 const ASSETS = [
   './',
@@ -18,6 +18,7 @@ const ASSETS = [
   './fonts/plexmono-400.woff2',
   './fonts/plexmono-500.woff2',
   './fonts/plexmono-600.woff2',
+  './fonts/lovelo-black.woff2',
   './manifest.json',
   './icons/tu-amber-192.png',
   './icons/tu-amber-512.png',

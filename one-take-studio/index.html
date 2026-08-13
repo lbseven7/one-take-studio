@@ -437,9 +437,16 @@
     }
 
     @media (max-width: 860px) {
+      /* Zoom no mobile: a frase ocupa a faixa central da imagem
+         (16:9 com bordas pretas), então ampliamos e cortamos as
+         laterais para o texto ficar maior e legível. */
       .hero-image {
-        max-height: none;
-        object-fit: contain;
+        width: 200%;
+        margin-left: -50%;
+        max-width: none;
+        height: auto;
+        max-height: 420px;
+        object-fit: cover;
         object-position: center;
       }
       #hero-banner::after {
@@ -449,9 +456,9 @@
 
     @media (max-width: 480px) {
       .hero-image {
-        max-height: none;
-        object-fit: contain;
-        object-position: center;
+        width: 230%;
+        margin-left: -65%;
+        max-height: 400px;
       }
       #hero-banner::after {
         height: 12px;
@@ -1380,7 +1387,7 @@
       <div id="home-view" class="active">
         <div id="hero-banner">
           <picture>
-            <source media="(max-width: 860px)" srcset="image/nova-frase-oficial.png">
+            <source media="(max-width: 860px)" srcset="image/banner-novo.png">
             <img src="image/nova-frase-oficial.png" alt="Take Um - Ferramentas para criadores de vídeo" class="hero-image">
           </picture>
         </div>

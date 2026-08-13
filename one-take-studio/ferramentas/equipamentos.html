@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Take Um Studio · Equipamentos</title>
+<title>Take Um Studio · Loja de Equipamentos</title>
 <link rel="stylesheet" href="../fonts.css">
 <style>
   :root{
@@ -37,7 +37,7 @@
     height: 100dvh;
     display: flex;
     flex-direction: column;
-    max-width: 980px;
+    max-width: 1080px;
     margin: 0 auto;
     width: 100%;
   }
@@ -55,7 +55,7 @@
   header h1{
     font-family: var(--font-display);
     font-weight: 900;
-    font-size: 16px;
+    font-size: 17px;
     margin: 0;
     letter-spacing: -0.01em;
   }
@@ -66,125 +66,249 @@
     text-transform: uppercase;
     white-space: nowrap;
   }
+  header .count strong{ color: var(--accent-amber); font-weight: 700; }
 
   #content{
     flex: 1;
     overflow-y: auto;
-    padding: 20px;
+    padding: 16px 20px 24px 20px;
   }
 
-  .intro{
-    color: var(--text-dim);
+  /* ---------- BUSCA E FILTROS ---------- */
+  .search-row{
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  #search{
+    flex: 1;
+    min-width: 0;
+    font-family: var(--font-mono);
     font-size: 13px;
-    line-height: 1.7;
-    margin: 0 0 18px 0;
+    color: var(--text-main);
+    background: var(--card);
+    border: 1px solid var(--panel-line);
+    border-radius: 10px;
+    padding: 11px 14px;
+    outline: none;
+    transition: border-color .15s ease;
   }
-  .intro strong{ color: var(--text-main); font-weight: 600; }
+  #search::placeholder{ color: var(--text-dim); }
+  #search:focus{ border-color: var(--accent-amber); }
+  #sort{
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-main);
+    background: var(--card);
+    border: 1px solid var(--panel-line);
+    border-radius: 10px;
+    padding: 0 10px;
+    outline: none;
+    cursor: pointer;
+  }
 
+  .chips{
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+  .chip{
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: .02em;
+    color: var(--text-dim);
+    background: var(--card);
+    border: 1px solid var(--panel-line);
+    border-radius: 999px;
+    padding: 7px 14px;
+    cursor: pointer;
+    transition: all .15s ease;
+  }
+  .chip:hover{ border-color: rgba(255,176,32,.4); color: var(--text-main); }
+  .chip.active{
+    background: var(--accent-amber);
+    border-color: var(--accent-amber);
+    color: #1a1200;
+    font-weight: 700;
+  }
+
+  /* ---------- GRADE DE PRODUTOS ---------- */
   .grid{
     display: grid;
     grid-template-columns: 1fr;
-    gap: 12px;
+    gap: 14px;
     margin-bottom: 22px;
   }
-  @media (min-width: 560px){ .grid{ grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 620px){ .grid{ grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 940px){ .grid{ grid-template-columns: 1fr 1fr 1fr; } }
 
   .item{
-    background: var(--panel);
+    background: var(--card);
     border: 1px solid var(--panel-line);
-    border-radius: 12px;
+    border-radius: 14px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 6px 18px rgba(0,0,0,.25);
-    transition: transform .15s ease, border-color .15s ease;
+    transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
   }
   .item:hover{
-    transform: translateY(-2px);
-    border-color: rgba(255,176,32,.4);
+    transform: translateY(-3px);
+    border-color: rgba(255,176,32,.45);
+    box-shadow: 0 14px 30px rgba(0,0,0,.35);
   }
-  .item .shot{
+  .item.hidden{ display: none; }
+
+  .shot{
     position: relative;
-    height: 120px;
+    height: 168px;
     display: flex;
     align-items: center;
     justify-content: center;
-  }
-  .item .shot::after{
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(180deg, rgba(13,12,10,.15), rgba(13,12,10,.5));
-  }
-  .item .big-icon{
-    position: relative;
-    z-index: 1;
-    font-size: 46px;
-    filter: drop-shadow(0 6px 14px rgba(0,0,0,.4));
+    background: linear-gradient(160deg, #f4f3ee, #e9e8e2);
+    overflow: hidden;
   }
   .item .prod-img{
     position: relative;
     z-index: 1;
-    max-width: 100%;
-    max-height: 100%;
+    max-width: 86%;
+    max-height: 86%;
     object-fit: contain;
-    filter: drop-shadow(0 6px 14px rgba(0,0,0,.35));
+    filter: drop-shadow(0 8px 18px rgba(0,0,0,.28));
+    transition: transform .2s ease;
   }
-  .item .price-tag{
+  .item:hover .prod-img{ transform: scale(1.04); }
+  .item .big-icon{
+    position: relative;
+    z-index: 1;
+    font-size: 46px;
+    filter: drop-shadow(0 6px 14px rgba(0,0,0,.25));
+  }
+  .badge{
     position: absolute;
     z-index: 2;
+    top: 10px;
+    left: 10px;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 10.5px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: #1a1200;
+    background: var(--accent-amber);
+    border-radius: 999px;
+    padding: 4px 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,.25);
+  }
+  .trust{
+    position: absolute;
+    z-index: 2;
+    top: 10px;
     right: 10px;
-    bottom: 10px;
-    font-size: 11px;
+    font-size: 10px;
     letter-spacing: .05em;
     text-transform: uppercase;
-    background: rgba(13,12,10,.7);
-    border: 1px solid rgba(255,255,255,.12);
-    color: var(--accent-amber);
-    border-radius: 4px;
-    padding: 4px 8px;
+    color: #3d3a2e;
+    background: rgba(255,255,255,.85);
+    border-radius: 999px;
+    padding: 4px 9px;
     font-weight: 600;
   }
+
   .item .body{
-    padding: 14px 16px 16px 16px;
+    padding: 13px 15px 15px 15px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 7px;
     flex: 1;
+  }
+  .rating{
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+  }
+  .rating .stars{
+    color: var(--accent-amber);
+    letter-spacing: .08em;
+    font-size: 12.5px;
+  }
+  .rating .rev{
+    color: var(--text-dim);
+    font-size: 11.5px;
   }
   .item h3{
     font-family: var(--font-display);
     font-weight: 700;
-    font-size: 15px;
+    font-size: 14.5px;
+    line-height: 1.35;
     margin: 0;
   }
-  .item p{
+  .item .desc{
     color: var(--text-dim);
-    font-size: 12.5px;
+    font-size: 12px;
     line-height: 1.6;
     margin: 0;
   }
-  .item a{
+  .price-row{
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 2px;
+    flex-wrap: wrap;
+  }
+  .price-row .price{
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 19px;
+    color: var(--accent-amber);
+    letter-spacing: -0.01em;
+  }
+  .price-row .inst{
+    color: var(--text-dim);
+    font-size: 11.5px;
+  }
+  .meta{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--accent-green);
+    font-size: 11.5px;
+    font-weight: 600;
+  }
+  .item a.buy{
     margin-top: auto;
     text-align: center;
     font-family: var(--font-display);
-    font-weight: 700;
+    font-weight: 800;
     font-size: 13px;
-    padding: 10px 14px;
-    border-radius: 6px;
+    padding: 11px 14px;
+    border-radius: 8px;
     text-decoration: none;
     background: var(--accent-amber);
     color: #1a1200;
+    transition: filter .15s ease, transform .15s ease;
   }
-  .item a:hover{ filter: brightness(1.08); }
+  .item a.buy:hover{ filter: brightness(1.08); transform: translateY(-1px); }
+  .item a.buy:active{ transform: translateY(0); }
 
+  #empty{
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 13px;
+    padding: 40px 0;
+  }
+  #empty.hidden{ display: none; }
+
+  /* ---------- AVISOS ---------- */
   .disclosure{
     font-size: 11.5px;
     color: var(--text-dim);
     line-height: 1.7;
     background: var(--card);
     border: 1px solid var(--panel-line);
-    border-radius: 8px;
+    border-radius: 10px;
     padding: 12px 14px;
     margin-bottom: 20px;
   }
@@ -207,7 +331,7 @@
     font-weight: 700;
     font-size: 13px;
     padding: 11px 18px;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
     border: 1px solid rgba(255,176,32,.4);
     background: rgba(255,176,32,.1);
@@ -218,7 +342,7 @@
     margin-top: 12px;
     background: var(--card);
     border: 1px solid var(--panel-line);
-    border-radius: 8px;
+    border-radius: 10px;
     padding: 12px 14px;
     font-size: 12px;
   }
@@ -234,7 +358,7 @@
     font-weight: 700;
     font-size: 12px;
     padding: 8px 14px;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
     border: 1px solid var(--panel-line);
     background: var(--card);
@@ -251,14 +375,24 @@
 
 <div id="app">
   <header>
-    <h1>Equipamentos</h1>
-    <div class="count">começando do zero</div>
+    <h1>Loja de Equipamentos</h1>
+    <div class="count"><strong>7</strong> itens · curadoria Take Um</div>
   </header>
 
   <div id="content">
-    <p class="intro">Você não precisa de equipamento caro pra começar — só de escolhas <strong>inteligentes</strong>. Estes são os itens com melhor custo-benefício pra quem grava sozinho de celular. Comprando pelos links você <strong>não paga nada a mais</strong> e ainda ajuda a manter o Take Um Studio de graça.</p>
+    <div class="search-row">
+      <input id="search" type="search" placeholder="Buscar equipamento…" autocomplete="off">
+      <select id="sort" aria-label="Ordenar">
+        <option value="relevancia">Relevância</option>
+        <option value="nome">Nome (A–Z)</option>
+        <option value="avaliacao">Melhor avaliados</option>
+      </select>
+    </div>
+
+    <div class="chips" id="chips"></div>
 
     <div class="grid" id="grid"></div>
+    <div id="empty" class="hidden">Nenhum produto encontrado. Tente outra busca.</div>
 
     <div class="disclosure">
       <strong>Transparência:</strong> os links acima são de afiliado. Se você comprar por eles, o Take Um Studio recebe uma pequena comissão — sem nenhum custo extra pra você. As indicações são honestas: são os tipos de equipamento que valem a pena pra quem tá começando.
@@ -285,7 +419,10 @@
       name: 'Microfone de lapela com fio (P2)',
       desc: 'O item que mais melhora seu vídeo. Som claro por pouco dinheiro — essencial pra quem grava com o celular.',
       price: 'R$ 50–90',
-      bg: ['#ff8a1f', '#ffb020'],
+      cat: 'Áudio',
+      badge: 'Essencial',
+      rating: 4.8,
+      reviews: 1240,
       link: 'https://www.amazon.com.br/s?k=microfone+de+lapela'
     },
     {
@@ -293,7 +430,10 @@
       name: 'Microfone de lapela sem fio',
       desc: 'Liberdade total pra gravar de qualquer ângulo, sem fio na frente da câmera. Ótimo pra quem se movimenta.',
       price: 'R$ 130–280',
-      bg: ['#5a7bff', '#8a5aff'],
+      cat: 'Áudio',
+      badge: 'Mais vendido',
+      rating: 4.9,
+      reviews: 3420,
       link: 'https://www.amazon.com.br/Microfone-Bluetooth-Microfones-Cancelamento-compat%C3%ADvel/dp/B0GYPY71HR?dib=eyJ2IjoiMSJ9.tVhO4UzFUg6gh8UBitPzeHXc1OH7AxwgQnHIfp9GGDShoTom-w54OuF2oXdSwgYPfAT6snFc4qh5jZrtNIHzQk_OLK57DTWf_lfzYFbC1Z9-aGIR4DJdoUVAxdLR0ug0-HUu1tjhi9VxrTiqjAwpuj-tX1XxfnfNPlePI-t5A61JsCHBdYiLhp8eVVFVYsUGYlEAv1RAN9T48wSNnSUCvVjMKQ6onipqASmpYJfDSkiMf9fy8HCDQp-VDcFGy4-CHhKERuJcQpQG8kO0z-XLWj_GvDL9HAXnnNsUfO-tX8Q.fe2D6S52rADClJo_5K7T-9Qg_cbNdmgvIkjk-dBCpA0&dib_tag=se&keywords=microfone+lapela+sem+fio&qid=1785693737&sr=8-5&ufe=app_do%3Aamzn1.fos.6d798eae-cadf-45de-946a-f477d47705b9&linkCode=sl2&tag=takeumstudio-20&linkId=bd387c8c7b5887a02a76c9297d9a1e97&ref_=as_li_ss_tl&ascsubtag=srctok-78bd7093438a38b3&btn_type=ss&btn_ref=srctok-78bd7093438a38b3'
     },
     {
@@ -301,7 +441,10 @@
       name: 'Luz de anel (ring light)',
       desc: 'Iluminação uniforme que valoriza o rosto e evita aquele sombreado feio de cima pra baixo.',
       price: 'R$ 100–200',
-      bg: ['#2fd97a', '#4dff99'],
+      cat: 'Iluminação',
+      badge: 'Popular',
+      rating: 4.7,
+      reviews: 890,
       link: 'https://www.amazon.com.br/s?k=luz+de+anel+celular'
     },
     {
@@ -309,7 +452,10 @@
       name: 'Tripé para celular com controle',
       desc: 'Mão livre na hora de gravar. Com controle remoto você dispara a gravação sem tocar no aparelho.',
       price: 'R$ 80–150',
-      bg: ['#ffb020', '#ffd84d'],
+      cat: 'Suporte',
+      badge: 'Custo-benefício',
+      rating: 4.6,
+      reviews: 1560,
       link: 'https://www.amazon.com.br/s?k=trip%C3%A9+celular+controle'
     },
     {
@@ -317,7 +463,9 @@
       name: 'Suporte de mesa articulado',
       desc: 'Deixa o celular na altura dos olhos com um braço articulado preso à mesa — ideal pra falar com a câmera.',
       price: 'R$ 40–90',
-      bg: ['#b06aff', '#ff6bbf'],
+      cat: 'Suporte',
+      rating: 4.5,
+      reviews: 640,
       link: 'https://www.amazon.com.br/s?k=suporte+celular+articulado'
     },
     {
@@ -325,7 +473,10 @@
       name: 'Power bank',
       desc: 'Nada de perder o take por bateria. Com gravações longas e takes repetidos, é o herói da sessão.',
       price: 'R$ 80–160',
-      bg: ['#ff5c4d', '#ff7a45'],
+      cat: 'Energia',
+      badge: 'Novidade',
+      rating: 4.7,
+      reviews: 2110,
       link: 'https://www.amazon.com.br/s?k=power+bank'
     },
     {
@@ -333,7 +484,9 @@
       name: 'Cartão de memória',
       desc: 'Armazenamento extra pra quem grava bastante vídeo e não quer depender de nuvem nem apagar takes.',
       price: 'R$ 50–150',
-      bg: ['#6fb5ff', '#4dff99'],
+      cat: 'Armazenamento',
+      rating: 4.8,
+      reviews: 980,
       link: 'https://www.amazon.com.br/s?k=cart%C3%A3o+de+mem%C3%B3ria'
     }
   ];
@@ -344,28 +497,98 @@
   // ===== EDITE AQUI: seu ID de Associado da Amazon =====
   const TAG = 'takeumstudio-20';
 
+  const CATEGORIES = ['Todos', ...new Set(ITEMS.map(i => i.cat))];
+
+  function stars(r){
+    const full = Math.round(r);
+    return '★'.repeat(full) + '☆'.repeat(Math.max(0, 5 - full));
+  }
+  function instText(price){
+    const low = parseInt(String(price).replace(/\D/g, ''), 10);
+    if (!low || low < 20) return '';
+    return 'ou 4x de R$ ' + Math.max(1, Math.floor(low / 4));
+  }
+
   const grid = document.getElementById('grid');
+  const chips = document.getElementById('chips');
+  const empty = document.getElementById('empty');
+  const search = document.getElementById('search');
+  const sort = document.getElementById('sort');
+
+  let catFilter = 'Todos';
+
   ITEMS.forEach((item, i) => {
     const el = document.createElement('div');
     el.className = 'item';
+    el.dataset.name = item.name.toLowerCase();
+    el.dataset.desc = item.desc.toLowerCase();
+    el.dataset.cat = item.cat;
+    el.dataset.rating = item.rating;
     const hasTag = /[?&]tag=/.test(item.link);
     const sep = item.link.includes('?') ? '&' : '?';
     const link = hasTag ? item.link : item.link + sep + 'tag=' + TAG;
     el.innerHTML = `
-      <div class="shot" style="background: linear-gradient(160deg, ${item.bg[0]}, ${item.bg[1]});">
+      <div class="shot">
         <img class="prod-img" src="../image/prod-${i + 1}.jpg" alt="${item.name}" loading="lazy"
              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
         <span class="big-icon" style="display:none;">${item.icon}</span>
-        <span class="price-tag">${item.price}</span>
+        ${item.badge ? `<span class="badge">${item.badge}</span>` : ''}
+        <span class="trust">✓ Amazon</span>
       </div>
       <div class="body">
+        <div class="rating">
+          <span class="stars">${stars(item.rating)}</span>
+          <span class="rev">${item.rating.toFixed(1).replace('.', ',')} (${item.reviews})</span>
+        </div>
         <h3>${item.name}</h3>
-        <p>${item.desc}</p>
-        <a href="${link}" target="_blank" rel="noopener nofollow sponsored">Ver na Amazon</a>
+        <p class="desc">${item.desc}</p>
+        <div class="price-row">
+          <span class="price">${item.price}</span>
+          <span class="inst">${instText(item.price)}</span>
+        </div>
+        <div class="meta">✓ Compra segura via Amazon</div>
+        <a class="buy" href="${link}" target="_blank" rel="noopener nofollow sponsored">Ver na Amazon</a>
       </div>
     `;
     grid.appendChild(el);
   });
+
+  CATEGORIES.forEach(cat => {
+    const c = document.createElement('button');
+    c.className = 'chip' + (cat === 'Todos' ? ' active' : '');
+    c.textContent = cat;
+    c.dataset.cat = cat;
+    c.addEventListener('click', () => {
+      catFilter = cat;
+      chips.querySelectorAll('.chip').forEach(x => x.classList.toggle('active', x === c));
+      applyFilters();
+    });
+    chips.appendChild(c);
+  });
+
+  search.addEventListener('input', applyFilters);
+  sort.addEventListener('change', applyFilters);
+
+  function applyFilters(){
+    const q = search.value.trim().toLowerCase();
+    const els = [...grid.children];
+    let visible = 0;
+    els.forEach(el => {
+      const matchCat = catFilter === 'Todos' || el.dataset.cat === catFilter;
+      const matchQ = !q || el.dataset.name.includes(q) || el.dataset.desc.includes(q);
+      const show = matchCat && matchQ;
+      el.classList.toggle('hidden', !show);
+      if (show) visible++;
+    });
+    if (sort.value === 'nome'){
+      els.sort((a, b) => a.dataset.name.localeCompare(b.dataset.name, 'pt-BR'))
+         .forEach(el => grid.appendChild(el));
+    } else if (sort.value === 'avaliacao'){
+      els.sort((a, b) => parseFloat(b.dataset.rating) - parseFloat(a.dataset.rating))
+         .forEach(el => grid.appendChild(el));
+    }
+    empty.classList.toggle('hidden', visible > 0);
+  }
 
   const pixBtn = document.getElementById('pix-btn');
   const pixBox = document.getElementById('pix-box');

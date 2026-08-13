@@ -40,10 +40,7 @@
     padding: 40px 24px 64px;
   }
 
-  /* ---------- HERO ---------- */
-  #hero{
-    display: none;
-  }
+  /* ---------- HERO (removido, banner assume) ---------- */
 
   /* ---------- BANNER ---------- */
   #page-banner{
@@ -79,24 +76,96 @@
     #page-banner::after{ height: 16px; }
   }
 
+  /* ---------- KICKER / TITULO ---------- */
+  .kicker{
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent-amber);
+    margin: 26px 0 0 0;
+  }
+
   h1{
     font-family: var(--font-display);
     font-weight: 900;
     font-size: clamp(24px, 4.5vw, 32px);
-    margin: 26px 0 10px 0;
+    margin: 6px 0 20px 0;
     letter-spacing: -0.02em;
   }
 
-  .tagline{
-    color: var(--text-dim);
-    font-size: 14px;
-    line-height: 1.65;
-    margin: 0 0 30px 0;
-    padding-bottom: 24px;
+  /* ---------- INTRO / MANIFESTO ---------- */
+  .story{
+    padding-bottom: 28px;
+    margin-bottom: 30px;
     border-bottom: 1px solid var(--panel-line);
   }
+  .story p{
+    color: var(--text-dim);
+    font-size: 16px;
+    line-height: 1.7;
+    margin: 0 0 9px 0;
+  }
+  .story .doubts{
+    margin: 2px 0 14px 0;
+    padding-left: 14px;
+    border-left: 2px solid var(--panel-line);
+  }
+  .story .doubts p{
+    font-style: italic;
+    opacity: 0.72;
+    margin-bottom: 6px;
+  }
 
-  .tagline strong{ color: var(--accent-amber); font-weight: 600; }
+  /* ---------- DESTAQUES ---------- */
+  p.strong{ color: var(--text-main); font-weight: 600; }
+  p.hl{ color: var(--accent-amber); font-weight: 700; }
+  .sub{ opacity: 0.62; }
+  p.rec{ color: var(--accent-red); }
+  p.big{
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: clamp(20px, 4vw, 30px);
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+    margin: 20px 0 16px 0;
+  }
+  .brand-end{
+    color: var(--accent-amber);
+    letter-spacing: 0.14em;
+  }
+
+  /* cartão de frases */
+  .turn{
+    background: var(--card);
+    border: 1px solid var(--panel-line);
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin: 14px 0;
+  }
+  .turn p{ margin-bottom: 6px; }
+  .turn p:last-child{ margin-bottom: 0; }
+
+  /* lista "Sem X." */
+  .no-list{
+    background: var(--card);
+    border: 1px solid var(--panel-line);
+    border-radius: 10px;
+    padding: 6px 18px;
+    margin: 6px 0 12px 0;
+  }
+  .no-list p{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    padding: 8px 0;
+    font-size: 15.5px;
+    border-bottom: 1px solid var(--panel-line);
+    color: var(--text-main);
+  }
+  .no-list p:last-child{ border-bottom: none; }
+  .no-list .chk{ color: var(--accent-green); flex-shrink: 0; font-weight: 700; }
 
   /* ---------- SECTIONS ---------- */
   section{ margin-bottom: 34px; }
@@ -104,7 +173,7 @@
   h2{
     font-family: var(--font-display);
     font-weight: 700;
-    font-size: 15px;
+    font-size: 16px;
     letter-spacing: 0.02em;
     margin: 0 0 12px 0;
     display: flex;
@@ -122,7 +191,7 @@
 
   p{
     color: var(--text-dim);
-    font-size: 13px;
+    font-size: 15.5px;
     line-height: 1.75;
     margin: 0 0 12px 0;
   }
@@ -144,7 +213,7 @@
     align-items: flex-start;
     gap: 10px;
     padding: 9px 0;
-    font-size: 13px;
+    font-size: 15.5px;
     line-height: 1.6;
     color: var(--text-dim);
     border-bottom: 1px solid var(--panel-line);
@@ -172,11 +241,11 @@
   .tool h3{
     font-family: var(--font-display);
     font-weight: 700;
-    font-size: 14px;
+    font-size: 15.5px;
     margin: 0 0 5px 0;
   }
   .tool p{
-    font-size: 11.5px;
+    font-size: 14px;
     line-height: 1.6;
     margin: 0;
     color: var(--text-dim);
@@ -188,7 +257,7 @@
     border: 1px solid rgba(57, 255, 136, 0.25);
     border-radius: 10px;
     padding: 16px 18px;
-    font-size: 12.5px;
+    font-size: 15px;
     line-height: 1.7;
     color: var(--text-dim);
   }
@@ -197,9 +266,12 @@
   /* CTA */
   #cta{
     margin-top: 8px;
-    text-align: center;
     padding-top: 26px;
     border-top: 1px solid var(--panel-line);
+  }
+  .cta-actions{
+    text-align: center;
+    margin-top: 30px;
   }
   #cta-btn{
     font-family: var(--font-display);
@@ -223,91 +295,158 @@
 <body>
 
 <div id="app">
-  <div id="hero">
-    <img class="mark" src="image/nova-image-perfil.png" alt="Take Um">
-  </div>
-
   <div id="page-banner">
     <img src="image/banner-sobre.png" alt="Take Um - Sobre">
   </div>
 
+  <p class="kicker">Sobre o Take Um</p>
   <h1>O estúdio de quem tá começando</h1>
-  <p class="tagline">
-    Ferramentas simples que rodam direto no seu navegador pra você <strong>planejar, roteirizar e gravar</strong>
-    seus vídeos como numa produção de verdade — com o que você já tem em casa.
-  </p>
+
+  <div class="story">
+    <p>Todo vídeo começa antes da câmera ser ligada.</p>
+    <p>Começa com uma ideia.</p>
+    <p>Depois vem a dúvida.</p>
+    <div class="doubts">
+      <p>Será que vai ficar bom?</p>
+      <p>E se ninguém assistir?</p>
+      <p>Eu ainda não estou preparado.</p>
+      <p>Amanhã eu gravo.</p>
+    </div>
+    <p>E, muitas vezes, o vídeo nunca acontece.</p>
+    <p class="big hl">O Take Um nasceu para mudar isso.</p>
+    <p>
+      Um conjunto de ferramentas simples, gratuitas e em português para quem quer começar a criar conteúdo —
+      mesmo gravando sozinho, com o celular e com o que já tem em casa.
+    </p>
+    <div class="turn">
+      <p>Porque você não precisa de uma equipe.</p>
+      <p>Não precisa de um estúdio.</p>
+      <p>Não precisa dos equipamentos mais caros.</p>
+      <p class="hl">Precisa dar o primeiro passo.</p>
+    </div>
+  </div>
 
   <section>
-    <h2><span class="dot"></span>O que é</h2>
+    <h2><span class="dot"></span>O que é o Take Um?</h2>
+    <p>O <strong>Take Um</strong> é um estúdio digital para quem cria sozinho.</p>
+    <p>Um lugar para transformar uma ideia em um vídeo.</p>
     <p>
-      O <strong>Take Um</strong> é uma suíte de ferramentas pro criador de conteúdo solo.
-      Em vez de dez abas abertas, apps pagos e planilhas confusas, você tem tudo num lugar só:
-      do momento em que a ideia surge até o take gravado.
+      Você pode pensar, organizar, roteirizar, preparar e gravar sem precisar ficar pulando entre
+      dezenas de aplicativos, planilhas e ferramentas diferentes.
     </p>
-    <p>
-      Nada de instalação, assinatura ou conta. Abriu a página, começou a criar.
-    </p>
+    <p>Tudo direto no navegador.</p>
+    <div class="no-list">
+      <p><span class="chk">✓</span>Sem instalação</p>
+      <p><span class="chk">✓</span>Sem assinatura</p>
+      <p><span class="chk">✓</span>Sem complicação</p>
+    </div>
+    <p><strong>Você abre.</strong> <strong>Começa.</strong> <strong>E grava.</strong></p>
   </section>
 
   <section>
-    <h2><span class="dot"></span>Pra quem é</h2>
+    <h2><span class="dot"></span>Feito para quem ainda não começou</h2>
+    <p>
+      O <strong>Take Um</strong> foi pensado principalmente para quem está naquele momento em que a
+      vontade de criar já existe — mas o primeiro vídeo ainda não saiu.
+    </p>
+    <p>Para quem:</p>
     <ul class="who-list">
-      <li><span class="chk">✓</span>Quem tá começando agora e não sabe por onde começar</li>
-      <li><span class="chk">✓</span>Quem grava sozinho, de celular, sem equipe</li>
-      <li><span class="chk">✓</span>Quem não tem orçamento pra software e equipamento caro</li>
-      <li><span class="chk">✓</span>Quem quer se organizar sem burocracia</li>
-      <li><span class="chk">✓</span>Quem quer parecer mais profissional mesmo no começo</li>
+      <li><span class="chk">✓</span>Quer começar um canal, mas não sabe por onde começar</li>
+      <li><span class="chk">✓</span>Grava sozinho, com celular ou computador</li>
+      <li><span class="chk">✓</span>Não tem equipe ou um estúdio profissional</li>
+      <li><span class="chk">✓</span>Quer se organizar sem transformar criação em burocracia</li>
+      <li><span class="chk">✓</span>Não quer gastar uma fortuna em softwares e equipamentos</li>
+      <li><span class="chk">✓</span>Quer fazer seu primeiro vídeo parecer mais profissional</li>
     </ul>
+    <p class="strong">Você não precisa esperar estar pronto. <span class="sub">O processo também faz parte do aprendizado.</span></p>
   </section>
 
   <section>
-    <h2><span class="dot"></span>O que tem dentro</h2>
+    <h2><span class="dot"></span>Um take de cada vez</h2>
+    <p>No <strong>Take Um</strong>, cada ferramenta resolve uma parte dessa jornada.</p>
     <div id="tools">
       <div class="tool">
-        <div class="t-icon" style="background:var(--accent-amber)22; color:var(--accent-amber)">▤</div>
-        <h3>Teleprompter</h3>
-        <p>Leia o roteiro rolando na tela enquanto grava, com câmera embutida e gravação direto no navegador.</p>
+        <div class="t-icon" style="background:var(--accent-amber)22; color:var(--accent-amber)">✦</div>
+        <h3>Ideia</h3>
+        <p>Tire a ideia da cabeça e coloque no papel.</p>
       </div>
       <div class="tool">
-        <div class="t-icon" style="background:var(--accent-red)22; color:var(--accent-red)">▣</div>
-        <h3>Gerador de Capa</h3>
-        <p>Crie a capa do vídeo: título, emoji, cor de fundo — e baixe o PNG pronto para usar.</p>
+        <div class="t-icon" style="background:var(--accent-purple)22; color:var(--accent-purple)">✍</div>
+        <h3>Roteiro</h3>
+        <p>Organize o que você quer dizer antes de apertar REC.</p>
       </div>
       <div class="tool">
         <div class="t-icon" style="background:var(--accent-blue)22; color:var(--accent-blue)">◫</div>
-        <h3>Painel de Pauta</h3>
-        <p>Organize suas ideias por etapas: ideia, roteiro, gravado, editado e postado.</p>
-      </div>
-      <div class="tool">
-        <div class="t-icon" style="background:var(--accent-purple)22; color:var(--accent-purple)">◧</div>
-        <h3>Claquete Digital</h3>
-        <p>Contagem regressiva, bate-claquete com som e cronômetro de take, com histórico.</p>
+        <h3>Pauta</h3>
+        <p>Transforme o roteiro em um plano simples para a gravação.</p>
       </div>
       <div class="tool">
         <div class="t-icon" style="background:var(--accent-green)22; color:var(--accent-green)">✓</div>
         <h3>Checklist</h3>
-        <p>Lista pré-gravação: bateria, microfone, luz, isolamento e muito mais.</p>
+        <p>Confira bateria, microfone, luz, ambiente e tudo o que pode fazer você parar no meio do caminho.</p>
       </div>
       <div class="tool">
-        <div class="t-icon" style="background:var(--accent-amber)22; color:var(--accent-amber)">✍</div>
-        <h3>Roteirizador</h3>
-        <p>Estruture o roteiro: gancho, problema, solução com tempo e CTA.</p>
+        <div class="t-icon" style="background:var(--accent-amber)22; color:var(--accent-amber)">▤</div>
+        <h3>Teleprompter</h3>
+        <p>Tenha seu roteiro na tela enquanto grava, direto pelo navegador.</p>
+      </div>
+      <div class="tool">
+        <div class="t-icon" style="background:var(--accent-red)22; color:var(--accent-red)">◧</div>
+        <h3>Claquete</h3>
+        <p>Prepare o take, faça a contagem e registre suas gravações.</p>
+      </div>
+      <div class="tool">
+        <div class="t-icon" style="background:var(--accent-red)22; color:var(--accent-red)">▣</div>
+        <h3>Capa</h3>
+        <p>Crie uma capa simples para dar ao seu vídeo a primeira impressão que ele merece.</p>
       </div>
     </div>
+  </section>
+
+  <section>
+    <h2><span class="dot"></span>Sem estúdio. Sem equipe. Sem desculpas.</h2>
+    <p>O <strong>Take Um</strong> não foi criado para substituir uma grande produção.</p>
+    <p class="strong">Foi criado para tornar possível a primeira produção.</p>
+    <div class="turn">
+      <p>Aquela feita no quarto.</p>
+      <p>Na sala.</p>
+      <p>Na cozinha.</p>
+      <p class="sub">Com o celular apoiado em alguns livros.</p>
+      <p class="sub">Com uma luz improvisada.</p>
+      <p class="sub">Com um microfone simples.</p>
+      <p class="hl">Com medo mesmo.</p>
+    </div>
+    <p>Porque é assim que muita gente começa.</p>
+    <p>E talvez o mais importante seja simplesmente:</p>
+    <p class="big hl">começar.</p>
   </section>
 
   <section>
     <h2><span class="dot"></span>Seus dados ficam com você</h2>
     <div id="data-banner">
-      <strong>Sem conta, sem nuvem, sem assinatura.</strong> Tudo o que você salva fica no seu próprio navegador.
-      Seus dados não saem do seu aparelho. Usamos apenas estatísticas anônimas de visita pra entender como o
-      site é usado — sem identificar quem você é.
+      <strong>Sem conta. Sem nuvem. Sem assinatura.</strong>
+      O <strong>Take Um</strong> foi pensado para ser simples também por dentro — os dados que você salva
+      ficam no próprio navegador do seu aparelho. Não precisamos saber quem você é para ajudar você a criar.
+      Usamos apenas estatísticas anônimas de visita para entender como o site é utilizado e melhorar a experiência.
     </div>
   </section>
 
-  <div id="cta">
-    <button id="cta-btn">Começar a criar</button>
-  </div>
+  <section id="cta">
+    <h2><span class="dot"></span>Agora é com você</h2>
+    <p>Você já teve uma ideia.</p>
+    <p>Talvez esteja esperando o momento certo.</p>
+    <p>Talvez esteja esperando o equipamento certo.</p>
+    <p>Talvez esteja esperando perder a vergonha.</p>
+    <p>Talvez esteja esperando o vídeo ficar perfeito.</p>
+    <p>Mas existe uma coisa que nenhum equipamento, software ou ferramenta pode fazer por você:</p>
+    <p class="big rec">apertar REC.</p>
+    <p>O <strong>Take Um</strong> pode ajudar com todo o resto.</p>
+    <p>Abra. Escolha sua ideia. Prepare o primeiro take. E <strong>comece</strong>.</p>
+    <p class="big brand-end">TAKE UM.</p>
+    <div class="cta-actions">
+      <button id="cta-btn">Começar a criar</button>
+    </div>
+  </section>
 </div>
 
 <script>

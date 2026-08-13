@@ -100,9 +100,11 @@
 
     #brand {
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 20px 10px 36px 10px;
+      gap: 12px;
+      padding: 20px 10px 32px 10px;
     }
 
     #brand .mark {
@@ -112,6 +114,17 @@
       object-fit: contain;
       display: block;
       flex-shrink: 0;
+    }
+
+    #brand .name {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 20px;
+      letter-spacing: 0.14em;
+      line-height: 1;
+      text-transform: uppercase;
+      color: var(--text-main);
+      text-align: center;
     }
 
     nav {
@@ -1312,6 +1325,7 @@
     <aside id="sidebar">
       <div id="brand">
         <img class="mark" src="image/nova-image-perfil.png" alt="Take Um">
+        <div class="name">TAKE UM</div>
       </div>
       <nav id="nav">
         <button id="theme-toggle" aria-label="Alternar tema" class="theme-toggle">

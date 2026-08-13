@@ -23,10 +23,30 @@
     --green: #0f8a4d;
     --bg: #ffffff;
     --muted: #f6f5f1;
-    --dark: #0a0a0c;
-    --dark-panel: #141417;
-    --dark-line: #232328;
+    --dark: #0d0c0a;
+    --dark-panel: #16140f;
+    --dark-line: #262219;
     --accent-amber: #ffb020;
+  }
+
+  /* ---------- Dark mode (tela) ----------
+     Segue o tema do app (theme.js). Na tela o documento usa a
+     paleta escura; ao imprimir (PDF) volta ao branco. */
+  @media screen{
+    html:not(.light){
+      --ink: #f7f4ec;
+      --ink-soft: #9c968a;
+      --line: #262219;
+      --amber: #ffb020;
+      --green: #4dff99;
+      --bg: #16140f;
+      --muted: #1d1a14;
+    }
+  }
+  html.light .tu-back{
+    background: rgba(255,255,255,0.92);
+    border-color: #e2e0d9;
+    color: #1d1c19;
   }
 
   *{ box-sizing: border-box; }
@@ -60,7 +80,7 @@
     font-family: "Archivo", -apple-system, sans-serif;
     font-weight: 900;
     font-size: 14px;
-    color: #f5f4ef;
+    color: #f7f4ec;
     flex: 1;
     letter-spacing: -0.01em;
     display: none;
@@ -70,18 +90,18 @@
     font-family: -apple-system, sans-serif;
     font-weight: 400;
     font-size: 10px;
-    color: #8a8a92;
+    color: #9c968a;
     letter-spacing: 0.06em;
     text-transform: uppercase;
   }
   .topbar a{
-    color: #8a8a92;
+    color: #9c968a;
     font-size: 11px;
     text-decoration: none;
     letter-spacing: 0.05em;
     text-transform: uppercase;
   }
-  .topbar a:hover{ color: #f5f4ef; }
+  .topbar a:hover{ color: #f7f4ec; }
 
   /* ---------- Gate (bloqueio para não-Pro) ---------- */
   #gate{
@@ -92,7 +112,7 @@
     border-radius: 12px;
     padding: 34px 26px;
     text-align: center;
-    color: #f5f4ef;
+    color: #f7f4ec;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   }
   #gate .lock{ font-size: 34px; margin-bottom: 12px; }
@@ -103,7 +123,7 @@
     margin: 0 0 8px;
     letter-spacing: -0.01em;
   }
-  #gate p{ color: #8a8a92; font-size: 13px; line-height: 1.65; margin: 0 0 20px; }
+  #gate p{ color: #9c968a; font-size: 13px; line-height: 1.65; margin: 0 0 20px; }
   #gate a{
     display: inline-block;
     background: var(--accent-amber);
@@ -302,6 +322,7 @@
 </style>
 <link rel="stylesheet" href="../mobile.css">
 <script src="../back-btn.js" defer></script>
+<script src="../theme.js"></script>
 </head>
 <body>
 

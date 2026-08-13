@@ -46,15 +46,15 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 12px 18px;
+    padding: 10px 18px;
     background: var(--dark-panel);
     border-bottom: 1px solid var(--dark-line);
     color: var(--dark-line);
   }
   .topbar img.mark{
-    width: 24px; height: 24px;
-    border-radius: 5px;
-    object-fit: cover;
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    object-fit: contain;
   }
   .topbar .name{
     font-family: "Archivo", -apple-system, sans-serif;
@@ -63,6 +63,7 @@
     color: #f5f4ef;
     flex: 1;
     letter-spacing: -0.01em;
+    display: none;
   }
   .topbar .name small{
     display: block;
@@ -305,8 +306,8 @@
 <body>
 
   <div class="topbar">
-    <img class="mark" src="../icons/icon-192.png" alt="Take Um Studio">
-    <div class="name">Take Um Studio<small>Bônus do Take Um Pro</small></div>
+    <img class="mark" src="../image/nova-image-perfil.png" alt="Take Um">
+    <div class="name">Take Um<small>Bônus do Take Um Pro</small></div>
     <a href="../pro.html">Plano Pro</a>
     <a href="../index.html">Voltar ao app</a>
   </div>
@@ -315,7 +316,7 @@
   <div id="gate">
     <div class="lock">🔒</div>
     <h1>Bônus exclusivo do Take Um Pro</h1>
-    <p>O Guia de Planejamento de 90 dias é um bônus de quem tem a licença vitalícia do Take Um Studio Pro — junto com a criação ilimitada em todas as ferramentas.</p>
+    <p>O Guia de Planejamento de 90 dias é um bônus de quem tem a licença vitalícia do Take Um Pro — junto com a criação ilimitada em todas as ferramentas.</p>
     <a href="../venda.html">Desbloquear com o Pro</a>
     <p class="hint">Já tem o Pro? Ative sua chave na página <a href="../pro.html">Plano Pro</a> e volte aqui.</p>
   </div>
@@ -325,7 +326,7 @@
     <div class="doc-inner">
 
       <div class="cover">
-        <div class="brand">Take Um Studio · Bônus do Pro</div>
+        <div class="brand">Take Um · Bônus do Pro</div>
         <h1>Guia de Planejamento<br>para quem grava sozinho</h1>
         <p class="sub">Um plano de 90 dias para sair do improviso: defina seu tema, monte a rotina semanal, organize o mês e acompanhe o que funciona.</p>
       </div>
@@ -394,7 +395,7 @@
         <p>Não tente fazer tudo no mesmo dia. Separe <strong>um dia para produzir</strong> (roteiro + gravação) e <strong>um dia para publicar</strong> (edição, capa, descrição e divulgação). Exemplo de semana:</p>
         <div class="steps">
           <ol>
-            <li><strong>Segunda (30 min) — Roteirize.</strong> Escolha o tema, o gancho e a estrutura no Roteirizador do Take Um Studio.</li>
+            <li><strong>Segunda (30 min) — Roteirize.</strong> Escolha o tema, o gancho e a estrutura no Roteirizador do Take Um.</li>
             <li><strong>Terça (1 h) — Grave.</strong> Teleprompter na tela, câmera do celular, checklist de gravação conferido.</li>
             <li><strong>Quarta (1 h) — Edite.</strong> Corte as pausas, ajuste o áudio, monte a capa na ferramenta de Capa.</li>
             <li><strong>Quinta (30 min) — Publique.</strong> Título, descrição e tags com o Pack de Publicação; agende o horário ideal.</li>
@@ -410,7 +411,7 @@
       <div class="section allow-break">
         <div class="kicker">Passo 5 · o mês no papel</div>
         <h2>Calendário do mês</h2>
-        <p>Anote 1 linha por vídeo. Use o Calendário do Take Um Studio para acompanhar as etapas em tempo real.</p>
+        <p>Anote 1 linha por vídeo. Use o Calendário do Take Um para acompanhar as etapas em tempo real.</p>
         <table>
           <tr><th style="width:14%">Data</th><th style="width:40%">Título / tema do vídeo</th><th style="width:22%">Pilar</th><th style="width:24%">Etapa (roteiro → gravado → editado → postado)</th></tr>
           <tr><td>Semana 1</td><td class="blank"></td><td class="blank"></td><td class="blank"></td></tr>
@@ -449,7 +450,7 @@
           <strong>Como o YouTube decide mostrar seu vídeo:</strong>
           O algoritmo <em>não</em> entrega o seu vídeo — ele <strong>segue as pessoas</strong>. Ele estuda o que cada espectador está querendo assistir e procura vídeos que entreguem esse valor. Se o seu vídeo entrega conteúdo de valor de verdade (título e capa honestos + conteúdo que segura até o fim), ele passa a ser mostrado para mais gente. Você não precisa "vencer" o algoritmo: precisa entregar o que prometeu a quem clicou.
         </div>
-        <p>Nos primeiros 90 dias, o número que importa é <strong>consistência</strong>, não views. Acompanhe estas 4 no Tracker do Take Um Studio — são os sinais que o algoritmo lê:</p>
+        <p>Nos primeiros 90 dias, o número que importa é <strong>consistência</strong>, não views. Acompanhe estas 4 no Tracker do Take Um — são os sinais que o algoritmo lê:</p>
         <div class="grid2">
           <div class="box">
             <strong>Impressões × CTR</strong>
@@ -484,7 +485,7 @@
       </div>
 
       <div class="foot">
-        Take Um Studio · ferramentas gratuitas para quem grava e organiza vídeo sozinho<br>
+        Take Um · ferramentas gratuitas para quem grava e organiza vídeo sozinho<br>
         Este guia acompanha o plano: foco, pilares, rotina, calendário e revisão.
       </div>
 

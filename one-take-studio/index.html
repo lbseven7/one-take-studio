@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Take Um Studio</title>
+  <title>Take Um</title>
   <meta name="description" content="Ferramentas para quem grava e organiza vídeo sozinho: teleprompter, roteiro, capa, pauta e mais.">
   <meta name="theme-color" content="#0a0a0c">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1268,7 +1268,7 @@
   <div id="splash" role="status" aria-label="Carregando">
     <div id="splash-inner">
       <div id="splash-mascot-wrap">
-        <img id="splash-fallback" src="image/nova-image-perfil.png" alt="Take Um Studio" aria-hidden="true">
+        <img id="splash-fallback" src="image/nova-image-perfil.png" alt="Take Um" aria-hidden="true">
         <video id="splash-mascot" src="video/mascote.mp4" autoplay muted loop playsinline preload="auto"
           onerror="this.style.display='none'"></video>
       </div>
@@ -1293,7 +1293,7 @@
 
     <aside id="sidebar">
       <div id="brand">
-        <img class="mark" src="image/nova-image-perfil.png" alt="Take Um Studio">
+        <img class="mark" src="image/nova-image-perfil.png" alt="Take Um">
       </div>
       <nav id="nav">
         <button id="theme-toggle" aria-label="Alternar tema" class="theme-toggle">
@@ -1346,7 +1346,7 @@
         <div id="hero-banner">
           <picture>
             <source media="(max-width: 860px)" srcset="image/nova-frase-oficial.png">
-            <img src="image/nova-frase-oficial.png" alt="Take Um Studio - Ferramentas para criadores de vídeo" class="hero-image">
+            <img src="image/nova-frase-oficial.png" alt="Take Um - Ferramentas para criadores de vídeo" class="hero-image">
           </picture>
         </div>
         <div id="install-row" style="max-width:1240px;margin-left:auto;margin-right:auto;padding:0;">
@@ -1554,14 +1554,14 @@
                   <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
                 </div>
                 <h3>Sobre</h3>
-                <p>O que é o Take Um Studio, pra quem é e como seus dados são guardados.</p>
+                <p>O que é o Take Um, pra quem é e como seus dados são guardados.</p>
               </div>
             </div>
           </section>
         </div>
         <div id="testimonials">
           <h2>Quem já usou a Jornada</h2>
-          <p>Depoimentos de quem saiu da ideia e publicou o primeiro vídeo usando as ferramentas do Take Um Studio.</p>
+          <p>Depoimentos de quem saiu da ideia e publicou o primeiro vídeo usando as ferramentas do Take Um.</p>
           <div id="testimonials-grid">
             <div class="t-card">
               <p class="t-quote">Eu enrolei meses pra gravar o primeiro vídeo. A Jornada me deu um passo de cada vez — em uma semana eu tinha o vídeo no ar.</p>
@@ -1599,7 +1599,7 @@
             <p>Ele é o <strong>backup</strong>: um arquivo que guarda todos os seus dados (roteiros, pautas, takes). Você não precisa abrir nem entender — trate como um documento importante.</p>
             <ol>
               <li><strong>Baixou o arquivo?</strong> Envie para você mesmo no WhatsApp ou guarde no Google Drive / nuvem do celular.</li>
-              <li><strong>Mudou de aparelho?</strong> Abra o Take Um Studio lá, toque em <em>Restaurar backup</em> e escolha o arquivo.</li>
+              <li><strong>Mudou de aparelho?</strong> Abra o Take Um lá, toque em <em>Restaurar backup</em> e escolha o arquivo.</li>
             </ol>
           </div>
           <div id="backup-msg"></div>
@@ -1607,7 +1607,7 @@
           <div id="support-banner">
           <div class="sb-icon">☕</div>
           <div class="sb-body">
-            <strong>Gostou? Apoie o Take Um Studio.</strong>
+            <strong>Gostou? Apoie o Take Um.</strong>
             <p>Um Pix de qualquer valor ajuda a manter tudo grátis — ou desbloqueie a criação ilimitada com o <a href="venda.html">Take Um Pro</a>.</p>
           </div>
           <button id="pix-btn">☕ Apoiar</button>
@@ -1623,7 +1623,7 @@
           <div class="nl-title">📮 1 dica por semana pra gravar melhor</div>
           <p>Dicas curtas de roteiro, luz, som e constância, direto no seu e-mail. Grátis e sem spam — cancele quando quiser.</p>
           <form action="https://formsubmit.co/takeumst@gmail.com" method="POST" target="_blank">
-            <input type="hidden" name="_subject" value="Nova inscrição na newsletter Take Um Studio">
+            <input type="hidden" name="_subject" value="Nova inscrição na newsletter Take Um">
             <input type="hidden" name="_captcha" value="false">
             <input type="hidden" name="_next" value="https://www.takeumstudio.com.br/newsletter-obrigado.html">
             <input type="email" name="email" placeholder="Seu melhor e-mail" required>
@@ -1812,7 +1812,7 @@
         try {
           const payload = JSON.parse(await file.text());
           if (payload.format !== 'takeum-backup') {
-            throw new Error('Este arquivo não é um backup do Take Um Studio');
+            throw new Error('Este arquivo não é um backup do Take Um');
           }
           if (!window.confirm('Isso vai substituir todos os dados salvos neste navegador pelos dados do backup. Continuar?')) {
             msgEl.textContent = '';

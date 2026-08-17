@@ -257,6 +257,20 @@
     text-align: center;
     display: none;
   }
+  #camera-retry-btn{
+    margin-top: 12px;
+    padding: 8px 18px;
+    background: var(--accent-amber);
+    color: #1a1200;
+    border: none;
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  #camera-retry-btn:active{ opacity: 0.8; }
 
   #scroll-container{
     position: relative;
@@ -351,18 +365,27 @@
     transform: translateX(-50%);
     display: flex;
     align-items: center;
-    gap: 14px;
-    background: rgba(22,20,15,0.9);
+    gap: 6px;
+    background: rgba(10, 10, 12, 0.95);
     backdrop-filter: blur(8px);
     border: 1px solid var(--panel-line);
     border-radius: 40px;
-    padding: 8px 16px;
+    padding: 8px 20px;
     z-index: 20;
     transition: opacity .3s ease;
     max-width: calc(100vw - 24px);
     overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
   }
+  #dock::-webkit-scrollbar{ display: none; }
   #dock.hidden{ opacity: 0; pointer-events: none; }
+
+  #dock > *{
+    scroll-snap-align: center;
+    flex-shrink: 0;
+  }
 
   #dock button{
     background: none;
@@ -383,32 +406,63 @@
   #record-btn{
     width: 46px;
     height: 46px;
-    border: 2px solid var(--accent-red) !important;
+    border: 2px solid #ff1a1a !important;
+    box-shadow: 0 0 10px #ff1a1a, 0 0 20px rgba(255,26,26,0.4);
   }
   #record-btn .rec-shape{
     width: 16px;
     height: 16px;
     border-radius: 50%;
-    background: var(--accent-red);
+    background: #ff1a1a;
+    box-shadow: 0 0 8px #ff1a1a, 0 0 16px rgba(255,26,26,0.5);
     transition: all .2s ease;
   }
   #record-btn.recording .rec-shape{
     border-radius: 3px;
     width: 14px;
     height: 14px;
+    animation: rec-pulse 1s infinite ease-in-out;
+  }
+  @keyframes rec-pulse{
+    0%,100%{ box-shadow: 0 0 8px #ff1a1a, 0 0 16px rgba(255,26,26,0.5); }
+    50%{ box-shadow: 0 0 14px #ff1a1a, 0 0 28px rgba(255,26,26,0.7); }
   }
 
   #dock .mini-field{
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 4px;
     font-size: 10px;
     color: var(--text-dim);
     letter-spacing: 0.06em;
     text-transform: uppercase;
     flex-shrink: 0;
   }
-  #dock .mini-field input[type=range]{ width: 60px; }
+  #dock .mini-field span{
+    min-width: 18px;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+  }
+  .dock-arrow{
+    background: none;
+    border: 1px solid var(--panel-line);
+    color: var(--text-main);
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    font-size: 16px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background .12s ease;
+  }
+  .dock-arrow:active{
+    background: var(--panel-line);
+    border-color: var(--accent-amber);
+  }
 
   #exit-btn{
     position: absolute;
@@ -569,7 +623,10 @@ Ex: Olá, seja bem-vindo ao vídeo de hoje. Vamos falar sobre..."></textarea>
   <!-- PROMPTER VIEW -->
   <div id="prompter-view">
     <video id="camera-feed" autoplay playsinline muted></video>
-    <div id="camera-error">Não foi possível acessar a câmera. Verifique se você permitiu o acesso, ou continue só com o texto.</div>
+    <div id="camera-error">
+      <div id="camera-error-msg">Não foi possível acessar a câmera.</div>
+      <button id="camera-retry-btn">Tentar novamente</button>
+    </div>
 
     <div id="scroll-container">
       <div id="script-display"></div>
@@ -585,13 +642,16 @@ Ex: Olá, seja bem-vindo ao vídeo de hoje. Vamos falar sobre..."></textarea>
       <button id="play-btn" title="Play/Pause (Espaço)">
         <svg id="play-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
       </button>
+      <button id="record-btn" title="Gravar" style="display:none;"><span class="rec-shape"></span></button>
       <div class="mini-field">
-        VEL
-        <input type="range" id="dock-speed" min="1" max="10" step="1" value="3">
+        <button class="dock-arrow" id="speed-down" title="Mais lento">‹</button>
+        <span id="dock-speed-val">3</span>
+        <button class="dock-arrow" id="speed-up" title="Mais rápido">›</button>
       </div>
       <div class="mini-field">
-        FONTE
-        <input type="range" id="dock-fontsize" min="20" max="88" step="2" value="40">
+        <button class="dock-arrow" id="font-down" title="Fonte menor">‹</button>
+        <span id="dock-font-val">40</span>
+        <button class="dock-arrow" id="font-up" title="Fonte maior">›</button>
       </div>
       <button id="dock-mirror-btn" title="Espelhar texto">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2v20M5 6l-3 6 3 6M19 6l3 6-3 6"/></svg>
@@ -599,7 +659,6 @@ Ex: Olá, seja bem-vindo ao vídeo de hoje. Vamos falar sobre..."></textarea>
       <button id="flip-camera-btn" title="Trocar câmera" style="display:none;">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 7h3l1.5-2h7L17 7h3a1 1 0 011 1v10a1 1 0 01-1 1H4a1 1 0 01-1-1V8a1 1 0 011-1zm8 3a4 4 0 100 8 4 4 0 000-8z"/></svg>
       </button>
-      <button id="record-btn" title="Gravar" style="display:none;"><span class="rec-shape"></span></button>
       <button id="fullscreen-btn" title="Tela cheia">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h6v2H6v4H4V4zm10 0h6v6h-2V6h-4V4zM4 14h2v4h4v2H4v-6zm16 0h2v6h-6v-2h4v-4z"/></svg>
       </button>
@@ -650,12 +709,18 @@ Ex: Olá, seja bem-vindo ao vídeo de hoje. Vamos falar sobre..."></textarea>
   const cameraToggle = document.getElementById('camera-toggle');
   const cameraNote = document.getElementById('camera-note');
 
-  const dockSpeed = document.getElementById('dock-speed');
-  const dockFontsize = document.getElementById('dock-fontsize');
+  const dockSpeedVal = document.getElementById('dock-speed-val');
+  const dockFontVal = document.getElementById('dock-font-val');
+  const dockSpeedDown = document.getElementById('speed-down');
+  const dockSpeedUp = document.getElementById('speed-up');
+  const dockFontDown = document.getElementById('font-down');
+  const dockFontUp = document.getElementById('font-up');
   const dockMirrorBtn = document.getElementById('dock-mirror-btn');
 
   const cameraFeed = document.getElementById('camera-feed');
   const cameraError = document.getElementById('camera-error');
+  const cameraErrorMsg = document.getElementById('camera-error-msg');
+  const cameraRetryBtn = document.getElementById('camera-retry-btn');
   const flipCameraBtn = document.getElementById('flip-camera-btn');
   const recordBtn = document.getElementById('record-btn');
   const recBadge = document.getElementById('rec-badge');
@@ -727,19 +792,21 @@ Ex: Olá, seja bem-vindo ao vídeo de hoje. Vamos falar sobre..."></textarea>
   function syncSpeedLabel(){
     speedVal.textContent = state.speed;
     speedInput.value = state.speed;
-    dockSpeed.value = state.speed;
+    dockSpeedVal.textContent = state.speed;
   }
   function syncFontLabel(){
     fontsizeVal.textContent = state.fontSize + 'px';
     fontsizeInput.value = state.fontSize;
-    dockFontsize.value = state.fontSize;
+    dockFontVal.textContent = state.fontSize;
     scriptDisplay.style.fontSize = state.fontSize + 'px';
   }
 
   speedInput.addEventListener('input', e => { state.speed = +e.target.value; syncSpeedLabel(); saveTeleState(); });
-  dockSpeed.addEventListener('input', e => { state.speed = +e.target.value; syncSpeedLabel(); saveTeleState(); });
+  dockSpeedDown.addEventListener('click', () => { state.speed = Math.max(1, state.speed - 1); syncSpeedLabel(); saveTeleState(); });
+  dockSpeedUp.addEventListener('click', () => { state.speed = Math.min(10, state.speed + 1); syncSpeedLabel(); saveTeleState(); });
   fontsizeInput.addEventListener('input', e => { state.fontSize = +e.target.value; syncFontLabel(); saveTeleState(); });
-  dockFontsize.addEventListener('input', e => { state.fontSize = +e.target.value; syncFontLabel(); saveTeleState(); });
+  dockFontDown.addEventListener('click', () => { state.fontSize = Math.max(20, state.fontSize - 2); syncFontLabel(); saveTeleState(); });
+  dockFontUp.addEventListener('click', () => { state.fontSize = Math.min(88, state.fontSize + 2); syncFontLabel(); saveTeleState(); });
 
   mirrorToggle.addEventListener('click', () => {
     state.mirrored = !state.mirrored;
@@ -770,6 +837,7 @@ Ex: Olá, seja bem-vindo ao vídeo de hoje. Vamos falar sobre..."></textarea>
     scriptDisplay.textContent = scriptInput.value;
     editView.style.display = 'none';
     prompterView.style.display = 'block';
+    try{ window.parent.postMessage({ type: 'tu-prompter-enter' }, '*'); }catch(e){}
     statusText.textContent = 'PRONTO';
     scrollContainer.scrollTop = 0;
     scrollPos = 0;
@@ -782,7 +850,6 @@ Ex: Olá, seja bem-vindo ao vídeo de hoje. Vamos falar sobre..."></textarea>
       startCamera().then(() => {
         if(state.useCountdown) runCountdown(3, () => setPlaying(true));
       }).catch(() => {
-        cameraError.style.display = 'block';
         if(state.useCountdown) runCountdown(3, () => setPlaying(true));
       });
     } else {
@@ -814,18 +881,50 @@ Ex: Olá, seja bem-vindo ao vídeo de hoje. Vamos falar sobre..."></textarea>
   }
 
   // ---------- CAMERA ----------
+  function showCameraError(msg){
+    cameraErrorMsg.textContent = msg;
+    cameraError.style.display = 'block';
+  }
+
   async function startCamera(){
     stopCamera();
     cameraError.style.display = 'none';
+
+    if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+      showCameraError('Seu navegador não suporta acesso à câmera. Tente usar o Chrome ou Safari.');
+      return;
+    }
+
     const constraints = {
       video: { facingMode: state.facingMode, width: { ideal: 1280 }, height: { ideal: 720 } },
       audio: true
     };
-    mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
+
+    try{
+      mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
+    }catch(err){
+      let msg = 'Não foi possível acessar a câmera.';
+      if(err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError'){
+        msg = 'Permissão de câmera negada. Abra as configurações do navegador e permita o acesso à câmera para este site.';
+      } else if(err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError'){
+        msg = 'Nenhuma câmera encontrada no dispositivo.';
+      } else if(err.name === 'NotReadableError' || err.name === 'TrackStartError'){
+        msg = 'A câmera está sendo usada por outro app. Feche outros aplicativos de câmera e tente novamente.';
+      }
+      showCameraError(msg);
+      return;
+    }
+
     cameraFeed.srcObject = mediaStream;
     cameraFeed.style.display = 'block';
     cameraFeed.classList.toggle('mirrored', state.facingMode === 'user');
   }
+
+  cameraRetryBtn.addEventListener('click', async () => {
+    cameraError.style.display = 'none';
+    await startCamera();
+    if(mediaStream && state.useCountdown) runCountdown(3, () => setPlaying(true));
+  });
 
   function stopCamera(){
     if(mediaStream){
@@ -840,7 +939,7 @@ Ex: Olá, seja bem-vindo ao vídeo de hoje. Vamos falar sobre..."></textarea>
       return;
     }
     state.facingMode = state.facingMode === 'user' ? 'environment' : 'user';
-    try{ await startCamera(); }catch(e){ cameraError.style.display = 'block'; }
+    try{ await startCamera(); }catch(e){}
   });
 
   // ---------- RECORDING ----------
@@ -1065,6 +1164,7 @@ Ex: Olá, seja bem-vindo ao vídeo de hoje. Vamos falar sobre..."></textarea>
     prompterView.style.display = 'none';
     editView.style.display = 'flex';
     statusText.textContent = 'MODO EDIÇÃO';
+    try{ window.parent.postMessage({ type: 'tu-prompter-exit' }, '*'); }catch(e){}
   }
 
   // ---------- KEYBOARD SHORTCUTS ----------

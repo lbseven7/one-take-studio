@@ -338,4 +338,21 @@ body {
     transform: scale(0.94);
     box-shadow: 0 3px 10px rgba(255, 176, 32, 0.4);
   }
+
+  /* Dock do teleprompter: evitar toques acidentais ao arrastar */
+  #dock {
+    gap: 4px;
+    padding: 8px 14px;
+  }
+  #dock > button {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  .dock-arrow {
+    width: 36px;
+    height: 36px;
+  }
+  #dock .mini-field {
+    padding: 0 2px;
+  }
 }

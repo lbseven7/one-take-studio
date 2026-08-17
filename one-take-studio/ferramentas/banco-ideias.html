@@ -267,6 +267,8 @@
   .idea-item .actions .pauta-btn:hover{ border-color: var(--accent-amber); }
   .idea-item .actions .ai-btn{ color: var(--accent-purple); }
   .idea-item .actions .ai-btn:hover{ border-color: var(--accent-purple); }
+  .idea-item .actions .edit-btn{ color: var(--accent-blue); }
+  .idea-item .actions .edit-btn:hover{ border-color: var(--accent-blue); }
   .idea-item .actions .del-btn:hover{ border-color: var(--accent-red); color: var(--accent-red); }
   .idea-item .actions button:disabled{ opacity: 0.5; cursor: not-allowed; }
   .idea-item .actions button:disabled:hover{ border-color: var(--panel-line); color: var(--text-dim); }
@@ -537,6 +539,7 @@
 
   let ideas = [];
   let selectedPlatform = 'reels';
+  let editingId = null;
 
   function uid(){
     return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
@@ -631,6 +634,7 @@
           <span class="date">${formatDate(idea.createdAt)}</span>
           <div class="actions">
             <button class="ai-btn">✍ Roteirizar</button>
+            <button class="edit-btn">✎ Editar</button>
             <button class="pauta-btn">→ Pauta</button>
             <button class="del-btn">✕</button>
           </div>
@@ -704,6 +708,18 @@
         render();
       });
 
+      el.querySelector('.edit-btn').addEventListener('click', () => {
+        editingId = idea.id;
+        fieldTitle.value = idea.title;
+        fieldNotes.value = idea.notes || '';
+        selectedPlatform = idea.platform || 'reels';
+        refreshPlatformChips();
+        captureBtn.textContent = 'Salvar';
+        refreshCaptureBtn();
+        fieldTitle.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        fieldTitle.focus();
+      });
+
       list.appendChild(el);
     });
   }
@@ -726,6 +742,8 @@
     selectedPlatform = 'reels';
     refreshPlatformChips();
     refreshCaptureBtn();
+    editingId = null;
+    captureBtn.textContent = '+ Capturar';
     fieldTitle.focus();
   }
 
@@ -742,15 +760,29 @@
   async function capture(){
     const title = fieldTitle.value.trim();
     if(!title) return;
-    const idea = {
-      id: uid(),
-      title,
-      notes: fieldNotes.value.trim(),
-      platform: selectedPlatform,
-      createdAt: Date.now()
-    };
-    await saveIdea(idea);
-    ideas.unshift(idea);
+
+    if(editingId){
+      const idea = ideas.find(i => i.id === editingId);
+      if(idea){
+        idea.title = title;
+        idea.notes = fieldNotes.value.trim();
+        idea.platform = selectedPlatform;
+        await saveIdea(idea);
+      }
+      editingId = null;
+      captureBtn.textContent = '+ Capturar';
+    } else {
+      const idea = {
+        id: uid(),
+        title,
+        notes: fieldNotes.value.trim(),
+        platform: selectedPlatform,
+        createdAt: Date.now()
+      };
+      await saveIdea(idea);
+      ideas.unshift(idea);
+    }
+
     clearCapture();
     render();
   }

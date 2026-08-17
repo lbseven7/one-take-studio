@@ -659,10 +659,7 @@
           showToast('Não foi possível enviar para a pauta.');
           return;
         }
-        ideas = ideas.filter(x => x.id !== idea.id);
-        await OneTakeDB.del('banco_ideias', idea.id);
         showToast('Ideia enviada para o Painel de Pauta!');
-        render();
       });
 
       el.querySelector('.ai-btn').addEventListener('click', async (e) => {

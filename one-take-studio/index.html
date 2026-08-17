@@ -1798,6 +1798,15 @@
 
       backBtn.addEventListener('click', openHome);
 
+      // ---------- PROMPTER: ocultar/mostrar botão voltar ----------
+      window.addEventListener('message', (e) => {
+        if(e.data && e.data.type === 'tu-prompter-enter'){
+          backBtn.style.display = 'none';
+        } else if(e.data && e.data.type === 'tu-prompter-exit'){
+          backBtn.style.display = '';
+        }
+      });
+
       // ---------- APOIO VIA PIX ----------
       const PIX_KEY = '45cc64c0-fb23-4188-9777-8d6812462df8';
       const pixBox = document.getElementById('pix-box');

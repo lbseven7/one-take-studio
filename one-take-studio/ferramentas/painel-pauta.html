@@ -343,6 +343,32 @@
     header h1{ font-size: 15px; }
     .column{ width: 82vw; min-width: 82vw; }
   }
+  #roteirizar-btn{
+    background: var(--accent-amber);
+    color: #1a1200;
+    border: none;
+    font-weight: 700;
+  }
+  #roteirizar-btn:disabled{ opacity: 0.6; cursor: not-allowed; }
+  #toast{
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translate(-50%, 20px);
+    background: var(--panel);
+    border: 1px solid var(--accent-amber);
+    color: var(--text-main);
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 13px;
+    z-index: 9999;
+    opacity: 0;
+    transition: opacity .25s ease, transform .25s ease;
+    pointer-events: none;
+    text-align: center;
+    max-width: 90vw;
+  }
+  #toast.show{ opacity: 1; transform: translate(-50%, 0); }
 </style>
 <link rel="stylesheet" href="../mobile.css">
 <link rel="stylesheet" href="../theme.css">
@@ -389,12 +415,15 @@
     </div>
 
     <div class="modal-actions">
+      <button id="roteirizar-btn" style="display:none;">Roteirizar</button>
       <button id="delete-from-modal">Excluir</button>
       <button id="cancel-btn">Cancelar</button>
       <button id="save-btn">Salvar</button>
     </div>
   </div>
 </div>
+
+<div id="toast"></div>
 
 <script src="../db.js"></script>
 <script>
@@ -428,6 +457,8 @@
   const cancelBtn = document.getElementById('cancel-btn');
   const saveBtn = document.getElementById('save-btn');
   const deleteFromModal = document.getElementById('delete-from-modal');
+  const roteirizarBtn = document.getElementById('roteirizar-btn');
+  const toast = document.getElementById('toast');
 
   let cards = [];
   let editingId = null;
@@ -594,6 +625,7 @@
     fieldStatus.value = card ? card.status : 'ideia';
     selectedPlatform = card ? card.platform : 'reels';
     deleteFromModal.style.display = card ? 'block' : 'none';
+    roteirizarBtn.style.display = card && card.status === 'ideia' ? 'block' : 'none';
     refreshPlatformChips();
     modalBackdrop.classList.add('show');
     setTimeout(() => fieldTitle.focus(), 50);
@@ -638,6 +670,48 @@
   deleteFromModal.addEventListener('click', () => {
     if(editingId) deleteCard(editingId);
     closeModal();
+  });
+
+  // ---------- ROTEIRIZAR ----------
+  let toastTimer = null;
+  function showToast(msg){
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 2400);
+  }
+
+  roteirizarBtn.addEventListener('click', async () => {
+    const card = cards.find(c => c.id === editingId);
+    if(!card) return;
+
+    roteirizarBtn.disabled = true;
+    roteirizarBtn.textContent = 'Enviando...';
+    try{
+      const script = {
+        id: uid(),
+        title: card.title,
+        sections: [
+          { id: 'gancho',   name: 'Gancho',                content: '', duration: 15 },
+          { id: 'problema', name: 'Problema / Contexto',   content: '', duration: 30 },
+          { id: 'solucao',  name: 'Solução / Conteúdo principal', content: '', duration: 120 },
+          { id: 'cta',      name: 'CTA',                    content: '', duration: 20 }
+        ],
+        updatedAt: Date.now()
+      };
+      await OneTakeDB.put('roteirizador_scripts', script);
+      closeModal();
+      if(window.TakeUmShell){
+        window.TakeUmShell.openToolById('roteirizador');
+      } else {
+        showToast('Ideia enviada para o Roteirizador!');
+      }
+    }catch(err){
+      showToast('Erro ao enviar: ' + err.message);
+    }finally{
+      roteirizarBtn.disabled = false;
+      roteirizarBtn.textContent = 'Roteirizar';
+    }
   });
 
   document.addEventListener('keydown', (e) => {

@@ -841,19 +841,14 @@ Ex: Olá, seja bem-vindo ao vídeo de hoje. Vamos falar sobre..."></textarea>
     statusText.textContent = 'PRONTO';
     scrollContainer.scrollTop = 0;
     scrollPos = 0;
+    state.playing = false;
 
     flipCameraBtn.style.display = state.useCamera ? 'flex' : 'none';
     recordBtn.style.display = state.useCamera ? 'flex' : 'none';
     scriptDisplay.classList.toggle('on-camera', state.useCamera);
 
     if(state.useCamera){
-      startCamera().then(() => {
-        if(state.useCountdown) runCountdown(3, () => setPlaying(true));
-      }).catch(() => {
-        if(state.useCountdown) runCountdown(3, () => setPlaying(true));
-      });
-    } else {
-      if(state.useCountdown) runCountdown(3, () => setPlaying(true));
+      startCamera().catch(() => {});
     }
   }
 

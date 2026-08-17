@@ -435,6 +435,10 @@
       border-radius: 18px;
     }
 
+    .hero-light { display: none; }
+    .light .hero-light { display: block; }
+    .light #hero-banner > picture:first-child { display: none; }
+
     @media (max-width: 860px) {
       /* Zoom no mobile: a frase ocupa a faixa central da imagem
          (16:9 com bordas pretas), então ampliamos e cortamos as
@@ -1387,6 +1391,10 @@
         <div id="hero-banner">
           <picture>
             <source media="(max-width: 860px)" srcset="image/banner-novo.png">
+            <img src="image/nova-frase-oficial.png" alt="Take Um - Ferramentas para criadores de vídeo" class="hero-image">
+          </picture>
+          <picture class="hero-light">
+            <source media="(max-width: 860px)" srcset="image/banner-novo-white.jpg">
             <img src="image/nova-frase-oficial.png" alt="Take Um - Ferramentas para criadores de vídeo" class="hero-image">
           </picture>
         </div>

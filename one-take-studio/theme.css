@@ -30,3 +30,15 @@ html.light .nav-item:hover {
 html.light .nav-item.active {
   background: rgba(180, 110, 0, 0.10);
 }
+
+html.light #menu-toggle {
+  background: var(--accent-amber);
+  border-color: var(--accent-amber);
+  color: #1a1200;
+}
+
+html.light #theme-toggle-mobile {
+  background: var(--accent-amber);
+  border-color: var(--accent-amber);
+  color: #1a1200;
+}

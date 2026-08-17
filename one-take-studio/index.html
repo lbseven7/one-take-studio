@@ -1750,8 +1750,8 @@
         toolView.classList.add('active');
         setActiveNav(id);
         closeSidebarOnMobile();
-        menuToggle.style.display = 'none';
-        themeToggleMobile.style.display = 'none';
+        menuToggle.style.setProperty('display', 'none', 'important');
+        themeToggleMobile.style.setProperty('display', 'none', 'important');
       }
 
       function openToolFromElement(el) {

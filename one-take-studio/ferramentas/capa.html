@@ -504,18 +504,15 @@
 
   @media (max-width: 900px){
     #layout{ flex-direction: column; }
+    #preview-col{ order: 1; }
     #controls{
+      order: 2;
       width: 100%;
       min-width: 0;
       border-right: none;
-      border-bottom: 1px solid var(--panel-line);
+      border-top: 1px solid var(--panel-line);
       flex: 0 1 50%;
       overflow-y: auto;
-    }
-    #preview-col{
-      flex: 1 1 50%;
-      min-height: 0;
-      padding: 12px 14px 32px;
     }
     canvas{
       max-height: calc(100dvh - 120px);

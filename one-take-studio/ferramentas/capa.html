@@ -780,6 +780,7 @@
   let inGesture = false;
   let gestureTimer = null;
   let alignGuides = null;
+  let hoveredElement = null;
 
   const canvas = document.getElementById('preview');
   const ctx = canvas.getContext('2d');
@@ -1266,6 +1267,47 @@
     }
 
     drawFace(g, w, h, interactive);
+
+    // Background image resize handle
+    if(interactive && layout && layout.bgImage){
+      const handleR = Math.max(10, Math.round(w * 0.012));
+      const hx = w - 16;
+      const hy = h - 16;
+      layout.bgImage.handle = { x: hx, y: hy, r: handleR };
+      g.save();
+      g.beginPath();
+      g.arc(hx, hy, handleR, 0, Math.PI * 2);
+      g.fillStyle = '#ffb020';
+      g.fill();
+      g.lineWidth = Math.max(2, Math.round(handleR * 0.3));
+      g.strokeStyle = '#0d0c0a';
+      g.stroke();
+      g.restore();
+    } else if(layout && layout.bgImage){
+      layout.bgImage.handle = null;
+    }
+
+    // Hover highlight
+    if(interactive && hoveredElement){
+      g.save();
+      g.setLineDash([6, 4]);
+      g.strokeStyle = 'rgba(255, 176, 32, 0.55)';
+      g.lineWidth = 2.5;
+      if(hoveredElement === 'block' && layout && layout.block){
+        const b = layout.block;
+        const hp = 8;
+        g.strokeRect(b.x0 - hp, b.y0 - hp, b.x1 - b.x0 + hp * 2, b.y1 - b.y0 + hp * 2);
+      } else if(hoveredElement === 'face' && layout && layout.face){
+        const f = layout.face;
+        g.beginPath();
+        g.arc(f.cx, f.cy, f.r + 6, 0, Math.PI * 2);
+        g.stroke();
+      } else if(hoveredElement === 'bgImage'){
+        g.strokeRect(4, 4, w - 8, h - 8);
+      }
+      g.setLineDash([]);
+      g.restore();
+    }
 
     if(guides){
       g.save();
@@ -1870,7 +1912,15 @@
     }
     if(layout && layout.block){
       const b = layout.block;
-      if(cx >= b.x0 && cx <= b.x1 && cy >= b.y0 && cy <= b.y1) return 'block';
+      const padY = Math.round(canvas.height * 0.03);
+      const padX = Math.round(canvas.width * 0.02);
+      if(cx >= b.x0 - padX && cx <= b.x1 + padX && cy >= b.y0 - padY && cy <= b.y1 + padY) return 'block';
+    }
+    if(layout && layout.bgImage && layout.bgImage.handle){
+      const hd = layout.bgImage.handle;
+      const dx = cx - hd.x, dy = cy - hd.y;
+      const r = hd.r * 1.7;
+      if(dx * dx + dy * dy <= r * r) return 'bgResize';
     }
     if(layout && layout.bgImage) return 'bgImage';
     return null;
@@ -1937,13 +1987,14 @@
   }
 
   function updateCursor(cx, cy){
-    if(dragState.target === 'faceResize' || dragState.target === 'textResize'){ canvas.style.cursor = 'nwse-resize'; return; }
+    if(dragState.target === 'faceResize' || dragState.target === 'textResize' || dragState.target === 'bgResize'){ canvas.style.cursor = 'nwse-resize'; return; }
     if(dragState.target){ canvas.style.cursor = 'grabbing'; return; }
     const t = hitTest(cx, cy);
-    canvas.style.cursor = (t === 'faceResize' || t === 'textResize') ? 'nwse-resize' : (t ? 'grab' : 'default');
+    canvas.style.cursor = (t === 'faceResize' || t === 'textResize' || t === 'bgResize') ? 'nwse-resize' : (t ? 'grab' : 'default');
   }
 
   canvas.addEventListener('pointerdown', (e) => {
+    hoveredElement = null;
     const p = canvasPoint(e);
     const t = hitTest(p.x, p.y);
     if(!t){
@@ -1957,9 +2008,20 @@
     dragState.startX = p.x;
     dragState.startY = p.y;
     alignGuides = { v: false, h: false };
-    if(t === 'face' || t === 'faceResize' || t === 'block' || t === 'textResize' || t === 'bgImage'){
+    if(t === 'face' || t === 'faceResize' || t === 'block' || t === 'textResize' || t === 'bgImage' || t === 'bgResize'){
       elemDelete.classList.add('show');
       pendingDelete = t;
+    }
+    if(t === 'bgResize'){
+      ensureTransforms();
+      const bi = layout.bgImage;
+      dragState.centerX = bi.dx + bi.dw / 2;
+      dragState.centerY = bi.dy + bi.dh / 2;
+      const dx0 = p.x - dragState.centerX, dy0 = p.y - dragState.centerY;
+      dragState.startDist = Math.sqrt(dx0 * dx0 + dy0 * dy0) || 1;
+      dragState.startSize = (state.bgTransform && state.bgTransform.scale) || 1;
+      canvas.style.cursor = 'nwse-resize';
+      return;
     }
     if(t === 'faceResize'){
       const cx0 = layout.face.cx, cy0 = layout.face.cy;
@@ -1998,6 +2060,21 @@
   canvas.addEventListener('pointermove', (e) => {
     const p = canvasPoint(e);
     if(dragState.target) beginChange();
+    if(dragState.target === 'bgResize'){
+      e.preventDefault();
+      const dx = p.x - dragState.centerX;
+      const dy = p.y - dragState.centerY;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      let newScale = dragState.startSize * (dist / dragState.startDist);
+      newScale = Math.max(1, Math.min(3, Math.round(newScale * 100) / 100));
+      ensureTransforms();
+      state.bgTransform.scale = newScale;
+      if(!dragRaf){
+        dragRaf = true;
+        requestAnimationFrame(() => { dragRaf = false; render(); syncUI(); });
+      }
+      return;
+    }
     if(dragState.target === 'faceResize'){
       e.preventDefault();
       const dx = p.x - dragState.centerX;
@@ -2053,7 +2130,13 @@
         requestAnimationFrame(() => { dragRaf = false; render(); });
       }
     } else {
+      const prev = hoveredElement;
+      hoveredElement = hitTest(p.x, p.y);
       updateCursor(p.x, p.y);
+      if(prev !== hoveredElement && !dragRaf){
+        dragRaf = true;
+        requestAnimationFrame(() => { dragRaf = false; render(); });
+      }
     }
   });
 
@@ -2070,7 +2153,7 @@
       faceImg = null;
       document.getElementById('face-remove').style.display = 'none';
       document.getElementById('face-btn').style.display = '';
-    } else if(t === 'bgImage'){
+    } else if(t === 'bgImage' || t === 'bgResize'){
       state.bgImage = null;
       bgImage = null;
       bgImageRemove.style.display = 'none';
@@ -2093,7 +2176,7 @@
 
   function endDrag(e){
     if(!dragState.target) return;
-    const needsSync = dragState.target === 'bgImage' || dragState.target === 'faceResize' || dragState.target === 'textResize';
+    const needsSync = dragState.target === 'bgImage' || dragState.target === 'faceResize' || dragState.target === 'textResize' || dragState.target === 'bgResize';
     clearTimeout(gestureTimer);
     inGesture = false;
     pendingDelete = dragState.target;
@@ -2108,6 +2191,16 @@
   canvas.addEventListener('pointerup', endDrag);
   canvas.addEventListener('pointercancel', endDrag);
   canvas.style.touchAction = 'none';
+
+  canvas.addEventListener('pointerleave', () => {
+    if(hoveredElement){
+      hoveredElement = null;
+      if(!dragRaf){
+        dragRaf = true;
+        requestAnimationFrame(() => { dragRaf = false; render(); });
+      }
+    }
+  });
 
   // Scroll / trackpad pinch to zoom the background image
   canvas.addEventListener('wheel', (e) => {

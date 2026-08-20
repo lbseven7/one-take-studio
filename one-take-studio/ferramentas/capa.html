@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Take Um Studio · Gerador de Capa</title>
 <link rel="stylesheet" href="../fonts.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Montserrat:wght@800;900&family=Oswald:wght@700&family=Poppins:wght@800;900&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg: #0d0c0a;
@@ -376,6 +379,9 @@
   }
 
   .toggle-row{ margin-bottom: 6px; }
+  .field-row{ display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .field-row > label{ font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: .5px; white-space: nowrap; }
+  .font-select{ flex: 1; background: var(--card); color: var(--text-main); border: 1px solid var(--panel-line); border-radius: 4px; padding: 5px 8px; font-size: 12px; font-family: var(--font-display); cursor: pointer; }
   .switch{
     display: flex;
     align-items: center;
@@ -589,6 +595,18 @@
         <div class="group">
           <label>Texto da capa</label>
           <textarea id="field-title" placeholder="Ex: 5 ERROS QUE TODO INICIANTE COMETE"></textarea>
+          <div class="field-row">
+            <label>Fonte</label>
+            <select id="text-font" class="font-select">
+              <option value="Archivo">Archivo</option>
+              <option value="Oswald">Oswald</option>
+              <option value="Bebas Neue">Bebas Neue</option>
+              <option value="Anton">Anton</option>
+              <option value="Montserrat">Montserrat</option>
+              <option value="Poppins">Poppins</option>
+              <option value="Impact">Impact</option>
+            </select>
+          </div>
           <button id="pack-btn">⚡ Usar título gerado no Pack de Publicação</button>
         </div>
 
@@ -782,6 +800,7 @@
       bgTransform: { scale: 1, x: 0, y: 0 },
       posX: 'center',
       posY: 'middle',
+      fontFamily: 'Archivo',
       textScale: 100,
       textBg: false,
       textBgColor: '#0d0c0a',
@@ -1108,6 +1127,8 @@
     textSize.value = state.textScale || 100;
     textSizeVal.textContent = (state.textScale || 100) + '%';
 
+    document.getElementById('text-font').value = state.fontFamily || 'Archivo';
+
     downloadBtn.textContent = '⬇ Baixar ' + exportExt.toUpperCase();
 
     // Sync filter sliders
@@ -1247,7 +1268,7 @@
       const avail = blockBottom - blockTop;
       const minSize = Math.round(w * 0.028);
       while(size >= minSize){
-        g.font = '900 ' + size + 'px Archivo, sans-serif';
+        g.font = '900 ' + size + 'px ' + (state.fontFamily || 'Archivo') + ', sans-serif';
         lines = wrap(title, maxWidth, g);
         lineH = Math.round(size * 1.18);
         bandPadTB = state.textBg ? Math.round(size * 0.55) : 0;
@@ -1262,7 +1283,7 @@
     const textScale = state.textScale || 100;
     if(title && textScale !== 100){
       size = Math.max(Math.round(w * 0.025), Math.round(size * textScale / 100));
-      g.font = '900 ' + size + 'px Archivo, sans-serif';
+      g.font = '900 ' + size + 'px ' + (state.fontFamily || 'Archivo') + ', sans-serif';
       lines = wrap(title, maxWidth, g);
       lineH = Math.round(size * 1.18);
       bandPadTB = state.textBg ? Math.round(size * 0.55) : 0;
@@ -1292,7 +1313,7 @@
     }
 
     // Draw text and measure its actual rendered bounds
-    g.font = '900 ' + size + 'px Archivo, sans-serif';
+    g.font = '900 ' + size + 'px ' + (state.fontFamily || 'Archivo') + ', sans-serif';
     g.textBaseline = 'top';
     const textDrawY = startY + gapEmoji + bandPadTB;
     let visTop = Infinity, visBot = -Infinity;
@@ -1955,6 +1976,12 @@
   textSize.addEventListener('input', () => {
     beginChange();
     state.textScale = parseInt(textSize.value, 10);
+    syncUI(); render(); scheduleSave();
+  });
+
+  document.getElementById('text-font').addEventListener('change', function(){
+    beginChange();
+    state.fontFamily = this.value;
     syncUI(); render(); scheduleSave();
   });
 

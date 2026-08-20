@@ -75,6 +75,24 @@
   header button:hover{ color: var(--text-main); border-color: var(--accent-amber); }
   header button:disabled{ opacity: .4; cursor: default; }
   header button:disabled:hover{ color: var(--text-dim); border-color: var(--panel-line); }
+  .header-home-btn{
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: none;
+    border: 1px solid var(--panel-line);
+    color: var(--text-dim);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 9px 13px;
+    border-radius: 6px;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+  .header-home-btn:hover{ color: var(--text-main); border-color: var(--accent-amber); }
   #undo-btn, #redo-btn{ color: var(--text-main); }
   #download-btn{
     background: var(--accent-amber);
@@ -534,6 +552,7 @@
   <header>
     <h1>Take Um Studio · Gerador de Capa</h1>
     <div class="actions">
+      <a href="../index.html" class="header-home-btn" title="Voltar ao Take Um Studio">← Home</a>
       <button id="undo-btn" title="Desfazer (Ctrl+Z)" disabled>↩ Desfazer</button>
       <button id="redo-btn" title="Refazer (Ctrl+Shift+Z)" disabled>↪ Refazer</button>
       <button id="download-btn">⬇ Baixar PNG</button><span class="tu-count" data-tu-count="capa-gerar"></span>
@@ -1249,42 +1268,74 @@
     }
 
     if(interactive && title && layout.block){
-      const hr = Math.max(9, Math.round(size * 0.25));
-      const hx = layout.block.x1;
-      const hy = layout.block.y1;
-      layout.text = { handle: { x: hx, y: hy, r: hr } };
+      const hr = Math.max(6, Math.round(size * 0.12));
+      const b = layout.block;
+      layout.textCorners = {
+        handles: [
+          { x: b.x0, y: b.y0 }, { x: b.x1, y: b.y0 },
+          { x: b.x0, y: b.y1 }, { x: b.x1, y: b.y1 }
+        ],
+        r: hr
+      };
+      // Selection border
       g.save();
-      g.beginPath();
-      g.arc(hx, hy, hr, 0, Math.PI * 2);
-      g.fillStyle = '#ffb020';
-      g.fill();
-      g.lineWidth = Math.max(2, Math.round(hr * 0.3));
-      g.strokeStyle = '#0d0c0a';
-      g.stroke();
+      g.setLineDash([6, 4]);
+      g.strokeStyle = 'rgba(255, 176, 32, 0.7)';
+      g.lineWidth = 2;
+      g.strokeRect(b.x0 - 4, b.y0 - 4, b.x1 - b.x0 + 8, b.y1 - b.y0 + 8);
+      g.setLineDash([]);
       g.restore();
+      // Corner handles
+      for(const c of layout.textCorners.handles){
+        g.save();
+        g.beginPath();
+        g.arc(c.x, c.y, hr, 0, Math.PI * 2);
+        g.fillStyle = '#fff';
+        g.fill();
+        g.lineWidth = Math.max(1.5, Math.round(hr * 0.35));
+        g.strokeStyle = '#ffb020';
+        g.stroke();
+        g.restore();
+      }
     } else {
-      layout.text = null;
+      layout.textCorners = null;
     }
 
     drawFace(g, w, h, interactive);
 
-    // Background image resize handle
+    // Background image corner handles
     if(interactive && layout && layout.bgImage){
-      const handleR = Math.max(10, Math.round(w * 0.012));
-      const hx = w - 16;
-      const hy = h - 16;
-      layout.bgImage.handle = { x: hx, y: hy, r: handleR };
+      const handleR = Math.max(6, Math.round(w * 0.008));
+      const margin = 4;
+      layout.bgCorners = {
+        handles: [
+          { x: margin, y: margin }, { x: w - margin, y: margin },
+          { x: margin, y: h - margin }, { x: w - margin, y: h - margin }
+        ],
+        r: handleR
+      };
+      // Selection border
       g.save();
-      g.beginPath();
-      g.arc(hx, hy, handleR, 0, Math.PI * 2);
-      g.fillStyle = '#ffb020';
-      g.fill();
-      g.lineWidth = Math.max(2, Math.round(handleR * 0.3));
-      g.strokeStyle = '#0d0c0a';
-      g.stroke();
+      g.setLineDash([6, 4]);
+      g.strokeStyle = 'rgba(255, 176, 32, 0.7)';
+      g.lineWidth = 2;
+      g.strokeRect(margin, margin, w - margin * 2, h - margin * 2);
+      g.setLineDash([]);
       g.restore();
+      // Corner handles
+      for(const c of layout.bgCorners.handles){
+        g.save();
+        g.beginPath();
+        g.arc(c.x, c.y, handleR, 0, Math.PI * 2);
+        g.fillStyle = '#fff';
+        g.fill();
+        g.lineWidth = Math.max(1.5, Math.round(handleR * 0.35));
+        g.strokeStyle = '#ffb020';
+        g.stroke();
+        g.restore();
+      }
     } else if(layout && layout.bgImage){
-      layout.bgImage.handle = null;
+      layout.bgCorners = null;
     }
 
     // Hover highlight
@@ -1376,25 +1427,42 @@
     drawCover(g, faceImg, d, d);
     g.restore();
 
-    // Resize handle: a small dot on the bottom-right edge of the circle,
-    // drawn outside the clip so it stays fully visible and draggable.
+    // Corner handles for face
     if(interactive){
-      const handleR = Math.max(9, Math.round(d * 0.07));
-      const handleAngle = Math.PI / 4; // 45°, bottom-right of the circle
-      const hx = fx + d / 2 + Math.cos(handleAngle) * (d / 2);
-      const hy = fy + d / 2 + Math.sin(handleAngle) * (d / 2);
-      if(layout && layout.face) layout.face.handle = { x: hx, y: hy, r: handleR };
+      const handleR = Math.max(6, Math.round(d * 0.045));
+      const corners = [
+        { x: fx, y: fy }, { x: fx + d, y: fy },
+        { x: fx, y: fy + d }, { x: fx + d, y: fy + d }
+      ];
+      if(layout && layout.face){
+        layout.faceCorners = { handles: corners, r: handleR };
+      }
+      // Selection border (circle)
       g.save();
+      g.setLineDash([6, 4]);
+      g.strokeStyle = 'rgba(255, 176, 32, 0.7)';
+      g.lineWidth = 2;
       g.beginPath();
-      g.arc(hx, hy, handleR, 0, Math.PI * 2);
-      g.fillStyle = '#ffb020';
-      g.fill();
-      g.lineWidth = Math.max(2, Math.round(handleR * 0.3));
-      g.strokeStyle = '#0d0c0a';
+      g.arc(fx + d / 2, fy + d / 2, d / 2 + 6, 0, Math.PI * 2);
       g.stroke();
+      g.setLineDash([]);
       g.restore();
+      // Corner handles
+      for(const c of corners){
+        g.save();
+        g.beginPath();
+        g.arc(c.x, c.y, handleR, 0, Math.PI * 2);
+        g.fillStyle = '#fff';
+        g.fill();
+        g.lineWidth = Math.max(1.5, Math.round(handleR * 0.35));
+        g.strokeStyle = '#ffb020';
+        g.stroke();
+        g.restore();
+      }
     } else {
-      if(layout && layout.face) layout.face.handle = null;
+      if(layout && layout.face){
+        layout.faceCorners = null;
+      }
     }
   }
 
@@ -1893,35 +1961,44 @@
   }
 
   function hitTest(cx, cy){
-    if(layout && layout.text && layout.text.handle){
-      const hd = layout.text.handle;
-      const dx = cx - hd.x, dy = cy - hd.y;
-      const r = hd.r * 1.7;
-      if(dx * dx + dy * dy <= r * r) return 'textResize';
+    // Text corner handles
+    if(layout && layout.textCorners){
+      const r2 = layout.textCorners.r * layout.textCorners.r * 2.8;
+      for(const c of layout.textCorners.handles){
+        const dx = cx - c.x, dy = cy - c.y;
+        if(dx * dx + dy * dy <= r2) return 'textResize';
+      }
     }
-    if(layout && layout.face && layout.face.handle){
-      const hd = layout.face.handle;
-      const dx = cx - hd.x, dy = cy - hd.y;
-      const r = hd.r * 1.7;
-      if(dx * dx + dy * dy <= r * r) return 'faceResize';
+    // Face corner handles
+    if(layout && layout.faceCorners){
+      const r2 = layout.faceCorners.r * layout.faceCorners.r * 2.8;
+      for(const c of layout.faceCorners.handles){
+        const dx = cx - c.x, dy = cy - c.y;
+        if(dx * dx + dy * dy <= r2) return 'faceResize';
+      }
     }
+    // Face body
     if(layout && layout.face){
       const dx = cx - layout.face.cx, dy = cy - layout.face.cy;
       const r = layout.face.r * 1.2;
       if(dx * dx + dy * dy <= r * r) return 'face';
     }
+    // Text block body
     if(layout && layout.block){
       const b = layout.block;
       const padY = Math.round(canvas.height * 0.03);
       const padX = Math.round(canvas.width * 0.02);
       if(cx >= b.x0 - padX && cx <= b.x1 + padX && cy >= b.y0 - padY && cy <= b.y1 + padY) return 'block';
     }
-    if(layout && layout.bgImage && layout.bgImage.handle){
-      const hd = layout.bgImage.handle;
-      const dx = cx - hd.x, dy = cy - hd.y;
-      const r = hd.r * 1.7;
-      if(dx * dx + dy * dy <= r * r) return 'bgResize';
+    // Background corner handles
+    if(layout && layout.bgCorners){
+      const r2 = layout.bgCorners.r * layout.bgCorners.r * 2.8;
+      for(const c of layout.bgCorners.handles){
+        const dx = cx - c.x, dy = cy - c.y;
+        if(dx * dx + dy * dy <= r2) return 'bgResize';
+      }
     }
+    // Background body
     if(layout && layout.bgImage) return 'bgImage';
     return null;
   }
@@ -1986,11 +2063,24 @@
     return out;
   }
 
+  function resizeCursor(cx, cy){
+    let centerX = canvas.width / 2, centerY = canvas.height / 2;
+    if(dragState.target === 'textResize' && layout && layout.block){
+      centerX = (layout.block.x0 + layout.block.x1) / 2;
+      centerY = (layout.block.y0 + layout.block.y1) / 2;
+    } else if(dragState.target === 'faceResize' && layout && layout.face){
+      centerX = layout.face.cx;
+      centerY = layout.face.cy;
+    }
+    return ((cx < centerX) === (cy < centerY)) ? 'nwse-resize' : 'nesw-resize';
+  }
+
   function updateCursor(cx, cy){
-    if(dragState.target === 'faceResize' || dragState.target === 'textResize' || dragState.target === 'bgResize'){ canvas.style.cursor = 'nwse-resize'; return; }
+    if(dragState.target === 'faceResize' || dragState.target === 'textResize' || dragState.target === 'bgResize'){ canvas.style.cursor = resizeCursor(cx, cy); return; }
     if(dragState.target){ canvas.style.cursor = 'grabbing'; return; }
     const t = hitTest(cx, cy);
-    canvas.style.cursor = (t === 'faceResize' || t === 'textResize' || t === 'bgResize') ? 'nwse-resize' : (t ? 'grab' : 'default');
+    if(t === 'faceResize' || t === 'textResize' || t === 'bgResize'){ canvas.style.cursor = resizeCursor(cx, cy); return; }
+    canvas.style.cursor = t ? 'grab' : 'default';
   }
 
   canvas.addEventListener('pointerdown', (e) => {

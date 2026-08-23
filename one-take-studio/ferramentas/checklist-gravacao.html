@@ -36,8 +36,6 @@
     height: 100dvh;
     display: flex;
     flex-direction: column;
-    max-width: 760px;
-    margin: 0 auto;
     width: 100%;
   }
 
@@ -45,7 +43,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 16px 20px;
+    padding: 14px 28px;
     background: var(--panel);
     border-bottom: 1px solid var(--panel-line);
     flex-shrink: 0;
@@ -82,7 +80,19 @@
   #list{
     flex: 1;
     overflow-y: auto;
-    padding: 12px 16px;
+    padding: 12px clamp(16px, 4vw, 40px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  #list > *{ width: 100%; max-width: 1320px; }
+
+  .bar-inner{
+    display: flex;
+    gap: 8px;
+    width: 100%;
+    max-width: 1320px;
+    margin: 0 auto;
   }
 
   .empty-hint{
@@ -168,7 +178,7 @@
   #add-row{
     display: flex;
     gap: 8px;
-    padding: 12px 16px;
+    padding: 12px clamp(16px, 4vw, 40px);
     background: var(--panel);
     border-top: 1px solid var(--panel-line);
     flex-shrink: 0;
@@ -206,11 +216,10 @@
 
   #footer-actions{
     display: flex;
-    gap: 12px;
-    padding: 10px 16px 14px 16px;
+    padding: 10px clamp(16px, 4vw, 40px) 14px;
     flex-shrink: 0;
-    justify-content: center;
   }
+  #footer-actions .bar-inner{ justify-content: center; gap: 12px; }
   #footer-actions button{
     background: none;
     border: 1px solid var(--panel-line);
@@ -243,7 +252,7 @@
 
 <div id="app">
   <header>
-    <h1>Take Um Studio · Checklist</h1>
+    <h1>Checklist de Gravação</h1>
     <div class="count"><span class="done" id="done-count">0</span> / <span id="total-count">0</span></div>
   </header>
   <div id="progress-bar"><div id="progress-fill"></div></div>
@@ -251,13 +260,17 @@
   <div id="list"></div>
 
   <div id="add-row">
-    <input type="text" id="add-input" placeholder="Novo item..." maxlength="120">
-    <button id="add-btn" disabled>+</button>
+    <div class="bar-inner">
+      <input type="text" id="add-input" placeholder="Novo item..." maxlength="120">
+      <button id="add-btn" disabled>+</button>
+    </div>
   </div>
 
   <div id="footer-actions">
-    <button id="reset-btn">Desmarcar todos</button>
-    <button id="clear-btn">Restaurar padrão</button>
+    <div class="bar-inner">
+      <button id="reset-btn">Desmarcar todos</button>
+      <button id="clear-btn">Restaurar padrão</button>
+    </div>
   </div>
 </div>
 

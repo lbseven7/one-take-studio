@@ -37,8 +37,6 @@
     height: 100dvh;
     display: flex;
     flex-direction: column;
-    max-width: 960px;
-    margin: 0 auto;
     width: 100%;
   }
 
@@ -46,7 +44,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 14px 20px;
+    padding: 14px 28px;
     background: var(--panel);
     border-bottom: 1px solid var(--panel-line);
     flex-shrink: 0;
@@ -110,7 +108,13 @@
   #content{
     flex: 1;
     overflow-y: auto;
-    padding: 16px 20px 24px;
+    padding: 20px clamp(16px, 4vw, 40px) 32px;
+  }
+
+  .layout{
+    width: 100%;
+    max-width: 1320px;
+    margin: 0 auto;
   }
 
   .edit-card{
@@ -484,7 +488,7 @@
 
 <div id="app">
   <header>
-    <h1>Take Um Studio · Roteirizador</h1>
+    <h1>Roteirizador</h1>
     <div class="actions">
       <button id="rewrite-btn" title="Reescrever com IA">✍ IA</button><span class="tu-count" data-tu-count="roteirizador-gerar"></span>
       <button id="desc-btn" title="Gerar descrição com IA">📝 Descrição</button><span class="tu-count" data-tu-count="roteirizador-desc"></span>
@@ -495,6 +499,7 @@
   </header>
 
   <div id="content">
+    <div class="layout">
     <div class="edit-card">
       <div class="tools">
         <button id="copy-btn" title="Copiar roteiro pronto">📋 Copiar roteiro</button>
@@ -512,6 +517,7 @@
     <div class="total-bar">
       <span class="label">Duração total estimada</span>
       <span class="time"><span id="total-min">0</span>:<span id="total-sec">00</span></span>
+    </div>
     </div>
   </div>
 </div>

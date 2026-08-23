@@ -37,8 +37,6 @@
     height: 100dvh;
     display: flex;
     flex-direction: column;
-    max-width: 720px;
-    margin: 0 auto;
     width: 100%;
   }
 
@@ -47,7 +45,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    padding: 16px 20px;
+    padding: 14px 28px;
     background: var(--panel);
     border-bottom: 1px solid var(--panel-line);
     flex-shrink: 0;
@@ -68,40 +66,24 @@
   }
   header .count .total{ color: var(--accent-amber); }
 
-  #content{
-    flex: 1;
-    overflow-y: auto;
-    padding: 20px;
-  }
-
-  .progress-wrap{
-    margin-bottom: 22px;
+  /* ---------- PROGRESSO ---------- */
+  .progress-row{
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 28px 0 28px;
+    flex-shrink: 0;
   }
   .progress-label{
-    display: flex;
-    justify-content: space-between;
     font-size: 11px;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--text-dim);
-    margin-bottom: 8px;
+    white-space: nowrap;
   }
-  .progress-label b{ color: var(--accent-amber); font-weight: 600; }
-  .reset-btn{
-    margin-top: 10px;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    background: none;
-    border: 1px solid var(--panel-line);
-    border-radius: 4px;
-    padding: 6px 12px;
-    cursor: pointer;
-  }
-  .reset-btn:hover{ color: var(--accent-red); border-color: var(--accent-red); }
+  .progress-label b{ color: var(--accent-green); font-weight: 600; }
   .progress-track{
+    flex: 1;
     height: 6px;
     border-radius: 3px;
     background: var(--card);
@@ -114,86 +96,155 @@
     background: var(--accent-green);
     transition: width .3s ease;
   }
-
-  .step-card{
-    background: var(--panel);
+  .reset-btn{
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    background: none;
     border: 1px solid var(--panel-line);
-    border-radius: 10px;
-    padding: 18px;
-    margin-bottom: 14px;
-    border-left: 3px solid var(--panel-line);
+    border-radius: 4px;
+    padding: 6px 12px;
+    cursor: pointer;
+    white-space: nowrap;
   }
-  .step-card.current{
-    border-left-color: var(--accent-amber);
-  }
-  .step-card.done{
-    border-left-color: var(--accent-green);
-    background: rgba(77, 255, 153, 0.03);
-  }
+  .reset-btn:hover{ color: var(--accent-red); border-color: var(--accent-red); }
 
-  .step-head{
+  .hero-note{
+    padding: 10px 28px 0 28px;
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.6;
+    margin: 0;
+    flex-shrink: 0;
+  }
+  .hero-note strong{ color: var(--accent-amber); font-weight: 600; }
+  @media (max-width: 760px){ .hero-note{ display: none; } }
+
+  /* ---------- TRILHA (SLIDESHOW) ---------- */
+  #trail{
+    flex: 1;
     display: flex;
-    align-items: flex-start;
-    gap: 12px;
+    flex-direction: column;
+    min-height: 0;
   }
-  .step-num{
-    width: 30px;
-    height: 30px;
-    border-radius: 8px;
-    background: var(--card);
+
+  #stage{
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .slide{
+    position: absolute;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px clamp(56px, 8vw, 96px);
+    overflow-y: auto;
+  }
+  .slide.active{ display: flex; }
+  .slide.anim-next{ animation: slideNext .35s ease; }
+  .slide.anim-prev{ animation: slidePrev .35s ease; }
+  @keyframes slideNext{
+    from{ opacity: 0; transform: translateX(28px); }
+    to{ opacity: 1; transform: none; }
+  }
+  @keyframes slidePrev{
+    from{ opacity: 0; transform: translateX(-28px); }
+    to{ opacity: 1; transform: none; }
+  }
+
+  .slide-inner{
+    display: grid;
+    grid-template-columns: minmax(300px, 500px) minmax(340px, 540px);
+    gap: clamp(28px, 4vw, 64px);
+    align-items: center;
+    width: 100%;
+    max-width: 1200px;
+    margin: auto;
+  }
+
+  .slide-media{
+    position: relative;
+    aspect-ratio: 16 / 9;
+    border-radius: 16px;
     border: 1px solid var(--panel-line);
+    background: var(--card);
+    overflow: hidden;
+  }
+  .slide-media img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .slide-media.no-img img{ display: none; }
+  .slide-media.no-img::after{
+    content: attr(data-n);
+    position: absolute;
+    inset: 0;
     display: flex;
     align-items: center;
     justify-content: center;
     font-family: var(--font-display);
     font-weight: 900;
-    font-size: 13px;
-    color: var(--text-dim);
-    flex-shrink: 0;
-    transition: all .2s ease;
+    font-size: clamp(72px, 10vw, 130px);
+    color: var(--panel-line);
   }
-  .step-card.current .step-num{ color: var(--accent-amber); border-color: var(--accent-amber); }
-  .step-card.done .step-num{ background: var(--accent-green); color: #06281a; border-color: var(--accent-green); }
-  .step-card.current .step-tag{ color: var(--accent-amber); border-color: rgba(255,176,32,.4); }
 
-  .step-title{
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: 15px;
-    margin: 0 0 2px 0;
-    line-height: 1.3;
-  }
   .step-tag{
     display: inline-block;
-    font-size: 10px;
+    font-size: 11px;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--text-dim);
     border: 1px solid var(--panel-line);
     border-radius: 4px;
-    padding: 2px 8px;
-    margin-top: 4px;
+    padding: 3px 10px;
   }
+  .slide.is-current .step-tag{
+    color: var(--accent-amber);
+    border-color: rgba(255,176,32,.4);
+  }
+  .slide.is-done .step-tag{
+    color: var(--accent-green);
+    border-color: rgba(77,255,153,.35);
+  }
+
+  .step-title{
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: clamp(24px, 3vw, 34px);
+    margin: 14px 0 0 0;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+  .step-title .num{ color: var(--accent-amber); }
 
   .step-desc{
     color: var(--text-dim);
-    font-size: 13px;
-    line-height: 1.7;
-    margin: 12px 0 0 0;
+    font-size: 15px;
+    line-height: 1.8;
+    margin: 16px 0 0 0;
+    max-width: 58ch;
   }
   .step-desc strong{ color: var(--text-main); font-weight: 600; }
 
   .step-actions{
     display: flex;
-    gap: 10px;
-    margin-top: 14px;
+    gap: 12px;
+    margin-top: 24px;
     flex-wrap: wrap;
   }
   .step-actions button{
     font-family: var(--font-display);
     font-weight: 700;
     font-size: 13px;
-    padding: 10px 16px;
+    padding: 12px 18px;
     border-radius: 6px;
     cursor: pointer;
     border: 1px solid var(--panel-line);
@@ -215,43 +266,118 @@
   .step-actions button.done-btn.revert{ color: var(--text-dim); border-color: var(--panel-line); }
 
   .done-hint{
-    font-size: 11px;
+    font-size: 12px;
     color: var(--accent-green);
-    margin-top: 10px;
+    margin-top: 14px;
   }
 
-  /* ---------- COMPLETION ---------- */
-  #done-panel{
+  /* ---------- SETAS DE NAVEGAÇÃO ---------- */
+  .nav-arrow{
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid var(--panel-line);
+    background: var(--panel);
+    color: var(--text-main);
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+    transition: border-color .2s ease, opacity .2s ease;
+  }
+  .nav-arrow:hover{ border-color: var(--accent-amber); }
+  .nav-arrow.prev{ left: clamp(6px, 1.5vw, 18px); }
+  .nav-arrow.next{ right: clamp(6px, 1.5vw, 18px); }
+  .nav-arrow[disabled]{
+    opacity: .25;
+    pointer-events: none;
+  }
+  @media (max-width: 760px){
+    .nav-arrow{
+      top: auto;
+      bottom: 10px;
+      transform: none;
+      width: 38px;
+      height: 38px;
+    }
+  }
+
+  /* ---------- DOTS ---------- */
+  #dots{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 28px 18px 28px;
+    flex-shrink: 0;
+  }
+  #dots button{
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 1px solid var(--panel-line);
+    background: var(--card);
+    cursor: pointer;
+    padding: 0;
+    transition: all .2s ease;
+  }
+  #dots button:hover{ border-color: var(--text-dim); }
+  #dots button.done{ background: var(--accent-green); border-color: var(--accent-green); }
+  #dots button.cur{
+    background: var(--accent-amber);
+    border-color: var(--accent-amber);
+    transform: scale(1.35);
+  }
+  @media (max-width: 760px){
+    #dots{ padding-bottom: 66px; }
+  }
+
+  /* ---------- CONCLUSÃO ---------- */
+  #done-view{
     display: none;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    overflow-y: auto;
+  }
+  #done-view.show{ display: flex; }
+  #done-card{
     text-align: center;
     background: var(--panel);
     border: 1px solid rgba(77,255,153,.3);
-    border-radius: 12px;
-    padding: 34px 22px;
-    margin-bottom: 16px;
+    border-radius: 16px;
+    padding: clamp(28px, 5vw, 52px);
+    max-width: 560px;
+    width: 100%;
   }
-  #done-panel.show{ display: block; }
-  #done-panel .big{ font-size: 40px; margin-bottom: 8px; }
-  #done-panel h2{
+  #done-card .big{ font-size: 46px; margin-bottom: 10px; }
+  #done-card h2{
     font-family: var(--font-display);
     font-weight: 900;
-    font-size: 20px;
-    margin: 0 0 8px 0;
+    font-size: 24px;
+    margin: 0 0 10px 0;
   }
-  #done-panel p{
+  #done-card p{
     color: var(--text-dim);
-    font-size: 13px;
+    font-size: 14px;
     line-height: 1.7;
-    margin: 0 auto 18px auto;
+    margin: 0 auto 22px auto;
     max-width: 420px;
   }
-  #done-panel p strong{ color: var(--accent-green); font-weight: 600; }
-  #done-actions{ display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+  #done-card p strong{ color: var(--accent-green); font-weight: 600; }
+  #done-actions{ display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
   #done-actions button{
     font-family: var(--font-display);
     font-weight: 700;
     font-size: 13px;
-    padding: 11px 18px;
+    padding: 12px 20px;
     border-radius: 6px;
     cursor: pointer;
   }
@@ -260,13 +386,24 @@
   #done-actions .b-primary:hover{ filter: brightness(1.08); }
   #done-actions .b-ghost:hover{ color: var(--text-main); border-color: var(--accent-amber); }
 
-  .hero-note{
-    font-size: 12px;
-    color: var(--text-dim);
-    line-height: 1.7;
-    margin: 0 0 20px 0;
+  /* ---------- MOBILE ---------- */
+  @media (max-width: 900px){
+    .slide{ padding: 16px 20px; }
+    .slide-inner{
+      grid-template-columns: 1fr;
+      gap: 18px;
+      align-content: start;
+      max-width: 640px;
+      padding-bottom: 56px;
+    }
+    .slide-media{
+      aspect-ratio: auto;
+      height: clamp(160px, 30vh, 260px);
+    }
+    .step-desc{ font-size: 13.5px; }
+    header, .progress-row{ padding-left: 16px; padding-right: 16px; }
+    .progress-label span.txt{ display: none; }
   }
-  .hero-note strong{ color: var(--accent-amber); font-weight: 600; }
 </style>
 <link rel="stylesheet" href="../mobile.css">
 <link rel="stylesheet" href="../theme.css">
@@ -281,16 +418,21 @@
     <div class="count"><span id="done-count">0</span> de <span class="total">7</span> passos</div>
   </header>
 
-  <div id="content">
-    <p class="hero-note">Uma trilha passo a passo do <strong>zero até o primeiro vídeo publicado</strong>. Cada passo abre uma ferramenta do Take Um Studio — use, conclua e siga em frente. Sem pressa.</p>
+  <div class="progress-row">
+    <div class="progress-label"><span class="txt">Progresso · fica salvo neste navegador · </span><b id="progress-pct">0%</b></div>
+    <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+    <button class="reset-btn" id="reset-btn">Zerar</button>
+  </div>
 
-    <div class="progress-wrap">
-      <div class="progress-label"><span>Progresso · fica salvo neste navegador</span><b id="progress-pct">0%</b></div>
-      <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
-      <button class="reset-btn" id="reset-btn">Zerar progresso</button>
-    </div>
+  <p class="hero-note">Uma trilha passo a passo do <strong>zero até o primeiro vídeo publicado</strong>. Cada passo abre uma ferramenta do Take Um Studio — use, conclua e siga em frente. Sem pressa.</p>
 
-    <div id="done-panel">
+  <div id="trail">
+    <div id="stage"></div>
+    <div id="dots"></div>
+  </div>
+
+  <div id="done-view">
+    <div id="done-card">
       <div class="big">🎉</div>
       <h2>Primeiro vídeo no ar!</h2>
       <p>Você saiu do zero e chegou até aqui. <strong>Isso é mais do que muita gente faz.</strong> Guarde seus dados com um backup e siga para o próximo vídeo.</p>
@@ -299,8 +441,6 @@
         <button class="b-ghost" id="restart-btn">Refazer trilha</button>
       </div>
     </div>
-
-    <div id="steps"></div>
   </div>
 </div>
 
@@ -310,10 +450,14 @@
   const STORE = 'jornada_state';
   const STATE_ID = 'state';
 
+  // Imagens ilustrativas de cada fase.
+  // Coloque os arquivos em ../image/fase-1.png ... fase-7.png.
+  // Sem imagem, o card mostra o número da fase no lugar.
   const STEPS = [
     {
       id: 'ideia',
       n: '1',
+      img: '../image/fase-1.png',
       title: 'Escolha a sua ideia',
       tag: 'Ideia',
       tool: 'ideias',
@@ -323,6 +467,7 @@
     {
       id: 'roteiro',
       n: '2',
+      img: '../image/fase-2.png',
       title: 'Escreva o roteiro',
       tag: 'Roteiro',
       tool: 'roteirizador',
@@ -332,6 +477,7 @@
     {
       id: 'pauta',
       n: '3',
+      img: '../image/fase-3.png',
       title: 'Encaixe na sua pauta',
       tag: 'Organização',
       tool: 'pauta',
@@ -341,6 +487,7 @@
     {
       id: 'checklist',
       n: '4',
+      img: '../image/fase-4.png',
       title: 'Prepare o ambiente',
       tag: 'Preparação',
       tool: 'checklist',
@@ -350,6 +497,7 @@
     {
       id: 'gravacao',
       n: '5',
+      img: '../image/fase-5.png',
       title: 'Grave o take',
       tag: 'Gravação',
       tool: 'teleprompter',
@@ -359,6 +507,7 @@
     {
       id: 'capa',
       n: '6',
+      img: '../image/fase-6.png',
       title: 'Crie a capa',
       tag: 'Capa',
       tool: 'capa',
@@ -368,6 +517,7 @@
     {
       id: 'publicar',
       n: '7',
+      img: '../image/fase-7.png',
       title: 'Publique e guarde',
       tag: 'Publicação',
       tool: null,
@@ -376,13 +526,16 @@
     }
   ];
 
-  const stepsEl = document.getElementById('steps');
+  const stageEl = document.getElementById('stage');
+  const dotsEl = document.getElementById('dots');
+  const trailEl = document.getElementById('trail');
+  const doneViewEl = document.getElementById('done-view');
   const doneCountEl = document.getElementById('done-count');
   const progressPctEl = document.getElementById('progress-pct');
   const progressFill = document.getElementById('progress-fill');
-  const donePanel = document.getElementById('done-panel');
 
   let done = {};
+  let cur = 0;
 
   function shellOpen(toolId){
     try{
@@ -419,12 +572,88 @@
     }catch(e){
       done = {};
     }
+    const first = STEPS.findIndex(s => !done[s.id]);
+    cur = first === -1 ? STEPS.length - 1 : first;
   }
 
   async function saveState(){
     try{
       await OneTakeDB.put(STORE, { id: STATE_ID, done: done, updatedAt: Date.now() });
     }catch(e){}
+  }
+
+  function buildSlides(){
+    stageEl.innerHTML = '';
+    dotsEl.innerHTML = '';
+
+    STEPS.forEach((step, i) => {
+      const slide = document.createElement('div');
+      slide.className = 'slide';
+      slide.dataset.i = i;
+
+      const actions = [];
+      if(step.tool && step.toolLabel){
+        actions.push(`<button class="primary" data-open="${step.tool}">${step.toolLabel}</button>`);
+      }
+      actions.push(`<button class="done-btn" data-toggle="${step.id}"></button>`);
+
+      slide.innerHTML = `
+        <div class="slide-inner">
+          <div class="slide-media" data-n="${step.n}">
+            <img src="${step.img}" alt="Ilustração da fase ${step.n}: ${step.title}" loading="lazy"
+                 onerror="this.parentElement.classList.add('no-img')">
+          </div>
+          <div>
+            <span class="step-tag">${step.tag}</span>
+            <h2 class="step-title"><span class="num">${step.n}</span> · ${step.title}</h2>
+            <p class="step-desc">${step.desc}</p>
+            <div class="step-actions">${actions.join('')}</div>
+            <div class="done-hint" hidden>✓ Passo concluído</div>
+          </div>
+        </div>
+      `;
+      stageEl.appendChild(slide);
+
+      const dot = document.createElement('button');
+      dot.dataset.i = i;
+      dot.setAttribute('aria-label', `Ir para o passo ${step.n}: ${step.title}`);
+      dotsEl.appendChild(dot);
+    });
+
+    const prevBtn = document.createElement('button');
+    prevBtn.className = 'nav-arrow prev';
+    prevBtn.setAttribute('aria-label', 'Passo anterior');
+    prevBtn.textContent = '‹';
+    prevBtn.addEventListener('click', () => go(cur - 1, 'prev'));
+
+    const nextBtn = document.createElement('button');
+    nextBtn.className = 'nav-arrow next';
+    nextBtn.setAttribute('aria-label', 'Próximo passo');
+    nextBtn.textContent = '›';
+    nextBtn.addEventListener('click', () => go(cur + 1, 'next'));
+
+    stageEl.appendChild(prevBtn);
+    stageEl.appendChild(nextBtn);
+
+    stageEl.querySelectorAll('[data-open]').forEach(btn => {
+      btn.addEventListener('click', () => shellOpen(btn.dataset.open));
+    });
+    stageEl.querySelectorAll('[data-toggle]').forEach(btn => {
+      btn.addEventListener('click', () => toggleStep(btn.dataset.toggle));
+    });
+    dotsEl.querySelectorAll('button').forEach(dot => {
+      dot.addEventListener('click', () => go(Number(dot.dataset.i)));
+    });
+  }
+
+  let lastDir = 'next';
+
+  function go(i, dir){
+    const next = Math.max(0, Math.min(STEPS.length - 1, i));
+    if(next === cur && dir) return;
+    lastDir = dir || (next > cur ? 'next' : 'prev');
+    cur = next;
+    render();
   }
 
   async function toggleStep(id){
@@ -435,62 +664,57 @@
     }
     await saveState();
     render();
-  }
 
-  function firstIncomplete(){
-    return STEPS.find(s => !done[s.id]);
+    if(done[id]){
+      const nextIncomplete = STEPS.findIndex((s, idx) => idx > cur && !done[s.id]);
+      const anyAfter = nextIncomplete !== -1 ? nextIncomplete : STEPS.findIndex(s => !done[s.id]);
+      if(anyAfter !== -1 && anyAfter !== cur){
+        setTimeout(() => { go(anyAfter, 'next'); }, 550);
+      }
+    }
   }
 
   function render(){
-    const currentId = firstIncomplete() ? firstIncomplete().id : null;
     const total = STEPS.length;
     const completed = Object.keys(done).length;
+    const finished = completed === total;
+    const currentStepId = (STEPS.find(s => !done[s.id]) || {}).id;
 
     doneCountEl.textContent = completed;
     progressPctEl.textContent = Math.round((completed / total) * 100) + '%';
     progressFill.style.width = (completed / total) * 100 + '%';
 
-    donePanel.classList.toggle('show', completed === total);
+    trailEl.style.display = finished ? 'none' : 'flex';
+    doneViewEl.classList.toggle('show', finished);
 
-    stepsEl.innerHTML = '';
-
-    STEPS.forEach(step => {
-      const isDone = !!done[step.id];
-      const isCurrent = step.id === currentId;
-
-      const card = document.createElement('div');
-      card.className = 'step-card' + (isDone ? ' done' : '') + (isCurrent ? ' current' : '');
-
-      let actions = '';
-      if(step.tool && step.toolLabel){
-        actions += `<button class="primary" data-open="${step.tool}">${step.toolLabel}</button>`;
+    stageEl.querySelectorAll('.slide').forEach((slide, i) => {
+      const step = STEPS[i];
+      const wasActive = slide.classList.contains('active');
+      slide.classList.toggle('active', i === cur && !finished);
+      slide.classList.toggle('is-done', !!done[step.id]);
+      slide.classList.toggle('is-current', step.id === currentStepId);
+      if(!wasActive && i === cur){
+        slide.classList.remove('anim-next', 'anim-prev');
+        void slide.offsetWidth;
+        slide.classList.add(lastDir === 'prev' ? 'anim-prev' : 'anim-next');
       }
-      actions += isDone
-        ? `<button class="done-btn revert" data-toggle="${step.id}">Desmarcar</button>`
-        : `<button class="done-btn" data-toggle="${step.id}">Marcar como feito</button>`;
 
-      const hint = isDone ? '<div class="done-hint">✓ Passo concluído</div>' : '';
-
-      card.innerHTML = `
-        <div class="step-head">
-          <div class="step-num">${step.n}</div>
-          <div>
-            <div class="step-title">${step.title}</div>
-            <span class="step-tag">${step.tag}${isCurrent ? ' · você está aqui' : ''}</span>
-          </div>
-        </div>
-        <p class="step-desc">${step.desc}</p>
-        <div class="step-actions">${actions}</div>
-        ${hint}
-      `;
-      stepsEl.appendChild(card);
+      const toggleBtn = slide.querySelector('[data-toggle]');
+      const hint = slide.querySelector('.done-hint');
+      if(toggleBtn){
+        const isDone = !!done[step.id];
+        toggleBtn.textContent = isDone ? 'Desmarcar' : 'Marcar como feito';
+        toggleBtn.classList.toggle('revert', isDone);
+      }
+      if(hint) hint.hidden = !done[step.id];
     });
 
-    document.querySelectorAll('[data-open]').forEach(btn => {
-      btn.addEventListener('click', () => shellOpen(btn.dataset.open));
-    });
-    document.querySelectorAll('[data-toggle]').forEach(btn => {
-      btn.addEventListener('click', () => toggleStep(btn.dataset.toggle));
+    stageEl.querySelector('.nav-arrow.prev').disabled = cur === 0;
+    stageEl.querySelector('.nav-arrow.next').disabled = cur === total - 1;
+
+    dotsEl.querySelectorAll('button').forEach((dot, i) => {
+      dot.classList.toggle('done', !!done[STEPS[i].id]);
+      dot.classList.toggle('cur', i === cur);
     });
   }
 
@@ -502,10 +726,34 @@
     if(!window.confirm('Zerar todo o progresso da trilha? Os dados das ferramentas (ideias, roteiros) não serão apagados.')) return;
     done = {};
     await saveState();
+    cur = 0;
     render();
   }
 
-  loadState().then(render);
+  document.addEventListener('keydown', e => {
+    if(doneViewEl.classList.contains('show')) return;
+    if(e.key === 'ArrowRight') go(cur + 1, 'next');
+    if(e.key === 'ArrowLeft') go(cur - 1, 'prev');
+  });
+
+  let touchX = null;
+  stageEl.addEventListener('touchstart', e => {
+    touchX = e.changedTouches[0].clientX;
+  }, { passive: true });
+  stageEl.addEventListener('touchend', e => {
+    if(touchX === null) return;
+    const dx = e.changedTouches[0].clientX - touchX;
+    if(Math.abs(dx) > 48){
+      if(dx < 0) go(cur + 1, 'next');
+      else go(cur - 1, 'prev');
+    }
+    touchX = null;
+  }, { passive: true });
+
+  loadState().then(() => {
+    buildSlides();
+    render();
+  });
 })();
 </script>
 

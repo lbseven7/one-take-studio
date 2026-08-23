@@ -37,8 +37,6 @@
     height: 100dvh;
     display: flex;
     flex-direction: column;
-    max-width: 960px;
-    margin: 0 auto;
     width: 100%;
   }
 
@@ -46,7 +44,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 16px 20px;
+    padding: 14px 28px;
     background: var(--panel);
     border-bottom: 1px solid var(--panel-line);
     flex-shrink: 0;
@@ -71,8 +69,29 @@
   #content{
     flex: 1;
     overflow-y: auto;
-    padding: 16px 20px 24px;
+    padding: 20px clamp(16px, 4vw, 40px) 32px;
   }
+
+  .layout{
+    width: 100%;
+    max-width: 1320px;
+    margin: 0 auto;
+  }
+
+  .main-grid{
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+  @media (min-width: 1080px){
+    .main-grid{ grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+    .col-ia{
+      position: sticky;
+      top: 20px;
+    }
+  }
+  .col-main, .col-ia{ min-width: 0; }
 
   /* ---------- CAPTURE ---------- */
   .capture-card{
@@ -80,7 +99,7 @@
     border: 1px solid var(--panel-line);
     border-radius: 10px;
     padding: 16px 18px;
-    margin-bottom: 20px;
+    margin-bottom: 0;
   }
   .capture-card h2{
     font-family: var(--font-display);
@@ -201,12 +220,19 @@
     opacity: 0.7;
   }
 
+  #list{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 12px;
+  }
+
   .idea-item{
+    display: flex;
+    flex-direction: column;
     background: var(--card);
     border: 1px solid var(--panel-line);
     border-radius: 8px;
     padding: 14px 16px;
-    margin-bottom: 8px;
     transition: border-color .15s ease;
   }
   .idea-item:hover{ border-color: var(--accent-amber); }
@@ -241,15 +267,17 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-top: 12px;
+    margin-top: auto;
     padding-top: 10px;
     border-top: 1px solid var(--panel-line);
   }
+  .idea-item .title + .notes + .footer,
+  .idea-item .title + .footer{ margin-top: 12px; }
   .idea-item .date{
     font-size: 10px;
     color: var(--text-dim);
   }
-  .idea-item .actions{ display: flex; gap: 8px; }
+  .idea-item .actions{ display: flex; gap: 8px; flex-wrap: wrap; }
   .idea-item .actions button{
     background: none;
     border: 1px solid var(--panel-line);
@@ -279,7 +307,7 @@
     border: 1px solid rgba(204,156,255,0.35);
     border-radius: 10px;
     padding: 16px 18px;
-    margin-bottom: 20px;
+    margin-bottom: 0;
   }
   .ai-card h2{
     font-family: var(--font-display);
@@ -331,6 +359,22 @@
   #suggest-btn:disabled{ background: var(--panel-line); color: var(--text-dim); cursor: not-allowed; }
 
   #suggest-results{ margin-top: 14px; }
+  .ai-placeholder{
+    border: 1px dashed var(--panel-line);
+    border-radius: 8px;
+    padding: 38px 18px;
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 12px;
+    line-height: 1.8;
+  }
+  .ai-placeholder .big{
+    display: block;
+    font-size: 24px;
+    margin-bottom: 8px;
+    opacity: .7;
+  }
+  .ai-placeholder strong{ color: var(--accent-purple); font-weight: 600; }
   .suggestion{
     display: flex;
     gap: 10px;
@@ -412,6 +456,7 @@
     padding: 36px 16px;
     line-height: 1.6;
     opacity: 0.7;
+    grid-column: 1 / -1;
   }
   .empty-hint .big{
     font-family: var(--font-display);
@@ -449,11 +494,12 @@
   @media (max-width: 480px){
     header{ padding: 12px 14px; }
     header h1{ font-size: 14px; }
-    #content{ padding: 12px 14px; }
+    #content{ padding: 12px 14px 24px; }
     .capture-card{ padding: 14px; }
     .capture-footer{ flex-direction: column; align-items: stretch; }
     #capture-btn{ width: 100%; }
     .idea-item .footer{ flex-direction: column; align-items: flex-start; gap: 10px; }
+    #list{ grid-template-columns: 1fr; }
   }
 </style>
 <link rel="stylesheet" href="../mobile.css">
@@ -465,46 +511,60 @@
 
 <div id="app">
   <header>
-    <h1>Take Um Studio · Banco de Ideias</h1>
+    <h1>Banco de Ideias</h1>
     <div class="count"><span class="total" id="total-count">0</span> ideias</div>
   </header>
 
   <div id="content">
-    <div class="capture-card">
-      <h2><span class="bolt">⚡</span> Capturar ideia na hora</h2>
-      <div class="field">
-        <label>Ideia</label>
-        <input type="text" id="field-title" placeholder="Ex: comparação rápido x devagar na edição" maxlength="140">
-      </div>
-      <div class="field">
-        <label>Notas (opcional)</label>
-        <textarea id="field-notes" placeholder="Detalhes, ganchos, referências..."></textarea>
-      </div>
-      <div class="field">
-        <label>Plataforma</label>
-        <div class="platform-picker" id="platform-picker"></div>
-      </div>
-      <div class="capture-footer">
-        <button id="capture-btn" disabled>+ Capturar</button>
+    <div class="layout">
+      <div class="main-grid">
+        <div class="col-main">
+          <div class="capture-card">
+            <h2><span class="bolt">⚡</span> Capturar ideia na hora</h2>
+            <div class="field">
+              <label>Ideia</label>
+              <input type="text" id="field-title" placeholder="Ex: comparação rápido x devagar na edição" maxlength="140">
+            </div>
+            <div class="field">
+              <label>Notas (opcional)</label>
+              <textarea id="field-notes" placeholder="Detalhes, ganchos, referências..."></textarea>
+            </div>
+            <div class="field">
+              <label>Plataforma</label>
+              <div class="platform-picker" id="platform-picker"></div>
+            </div>
+            <div class="capture-footer">
+              <button id="capture-btn" disabled>+ Capturar</button>
+            </div>
+          </div>
+
+          <div class="search-row">
+            <input type="text" id="search-input" placeholder="Buscar ideias...">
+          </div>
+
+          <div class="list-label">Ideias salvas</div>
+          <div id="list"></div>
+        </div>
+
+        <aside class="col-ia">
+          <div class="ai-card">
+            <h2>✦ Ideias com IA</h2>
+            <p class="sub">Escreva um tema e a IA sugere ideias de vídeo. Toque em "+" para guardar aqui no banco.</p>
+            <div class="ai-row">
+              <input type="text" id="theme-input" placeholder="Ex: rotina de estudos, cachorro, viagem, cozinha..." maxlength="100">
+              <button id="suggest-btn" disabled>Sugerir</button><span class="tu-count" data-tu-count="banco-ideias-sugerir"></span>
+            </div>
+            <div id="suggest-results">
+            <div class="ai-placeholder">
+              <span class="big">✦</span>
+              As ideias sugeridas pela IA <strong>vão aparecer aqui</strong>.<br>
+              Escreva um tema acima e toque em <strong>Sugerir</strong>.
+            </div>
+          </div>
+          </div>
+        </aside>
       </div>
     </div>
-
-    <div class="ai-card">
-      <h2>✦ Ideias com IA</h2>
-      <p class="sub">Escreva um tema e a IA sugere ideias de vídeo. Toque em "+" para guardar aqui no banco.</p>
-      <div class="ai-row">
-        <input type="text" id="theme-input" placeholder="Ex: rotina de estudos, cachorro, viagem, cozinha..." maxlength="100">
-        <button id="suggest-btn" disabled>Sugerir</button><span class="tu-count" data-tu-count="banco-ideias-sugerir"></span>
-      </div>
-      <div id="suggest-results"></div>
-    </div>
-
-    <div class="search-row">
-      <input type="text" id="search-input" placeholder="Buscar ideias...">
-    </div>
-
-    <div class="list-label">Ideias salvas</div>
-    <div id="list"></div>
   </div>
 </div>
 

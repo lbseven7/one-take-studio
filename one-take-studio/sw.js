@@ -1,4 +1,4 @@
-const CACHE = 'takeum-v75';
+const CACHE = 'takeum-v77';
 
 const ASSETS = [
   './',
@@ -39,6 +39,8 @@ const ASSETS = [
   './image/fase-5.png',
   './image/fase-6.png',
   './image/fase-7.png',
+  './image/pack-publicacao.webp',
+  './image/tracker-resultados.webp',
   './newsletter-obrigado.html',
   './pro.html',
   './venda.html',

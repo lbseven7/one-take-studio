@@ -11,7 +11,10 @@ html.light {
   --card: #ffffff;
   --text-main: #1d1c19;
   --text-dim: #6f6d66;
+  /* Texto/bordas em âmbar usam tom escuro (contraste no branco);
+     fundos de botões/chips usam o âmbar vivo via --amber-fill */
   --accent-amber: #b36e00;
+  --amber-fill: #ffb020;
   --accent-red: #cf2d24;
   --accent-green: #0e9f55;
   --accent-blue: #1a66cc;
@@ -32,13 +35,13 @@ html.light .nav-item.active {
 }
 
 html.light #menu-toggle {
-  background: var(--accent-amber);
+  background: var(--amber-fill, var(--accent-amber));
   border-color: var(--accent-amber);
   color: #1a1200;
 }
 
 html.light #theme-toggle-mobile {
-  background: var(--accent-amber);
+  background: var(--amber-fill, var(--accent-amber));
   border-color: var(--accent-amber);
   color: #1a1200;
 }

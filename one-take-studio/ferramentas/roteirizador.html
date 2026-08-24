@@ -75,7 +75,7 @@
   }
   header button:hover{ color: var(--text-main); border-color: var(--accent-amber); }
 
-  #save-btn{ background: var(--accent-amber); color: #1a1200; border-color: var(--accent-amber); font-weight: 600; }
+  #save-btn{ background: var(--amber-fill, var(--accent-amber)); color: #1a1200; border-color: var(--amber-fill, var(--accent-amber)); font-weight: 600; }
   #save-btn:hover{ filter: brightness(1.1); }
   #library-btn svg{ width: 14px; height: 14px; display: block; }
   #rewrite-btn, #desc-btn{ color: var(--accent-purple); }
@@ -186,7 +186,7 @@
     -webkit-appearance: none;
     width: 16px; height: 16px;
     border-radius: 50%;
-    background: var(--accent-amber);
+    background: var(--amber-fill, var(--accent-amber));
     cursor: pointer;
     border: 2px solid var(--bg);
   }
@@ -433,7 +433,7 @@
     flex-shrink: 0;
   }
   #desc-actions button{
-    background: var(--accent-amber);
+    background: var(--amber-fill, var(--accent-amber));
     border: none;
     color: #1a1200;
     font-family: var(--font-mono);

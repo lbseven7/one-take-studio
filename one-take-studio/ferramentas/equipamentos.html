@@ -37,8 +37,6 @@
     height: 100dvh;
     display: flex;
     flex-direction: column;
-    max-width: 1080px;
-    margin: 0 auto;
     width: 100%;
   }
 
@@ -47,7 +45,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    padding: 16px 20px;
+    padding: 14px 28px;
     background: var(--panel);
     border-bottom: 1px solid var(--panel-line);
     flex-shrink: 0;
@@ -71,7 +69,13 @@
   #content{
     flex: 1;
     overflow-y: auto;
-    padding: 16px 20px 24px 20px;
+    padding: 20px clamp(16px, 4vw, 40px) 32px;
+  }
+
+  .layout{
+    width: 100%;
+    max-width: 1320px;
+    margin: 0 auto;
   }
 
   /* ---------- BUSCA E FILTROS ---------- */
@@ -127,8 +131,8 @@
   }
   .chip:hover{ border-color: rgba(255,176,32,.4); color: var(--text-main); }
   .chip.active{
-    background: var(--accent-amber);
-    border-color: var(--accent-amber);
+    background: var(--amber-fill, var(--accent-amber));
+    border-color: var(--amber-fill, var(--accent-amber));
     color: #1a1200;
     font-weight: 700;
   }
@@ -195,7 +199,7 @@
     letter-spacing: .06em;
     text-transform: uppercase;
     color: #1a1200;
-    background: var(--accent-amber);
+    background: var(--amber-fill, var(--accent-amber));
     border-radius: 999px;
     padding: 4px 10px;
     box-shadow: 0 4px 12px rgba(0,0,0,.25);
@@ -286,7 +290,7 @@
     padding: 11px 14px;
     border-radius: 8px;
     text-decoration: none;
-    background: var(--accent-amber);
+    background: var(--amber-fill, var(--accent-amber));
     color: #1a1200;
     transition: filter .15s ease, transform .15s ease;
   }
@@ -380,6 +384,7 @@
   </header>
 
   <div id="content">
+    <div class="layout">
     <div class="search-row">
       <input id="search" type="search" placeholder="Buscar Aqui" autocomplete="off">
       <select id="sort" aria-label="Ordenar">
@@ -406,6 +411,7 @@
         <div id="pix-key"></div>
         <button id="pix-copy">Copiar chave</button>
       </div>
+    </div>
     </div>
   </div>
 </div>

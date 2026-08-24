@@ -36,8 +36,6 @@
     height: 100dvh;
     display: flex;
     flex-direction: column;
-    max-width: 980px;
-    margin: 0 auto;
     width: 100%;
   }
 
@@ -46,7 +44,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    padding: 16px 20px;
+    padding: 14px 28px;
     background: var(--panel);
     border-bottom: 1px solid var(--panel-line);
     flex-shrink: 0;
@@ -69,7 +67,37 @@
   #content{
     flex: 1;
     overflow-y: auto;
-    padding: 20px;
+    padding: 20px clamp(16px, 4vw, 40px) 32px;
+  }
+
+  .layout{
+    width: 100%;
+    max-width: 1320px;
+    margin: 0 auto;
+  }
+
+  .cols{
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) clamp(280px, 28vw, 420px);
+    gap: 32px;
+  }
+  .col-form{ min-width: 0; }
+  .col-art img{
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 1px solid var(--panel-line);
+  }
+  .col-art.hidden{ display: none; }
+  .col-rest{
+    grid-column: 1 / -1;
+    min-width: 0;
+  }
+  @media (max-width: 1100px){
+    .cols{ grid-template-columns: 1fr; }
+    .col-art{ display: none; }
   }
 
   .intro{
@@ -130,7 +158,7 @@
   }
   #ai-btn{
     border: none;
-    background: var(--accent-amber);
+    background: var(--amber-fill, var(--accent-amber));
     color: #1a1200;
   }
   #ai-btn:hover{ filter: brightness(1.08); }
@@ -300,6 +328,9 @@
   </header>
 
   <div id="content">
+    <div class="layout">
+    <div class="cols">
+    <div class="col-form">
     <p class="intro">Tudo pronto pra colar no YouTube: <strong>título</strong>, <strong>descrição</strong>, <strong>tags</strong> e o <strong>melhor horário</strong> de postagem. Preencha o tema e gere com IA — ou sem IA, se preferir.</p>
 
     <div class="form-card">
@@ -321,6 +352,13 @@
       </div>
       <div class="ai-hint">O gerar com IA usa sua chave do Gemini. Configure em <a href="ia-config.html">Configuração da IA</a>. O sem IA funciona sempre, sem chave.</div>
     </div>
+    </div>
+
+    <aside class="col-art">
+      <img src="../image/pack-publicacao.webp" alt="" onerror="this.closest('.col-art').classList.add('hidden')">
+    </aside>
+
+    <div class="col-rest">
 
     <div id="results">
       <div class="result-card">
@@ -377,6 +415,9 @@
     <div class="howto">
       <strong>Como usar:</strong> 1) preencha o tema, 2) gere (com ou sem IA), 3) copie cada bloco com o botão,
       4) cole no YouTube Studio (ou no Shorts/Reels). O horário é uma referência geral — seu público pode variar.
+    </div>
+    </div>
+    </div>
     </div>
   </div>
 </div>

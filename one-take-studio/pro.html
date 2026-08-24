@@ -106,7 +106,7 @@
   .status-chip.configured{ color: var(--accent-green); border-color: rgba(77,255,153,0.35); }
   .status-chip.configured .dot{ background: var(--accent-green); }
   .status-chip.missing{ color: var(--accent-amber); border-color: rgba(255,176,32,0.35); }
-  .status-chip.missing .dot{ background: var(--accent-amber); }
+  .status-chip.missing .dot{ background: var(--amber-fill, var(--accent-amber)); }
 
   .pro-price{
     display: flex;
@@ -128,7 +128,7 @@
   }
   .buy-btn{
     display: block;
-    background: var(--accent-amber);
+    background: var(--amber-fill, var(--accent-amber));
     color: #1a1200;
     font-family: var(--font-mono);
     font-weight: 700;

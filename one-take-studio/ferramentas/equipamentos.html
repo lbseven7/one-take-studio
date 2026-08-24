@@ -127,8 +127,8 @@
   }
   .chip:hover{ border-color: rgba(255,176,32,.4); color: var(--text-main); }
   .chip.active{
-    background: var(--accent-amber);
-    border-color: var(--accent-amber);
+    background: var(--amber-fill, var(--accent-amber));
+    border-color: var(--amber-fill, var(--accent-amber));
     color: #1a1200;
     font-weight: 700;
   }
@@ -195,7 +195,7 @@
     letter-spacing: .06em;
     text-transform: uppercase;
     color: #1a1200;
-    background: var(--accent-amber);
+    background: var(--amber-fill, var(--accent-amber));
     border-radius: 999px;
     padding: 4px 10px;
     box-shadow: 0 4px 12px rgba(0,0,0,.25);
@@ -286,7 +286,7 @@
     padding: 11px 14px;
     border-radius: 8px;
     text-decoration: none;
-    background: var(--accent-amber);
+    background: var(--amber-fill, var(--accent-amber));
     color: #1a1200;
     transition: filter .15s ease, transform .15s ease;
   }

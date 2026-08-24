@@ -331,7 +331,7 @@ body {
     left: auto !important;
     z-index: 60 !important;
     border: none !important;
-    background: linear-gradient(180deg, #ffc24d, var(--accent-amber, #ffb020)) !important;
+    background: linear-gradient(180deg, #ffc24d, var(--amber-fill, var(--accent-amber, #ffb020))) !important;
     color: #1a1200 !important;
     width: 28px !important;
     height: 28px !important;

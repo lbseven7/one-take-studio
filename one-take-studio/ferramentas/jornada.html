@@ -295,8 +295,8 @@
   }
   .step-actions button:hover{ border-color: var(--accent-amber); }
   .step-actions button.primary{
-    background: var(--accent-amber);
-    border-color: var(--accent-amber);
+    background: var(--amber-fill, var(--accent-amber));
+    border-color: var(--amber-fill, var(--accent-amber));
     color: #1a1200;
   }
   .step-actions button.primary:hover{ filter: brightness(1.08); }
@@ -372,8 +372,8 @@
   #dots button:hover{ border-color: var(--text-dim); }
   #dots button.done{ background: var(--accent-green); border-color: var(--accent-green); }
   #dots button.cur{
-    background: var(--accent-amber);
-    border-color: var(--accent-amber);
+    background: var(--amber-fill, var(--accent-amber));
+    border-color: var(--amber-fill, var(--accent-amber));
     transform: scale(1.35);
   }
   @media (max-width: 760px){
@@ -423,7 +423,7 @@
     border-radius: 6px;
     cursor: pointer;
   }
-  #done-actions .b-primary{ background: var(--accent-amber); border: none; color: #1a1200; }
+  #done-actions .b-primary{ background: var(--amber-fill, var(--accent-amber)); border: none; color: #1a1200; }
   #done-actions .b-ghost{ background: var(--card); border: 1px solid var(--panel-line); color: var(--text-dim); }
   #done-actions .b-primary:hover{ filter: brightness(1.08); }
   #done-actions .b-ghost:hover{ color: var(--text-main); border-color: var(--accent-amber); }

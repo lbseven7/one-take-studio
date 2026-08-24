@@ -36,8 +36,6 @@
     height: 100dvh;
     display: flex;
     flex-direction: column;
-    max-width: 980px;
-    margin: 0 auto;
     width: 100%;
   }
 
@@ -46,7 +44,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    padding: 16px 20px;
+    padding: 14px 28px;
     background: var(--panel);
     border-bottom: 1px solid var(--panel-line);
     flex-shrink: 0;
@@ -69,7 +67,33 @@
   #content{
     flex: 1;
     overflow-y: auto;
-    padding: 20px;
+    padding: 20px clamp(16px, 4vw, 40px) 32px;
+  }
+
+  .layout{
+    width: 100%;
+    max-width: 1320px;
+    margin: 0 auto;
+  }
+
+  .cols{
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) clamp(260px, 26vw, 380px);
+    gap: 32px;
+    align-items: start;
+  }
+  .col-main{ min-width: 0; }
+  .col-art{ position: sticky; top: 20px; }
+  .col-art img{
+    display: block;
+    width: 100%;
+    border-radius: 12px;
+    border: 1px solid var(--panel-line);
+  }
+  .col-art.hidden{ display: none; }
+  @media (max-width: 1100px){
+    .cols{ grid-template-columns: 1fr; }
+    .col-art{ display: none; }
   }
 
   .intro{
@@ -300,6 +324,9 @@
   </header>
 
   <div id="content">
+    <div class="layout">
+    <div class="cols">
+    <div class="col-main">
     <p class="intro">Tudo pronto pra colar no YouTube: <strong>título</strong>, <strong>descrição</strong>, <strong>tags</strong> e o <strong>melhor horário</strong> de postagem. Preencha o tema e gere com IA — ou sem IA, se preferir.</p>
 
     <div class="form-card">
@@ -377,6 +404,12 @@
     <div class="howto">
       <strong>Como usar:</strong> 1) preencha o tema, 2) gere (com ou sem IA), 3) copie cada bloco com o botão,
       4) cole no YouTube Studio (ou no Shorts/Reels). O horário é uma referência geral — seu público pode variar.
+    </div>
+    </div>
+    <aside class="col-art">
+      <img src="../image/pack-publicacao.webp" alt="" onerror="this.closest('.col-art').classList.add('hidden')">
+    </aside>
+    </div>
     </div>
   </div>
 </div>

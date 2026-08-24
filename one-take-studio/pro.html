@@ -35,15 +35,15 @@
     height: 100dvh;
     display: flex;
     flex-direction: column;
-    max-width: 860px;
-    margin: 0 auto;
     width: 100%;
   }
 
   header{
     display: flex;
     align-items: center;
-    padding: 16px 20px;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 28px;
     background: var(--panel);
     border-bottom: 1px solid var(--panel-line);
     flex-shrink: 0;
@@ -59,7 +59,13 @@
   #content{
     flex: 1;
     overflow-y: auto;
-    padding: 20px;
+    padding: 20px clamp(16px, 4vw, 40px) 32px;
+  }
+
+  .layout{
+    width: 100%;
+    max-width: 860px;
+    margin: 0 auto;
   }
 
   .card{
@@ -256,7 +262,6 @@
   @media (max-width: 480px){
     header{ padding: 12px 14px; }
     header h1{ font-size: 14px; }
-    #content{ padding: 14px; }
     .card{ padding: 16px; }
   }
 </style>
@@ -272,6 +277,7 @@
   <header><h1>Take Um Studio · Plano Pro</h1></header>
 
   <div id="content">
+    <div class="layout">
     <div class="card">
       <h2><span class="star">★</span> Take Um Pro</h2>
       <p class="sub">Criação de conteúdo sem limites nas ferramentas de geração do Take Um Studio. Pagamento único, chave liberada na hora.</p>
@@ -338,6 +344,7 @@
       </ol>
       <p>Na ativação, sua chave é conferida online e este navegador é registrado como um dos aparelhos ativos. A cada 48h o app confirma que este aparelho ainda é seu (você precisa de internet para revalidar). Seus dados e a chave ficam salvos <strong>apenas neste navegador</strong>.</p>
       <p>Não recebeu sua chave? Recupere a qualquer momento com o número da transação em <a href="./resgatar.html">Recuperar minha chave</a>.</p>
+    </div>
     </div>
   </div>
 </div>

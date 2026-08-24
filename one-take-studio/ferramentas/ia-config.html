@@ -36,15 +36,15 @@
     height: 100dvh;
     display: flex;
     flex-direction: column;
-    max-width: 940px;
-    margin: 0 auto;
     width: 100%;
   }
 
   header{
     display: flex;
     align-items: center;
-    padding: 16px 20px;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 28px;
     background: var(--panel);
     border-bottom: 1px solid var(--panel-line);
     flex-shrink: 0;
@@ -60,7 +60,32 @@
   #content{
     flex: 1;
     overflow-y: auto;
-    padding: 20px;
+    padding: 20px clamp(16px, 4vw, 40px) 32px;
+  }
+
+  .layout{
+    width: 100%;
+    max-width: 1320px;
+    margin: 0 auto;
+  }
+
+  .card-row{
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) clamp(280px, 28vw, 420px);
+    gap: 24px;
+    align-items: start;
+  }
+  .card-row .card{ margin-bottom: 0; }
+  .card-row .col-art img{
+    display: block;
+    width: 100%;
+    border-radius: 12px;
+    border: 1px solid var(--panel-line);
+  }
+  .card-row .col-art.hidden{ display: none; }
+  @media (max-width: 900px){
+    .card-row{ grid-template-columns: 1fr; }
+    .card-row .col-art{ display: none; }
   }
 
   .card{
@@ -198,6 +223,7 @@
     border: 1px solid var(--panel-line);
     border-radius: 8px;
     padding: 16px 18px;
+    margin-top: 24px;
     font-size: 12.5px;
     line-height: 1.7;
     color: var(--text-dim);
@@ -219,7 +245,6 @@
   @media (max-width: 480px){
     header{ padding: 12px 14px; }
     header h1{ font-size: 14px; }
-    #content{ padding: 14px; }
     .card{ padding: 16px; }
   }
 </style>
@@ -234,6 +259,8 @@
   <header><h1>Take Um Studio · Configuração da IA</h1></header>
 
   <div id="content">
+    <div class="layout">
+    <div class="card-row">
     <div class="card">
       <h2><span class="star">✦</span> Google Gemini</h2>
       <p class="sub">Sua chave fica salva apenas neste navegador. Ela é usada só para chamar a IA — nunca é enviada para outro lugar.</p>
@@ -265,6 +292,11 @@
       <div id="msg"></div>
     </div>
 
+    <aside class="col-art">
+      <img src="../image/ia-config.png" alt="Configuração da IA" onerror="this.closest('.col-art').classList.add('hidden')">
+    </aside>
+    </div>
+
     <div class="help">
       <strong>Como conseguir sua chave? É grátis!</strong>
       <ol>
@@ -274,6 +306,8 @@
         <li>Toque em <em>Salvar chave</em> e depois em <em>Testar conexão</em> para confirmar que está tudo certo.</li>
       </ol>
       <p>A camada gratuita cobre os modelos <strong>gemini-3.6-flash</strong> e <strong>gemini-3.5-flash-lite</strong>. Se um modelo acusar cota esgotada (erro 429), troque no seletor acima — cada modelo tem sua própria cota diária.</p>
+    </div>
+    </div>
     </div>
   </div>
 </div>

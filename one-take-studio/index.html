@@ -652,6 +652,209 @@
       #category-chips .chip { transition: none; }
     }
 
+    /* ---------- HOME TOPBAR (search) ---------- */
+    #home-topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: var(--bg);
+      border-bottom: 1px solid var(--panel-line);
+      padding: 10px 0;
+    }
+
+    #home-topbar-inner {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .home-logo {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      flex-shrink: 0;
+    }
+
+    #search-wrap {
+      flex: 1;
+      max-width: 480px;
+      position: relative;
+    }
+
+    #search-wrap .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-dim);
+      pointer-events: none;
+    }
+
+    #home-search {
+      width: 100%;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      padding: 9px 14px 9px 36px;
+      border-radius: 8px;
+      border: 1px solid var(--panel-line);
+      background: var(--card);
+      color: var(--text-main);
+      outline: none;
+      transition: border-color .15s ease;
+    }
+
+    #home-search::placeholder {
+      color: var(--text-dim);
+    }
+
+    #home-search:focus {
+      border-color: var(--accent-amber);
+    }
+
+    @media (max-width: 860px) {
+      #home-topbar {
+        padding: 10px 0;
+      }
+      #home-topbar-inner {
+        padding-left: clamp(28px, 5vw, 64px);
+        padding-right: 16px;
+      }
+      .home-logo { display: none; }
+      #search-wrap { max-width: none; }
+    }
+
+    @media (max-width: 560px) {
+      #home-search {
+        font-size: 16px;
+        padding: 10px 14px 10px 36px;
+      }
+    }
+
+    /* ---------- RECENT SECTION ("Continuar de onde parou") ---------- */
+    #recent-section {
+      max-width: 1240px;
+      margin: clamp(16px, 3vw, 28px) auto 0;
+    }
+
+    #recent-section[hidden] { display: none; }
+
+    #recent-section-inner {
+      padding: 0;
+    }
+
+    .recent-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .recent-head h2 {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 17px;
+      margin: 0;
+      color: var(--text-dim);
+    }
+
+    #recent-clear {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-dim);
+      background: none;
+      border: 1px solid var(--panel-line);
+      border-radius: 6px;
+      padding: 4px 10px;
+      cursor: pointer;
+      transition: border-color .15s ease, color .15s ease;
+    }
+
+    #recent-clear:hover {
+      border-color: var(--accent-red);
+      color: var(--accent-red);
+    }
+
+    #recent-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 12px;
+    }
+
+    .recent-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--card);
+      border: 1px solid var(--panel-line);
+      border-radius: 10px;
+      padding: 10px 14px;
+      cursor: pointer;
+      transition: border-color .15s ease, transform .15s ease;
+    }
+
+    .recent-card:hover {
+      border-color: var(--stage);
+      transform: translateY(-2px);
+    }
+
+    .recent-card .rc-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      overflow: hidden;
+    }
+
+    .recent-card .rc-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .recent-card .rc-meta {
+      min-width: 0;
+    }
+
+    .recent-card .rc-meta h4 {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 13px;
+      margin: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .recent-card .rc-meta span {
+      font-size: 11px;
+      color: var(--text-dim);
+    }
+
+    @media (max-width: 560px) {
+      #recent-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .recent-card { transition: none; }
+    }
+
+    /* ---------- GRID 4 COLUNAS (telas grandes) ---------- */
+    @media (min-width: 1200px) {
+      #tool-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+      }
+    }
+
     .tool-section__head,
     .tool-section__icon { display: none; }
 
@@ -764,6 +967,7 @@
     @media (max-width: 860px) {
       #hero-banner,
       #install-row,
+      #recent-section,
       #tool-grid,
       #testimonials,
       #backup-section {
@@ -1581,6 +1785,15 @@
 
     <main id="main">
       <div id="home-view" class="active">
+        <div id="home-topbar">
+          <div id="home-topbar-inner">
+            <img class="home-logo" src="image/logo3.png" alt="Take Um">
+            <div id="search-wrap">
+              <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="search" id="home-search" placeholder="Buscar ferramentas..." autocomplete="off">
+            </div>
+          </div>
+        </div>
         <div id="hero-banner">
           <picture>
             <source media="(max-width: 860px)" srcset="image/banner-novo.png">
@@ -1601,6 +1814,15 @@
         </div>
         <div id="install-row">
           <button id="install-btn" hidden type="button">📲 Instalar app</button>
+        </div>
+        <div id="recent-section" hidden>
+          <div id="recent-section-inner">
+            <div class="recent-head">
+              <h2>Continuar de onde parou</h2>
+              <button id="recent-clear" type="button">Limpar</button>
+            </div>
+            <div id="recent-grid"></div>
+          </div>
         </div>
         <div id="tool-grid">
           <div class="tool-card featured" data-id="jornada" data-category="todos" data-file="ferramentas/jornada.html" data-name="Primeiro Vídeo">
@@ -2032,6 +2254,7 @@
         closeSidebarOnMobile();
         menuToggle.style.setProperty('display', 'none', 'important');
         themeToggleMobile.style.setProperty('display', 'none', 'important');
+        trackRecent(id, name, file);
       }
 
       function openToolFromElement(el) {
@@ -2069,16 +2292,113 @@
         chips.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
         chip.classList.add('active');
 
+        const q = searchInput.value.trim().toLowerCase();
+
         allCards.forEach(card => {
-          if (filter === 'todos') {
-            card.removeAttribute('data-hidden');
-          } else if (card.dataset.category === filter || card.classList.contains('featured')) {
+          let matchesCategory = true;
+          if (filter !== 'todos') {
+            matchesCategory = card.dataset.category === filter || card.classList.contains('featured');
+          }
+
+          const name = (card.dataset.name || '').toLowerCase();
+          const tag = (card.querySelector('.yt-tag')?.textContent || '').toLowerCase();
+          const matchesSearch = !q || name.includes(q) || tag.includes(q);
+
+          if (matchesCategory && matchesSearch) {
             card.removeAttribute('data-hidden');
           } else {
             card.setAttribute('data-hidden', 'true');
           }
         });
       });
+
+      // ---------- SEARCH (filtro por busca) ----------
+      const searchInput = document.getElementById('home-search');
+
+      searchInput.addEventListener('input', () => {
+        const q = searchInput.value.trim().toLowerCase();
+        const activeFilter = chips.querySelector('.chip.active')?.dataset.filter || 'todos';
+
+        allCards.forEach(card => {
+          const name = (card.dataset.name || '').toLowerCase();
+          const tag = (card.querySelector('.yt-tag')?.textContent || '').toLowerCase();
+          const matchesSearch = !q || name.includes(q) || tag.includes(q);
+
+          let matchesCategory = true;
+          if (activeFilter !== 'todos') {
+            matchesCategory = card.dataset.category === activeFilter || card.classList.contains('featured');
+          }
+
+          if (matchesSearch && matchesCategory) {
+            card.removeAttribute('data-hidden');
+          } else {
+            card.setAttribute('data-hidden', 'true');
+          }
+        });
+      });
+
+      // ---------- RECENT TOOLS (Continuar de onde parou) ----------
+      const RECENT_KEY = 'tu-recent-tools';
+      const RECENT_MAX = 6;
+      const recentSection = document.getElementById('recent-section');
+      const recentGrid = document.getElementById('recent-grid');
+      const recentClear = document.getElementById('recent-clear');
+
+      function getRecent() {
+        try { return JSON.parse(localStorage.getItem(RECENT_KEY)) || []; }
+        catch { return []; }
+      }
+
+      function saveRecent(list) {
+        localStorage.setItem(RECENT_KEY, JSON.stringify(list));
+      }
+
+      function trackRecent(id, name, file) {
+        if (id === 'home') return;
+        const list = getRecent().filter(r => r.id !== id);
+        list.unshift({ id, name, file, ts: Date.now() });
+        saveRecent(list.slice(0, RECENT_MAX));
+      }
+
+      const iconColors = {
+        jornada: 'var(--accent-green)', pauta: 'var(--accent-blue)', calendario: 'var(--accent-blue)',
+        roteirizador: 'var(--accent-blue)', ideias: 'var(--accent-blue)',
+        teleprompter: 'var(--accent-amber)', claquete: 'var(--accent-amber)', checklist: 'var(--accent-amber)',
+        capa: 'var(--accent-red)', 'checklist-divulgacao': 'var(--accent-red)',
+        'pack-publicacao': 'var(--accent-red)', tracker: 'var(--accent-red)',
+        equipamentos: 'var(--accent-purple)', guia: 'var(--accent-purple)',
+        'ia-config': 'var(--text-dim)', pro: 'var(--accent-amber)', sobre: 'var(--text-dim)'
+      };
+
+      function renderRecent() {
+        const list = getRecent();
+        if (!list.length) { recentSection.hidden = true; return; }
+        recentSection.hidden = false;
+        recentGrid.innerHTML = list.map(r => {
+          const card = toolGrid.querySelector('.tool-card[data-id="' + r.id + '"]');
+          const imgSrc = card?.querySelector('.thumb img')?.src || '';
+          const color = iconColors[r.id] || 'var(--text-dim)';
+          return '<div class="recent-card" data-id="' + r.id + '" data-file="' + r.file + '" data-name="' + r.name + '">'
+            + '<div class="rc-icon" style="background:' + color + '20">'
+            + (imgSrc ? '<img src="' + imgSrc + '" alt="">' : '<span style="color:' + color + '">▶</span>')
+            + '</div>'
+            + '<div class="rc-meta"><h4>' + r.name + '</h4><span>abrir novamente</span></div>'
+            + '</div>';
+        }).join('');
+      }
+
+      recentGrid.addEventListener('click', (e) => {
+        const card = e.target.closest('.recent-card');
+        if (!card) return;
+        openToolFromElement(card);
+      });
+
+      recentClear.addEventListener('click', () => {
+        saveRecent([]);
+        renderRecent();
+      });
+
+      renderRecent();
 
       // ---------- ÍCONES 3D (inclinação ao passar o mouse) ----------
       if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {

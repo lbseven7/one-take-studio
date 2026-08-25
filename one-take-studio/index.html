@@ -1217,6 +1217,86 @@
       }
     }
 
+    /* ---------- SKELETON LOADING ---------- */
+    @keyframes shimmer {
+      0% { background-position: -400px 0; }
+      100% { background-position: 400px 0; }
+    }
+
+    #tool-grid.loading .tool-card {
+      pointer-events: none;
+    }
+
+    #tool-grid.loading .tool-card .thumb {
+      background: var(--card) !important;
+    }
+
+    #tool-grid.loading .tool-card .thumb img,
+    #tool-grid.loading .tool-card .thumb .thumb-badge,
+    #tool-grid.loading .tool-card .thumb .thumb-duration {
+      opacity: 0;
+    }
+
+    #tool-grid.loading .tool-card .thumb::after {
+      display: none;
+    }
+
+    #tool-grid.loading .tool-card .thumb::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.04), transparent);
+      background-size: 400px 100%;
+      animation: shimmer 1.6s ease-in-out infinite;
+      z-index: 1;
+    }
+
+    #tool-grid.loading .tool-card .yt-avatar {
+      background: var(--panel-line);
+    }
+
+    #tool-grid.loading .tool-card .yt-avatar img {
+      opacity: 0;
+    }
+
+    #tool-grid.loading .tool-card .yt-meta h3,
+    #tool-grid.loading .tool-card .yt-sub,
+    #tool-grid.loading .tool-card .yt-tag {
+      color: transparent !important;
+      background: var(--panel-line);
+      border-radius: 4px;
+      user-select: none;
+    }
+
+    #tool-grid.loading .tool-card .yt-meta h3 {
+      width: 70%;
+      height: 14px;
+      margin-bottom: 6px;
+    }
+
+    #tool-grid.loading .tool-card .yt-sub {
+      width: 45%;
+      height: 11px;
+      margin-bottom: 5px;
+    }
+
+    #tool-grid.loading .tool-card .yt-tag {
+      width: 55%;
+      height: 10px;
+    }
+
+    #tool-grid.loading .tool-card:hover {
+      transform: none;
+      box-shadow: none;
+      border-color: var(--panel-line);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      #tool-grid.loading .tool-card .thumb::before {
+        animation: none;
+      }
+    }
+
     #install-row {
       min-height: 39px;
       margin: 18px 0 30px 0;
@@ -1843,7 +1923,7 @@
             <div id="recent-grid"></div>
           </div>
         </div>
-        <div id="tool-grid">
+        <div id="tool-grid" class="loading">
           <div class="tool-card featured" data-id="jornada" data-category="todos" data-file="ferramentas/jornada.html" data-name="Primeiro Vídeo">
             <div class="thumb" style="background:linear-gradient(135deg,#0a2e1a,#0d3a12)">
               <img src="image/home/primeiro-video.png" alt="" onerror="this.style.display='none'">
@@ -2630,6 +2710,7 @@
         const wait = Math.max(0, SPLASH_MIN_MS - (Date.now() - splashStart));
         setTimeout(() => {
           splash.classList.add('hidden');
+          toolGrid.classList.remove('loading');
           setTimeout(() => splash.remove(), 600);
         }, wait);
       }

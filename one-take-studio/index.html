@@ -1101,6 +1101,22 @@
       background: linear-gradient(135deg, color-mix(in srgb, var(--stage) 18%, #0d0c0a), color-mix(in srgb, var(--stage) 6%, #0d0c0a));
     }
 
+    .tool-card .thumb::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 3px;
+      background: var(--accent-amber);
+      transition: width .6s cubic-bezier(.4,0,.2,1);
+      z-index: 3;
+    }
+
+    .tool-card:hover .thumb::after {
+      width: 100%;
+    }
+
     .tool-card .thumb img {
       width: 100%;
       height: 100%;
@@ -1194,6 +1210,9 @@
 
     @media (prefers-reduced-motion: reduce) {
       .tool-card {
+        transition: none;
+      }
+      .tool-card .thumb::after {
         transition: none;
       }
     }
